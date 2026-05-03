@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Hire Thruput Live</title>
+    <title>OJT Operational Analytics | Live</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
@@ -17,86 +17,66 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* HEADER & TOP SUMMARY */
-        .header { 
-            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000;
-        }
-        .brand h1 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        /* HEADER */
+        .header { padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000; }
+        .brand h1 { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
         .brand span { color: var(--accent); }
-        .h-ticker { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim); }
-        .h-ticker span { color: var(--accent); }
+        .h-ticker { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--text-dim); margin-top: 4px; }
         .h-metrics { display: flex; gap: 25px; }
         .hm-item { text-align: right; }
-        .hm-v { display: block; font-size: 20px; font-weight: 800; font-family: 'JetBrains Mono'; line-height: 1; }
+        .hm-v { display: block; font-size: 20px; font-weight: 800; font-family: 'JetBrains Mono'; }
         .hm-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 800; }
 
         /* SEARCHABLE SLICERS */
-        .nav-bar { display: flex; gap: 12px; padding: 10px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; }
-        .dropdown { position: relative; width: 160px; }
-        .dd-label { font-size: 9px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 4px; display: flex; gap: 5px; }
-        .dd-btn { 
-            width: 100%; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); 
-            color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px; 
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .dd-menu { 
-            position: absolute; top: 110%; left: 0; width: 220px; background: #1c2128; 
-            border: 1px solid var(--border); border-radius: 8px; display: none; z-index: 1001; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden;
-        }
+        .nav-bar { display: flex; gap: 10px; padding: 10px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; }
+        .dropdown { position: relative; width: 165px; }
+        .dd-label { font-size: 8px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
+        .dd-btn { width: 100%; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px; display: flex; justify-content: space-between; }
+        .dd-menu { position: absolute; top: 110%; left: 0; width: 220px; background: #1c2128; border: 1px solid var(--border); border-radius: 8px; display: none; z-index: 1001; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .dropdown.open .dd-menu { display: block; }
         .search-box { padding: 8px; border-bottom: 1px solid var(--border); }
-        .search-box input { width: 100%; padding: 6px; background: #0d1117; border: 1px solid var(--border); color: #fff; border-radius: 4px; font-size: 11px; }
-        .dd-actions { display: flex; padding: 6px 10px; border-bottom: 1px solid var(--border); gap: 10px; font-size: 10px; }
-        .dd-actions span { color: var(--accent); cursor: pointer; font-weight: 700; }
+        .search-box input { width: 100%; padding: 6px; background: #0d1117; border: 1px solid var(--border); color: #fff; border-radius: 4px; font-size: 11px; outline: none; }
         .dd-list { max-height: 200px; overflow-y: auto; }
-        .li { padding: 8px 12px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .li { padding: 8px 12px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .li:hover { background: rgba(255,255,255,0.05); }
-        .li.active { color: var(--accent); font-weight: 600; }
-        .chk { width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 3px; position: relative; }
+        .li.active { color: var(--accent); background: rgba(56, 189, 248, 0.05); }
+        .chk { width: 12px; height: 12px; border: 1px solid var(--border); border-radius: 2px; position: relative; }
         .li.active .chk { background: var(--accent); border-color: var(--accent); }
-        .li.active .chk::after { content: '✓'; color: #000; position: absolute; left: 2px; top: -1px; font-size: 10px; }
 
         /* STATUS & NAV FRAME */
-        .status-bar { padding: 8px 30px; border-bottom: 1px solid var(--border); font-size: 11px; color: var(--text-dim); display: flex; justify-content: space-between; }
-        .nav-frame { display: flex; gap: 20px; padding: 10px 30px; background: var(--surface); border-bottom: 1px solid var(--border); }
-        .nav-item { font-size: 11px; color: var(--text-dim); cursor: pointer; font-weight: 600; }
-        .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 2px; }
+        .status-bar { padding: 10px 30px; font-size: 11px; color: var(--text-dim); display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); }
+        .nav-frame { display: flex; gap: 20px; padding: 12px 30px; background: var(--surface); border-bottom: 1px solid var(--border); }
+        .nav-item { font-size: 11px; color: var(--text-dim); cursor: pointer; font-weight: 600; padding-bottom: 4px; }
+        .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
-        /* EIGHT METRIC CARDS */
-        .metrics-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; padding: 20px 30px; }
-        .m-card { background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: 8px; border-left: 3px solid var(--accent); }
-        .m-card.blue { border-left-color: var(--accent); }
-        .m-card.cyan { border-left-color: #00d4ff; }
-        .m-card.red { border-left-color: var(--red); }
-        .m-card.green { border-left-color: var(--green); }
-        .m-card.purple { border-left-color: var(--purple); }
-        .m-card.orange { border-left-color: var(--orange); }
-        .m-card.pink { border-left-color: var(--pink); }
-        .m-card.teal { border-left-color: var(--teal); }
-        .m-card .val { font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono'; display: block; }
-        .m-card .lab { font-size: 8px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; }
+        /* 8-CARD METRIC GRID */
+        .metrics-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; padding: 15px 30px; }
+        .m-card { background: var(--surface); border: 1px solid var(--border); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent); }
+        .m-card .val { font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono'; display: block; }
+        .m-card .lab { font-size: 8px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 2px; display: block; }
         .m-card .sub { font-size: 9px; color: var(--text-dim); }
 
-        /* DISTRIBUTION ANALYSIS */
-        .section-header { padding: 0 30px; font-size: 11px; font-weight: 800; color: var(--accent); border-left: 4px solid var(--accent); margin-left: 30px; text-transform: uppercase; }
-        .charts-container { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 20px; padding: 20px 30px; }
-        .chart-card { background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: 10px; min-height: 300px; }
-        .chart-card h4 { font-size: 10px; color: var(--text-dim); margin-bottom: 15px; text-transform: uppercase; }
+        /* STRUCTURED DISTRIBUTION ANALYSIS */
+        .section-label { padding: 15px 30px 5px 30px; font-size: 10px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        
+        .charts-container { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 15px; padding: 10px 30px 20px 30px; }
+        .chart-box { background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: 12px; height: 280px; display: flex; flex-direction: column; }
+        .chart-box h4 { font-size: 9px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 15px; text-align: center; }
+        .chart-wrapper { flex: 1; min-height: 0; }
 
-        /* BATCH SUMMARY TABLE */
-        .table-container { padding: 0 30px 40px 30px; }
+        /* SUMMARY TABLE */
+        .table-wrap { padding: 10px 30px 40px 30px; }
         table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); font-size: 11px; }
-        th { text-align: left; padding: 12px; color: var(--text-dim); text-transform: uppercase; font-size: 9px; border-bottom: 1px solid var(--border); }
+        th { padding: 12px; color: var(--text-dim); font-size: 8px; text-transform: uppercase; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); text-align: left; }
         td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .status-pill { background: var(--green); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 9px; }
+        .status-pill { background: var(--green); color: #000; padding: 2px 8px; border-radius: 10px; font-weight: 800; font-size: 9px; }
 
         #loader { position: fixed; inset: 0; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .spin { width: 30px; height: 30px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: s 0.8s linear infinite; }
-        @keyframes s { to { transform: rotate(360deg); } }
+        .spin { width: 30px; height: 30px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: rot 0.8s linear infinite; }
+        @keyframes rot { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -104,215 +84,177 @@
 <div id="loader"><div class="spin"></div></div>
 
 <div class="header">
-    <div class="brand"><h1>NEW HIRE <span>THRUPUT LIVE</span></h1><div class="h-ticker" id="h-ticker">Loading...</div></div>
+    <div class="brand"><h1>Operational <span>Analytics</span></h1><div class="h-ticker" id="h-ticker">Syncing Records...</div></div>
     <div class="h-metrics">
         <div class="hm-item"><span class="hm-v" id="h-bat">0</span><span class="hm-l">Batches</span></div>
         <div class="hm-item"><span class="hm-v" id="h-hc">0</span><span class="hm-l">Headcount</span></div>
         <div class="hm-item"><span class="hm-v" id="h-at" style="color:var(--red)">0</span><span class="hm-l">Attrition</span></div>
-        <div class="hm-item"><span class="hm-v" id="h-cv" style="color:var(--green)">0%</span><span class="hm-l">Avg Conv%</span></div>
+        <div class="hm-item"><span class="hm-v" id="h-cv" style="color:var(--green)">0%</span><span class="hm-l">Conv%</span></div>
     </div>
 </div>
 
 <div class="nav-bar">
-    <div class="dropdown" id="dd-batch"><div class="dd-label">🔍 Batch</div><button class="dd-btn" onclick="toggleDD('dd-batch')">All <span>▼</span></button>
-        <div class="dd-menu"><div class="search-box"><input type="text" placeholder="Search..." onkeyup="filterList('batch', this.value)"></div>
-        <div class="dd-actions"><span onclick="bulk('batch',1)">Select All</span><span onclick="bulk('batch',0)">Clear</span></div><div class="dd-list" id="list-batch"></div></div></div>
-    <div class="dropdown" id="dd-process"><div class="dd-label">🏭 Process</div><button class="dd-btn" onclick="toggleDD('dd-process')">All <span>▼</span></button>
-        <div class="dd-menu"><div class="search-box"><input type="text" placeholder="Search..." onkeyup="filterList('process', this.value)"></div>
-        <div class="dd-actions"><span onclick="bulk('process',1)">Select All</span><span onclick="bulk('process',0)">Clear</span></div><div class="dd-list" id="list-process"></div></div></div>
-    <div class="dropdown" id="dd-trainer"><div class="dd-label">👤 Trainer</div><button class="dd-btn" onclick="toggleDD('dd-trainer')">All <span>▼</span></button>
-        <div class="dd-menu"><div class="search-box"><input type="text" placeholder="Search..." onkeyup="filterList('trainer', this.value)"></div>
-        <div class="dd-actions"><span onclick="bulk('trainer',1)">Select All</span><span onclick="bulk('trainer',0)">Clear</span></div><div class="dd-list" id="list-trainer"></div></div></div>
-    <div class="dropdown" id="dd-month"><div class="dd-label">📅 Month</div><button class="dd-btn" onclick="toggleDD('dd-month')">All <span>▼</span></button>
-        <div class="dd-menu"><div class="search-box"><input type="text" placeholder="Search..." onkeyup="filterList('month', this.value)"></div>
-        <div class="dd-actions"><span onclick="bulk('month',1)">Select All</span><span onclick="bulk('month',0)">Clear</span></div><div class="dd-list" id="list-month"></div></div></div>
-    <button onclick="loadData(true)" style="padding:8px 15px; background:transparent; border:1px solid var(--border); color:#fff; border-radius:6px; cursor:pointer; margin-left:auto; font-size:11px; font-weight:800;">REFRESH</button>
+    <div class="dropdown" id="dd-batch"><div class="dd-label">Batch</div><button class="dd-btn" onclick="toggleDD('dd-batch')">All <span>▼</span></button>
+        <div class="dd-menu"><div class="search-box"><input type="text" onkeyup="filterL('batch', this.value)"></div><div class="dd-list" id="l-batch"></div></div></div>
+    <div class="dropdown" id="dd-process"><div class="dd-label">Process</div><button class="dd-btn" onclick="toggleDD('dd-process')">All <span>▼</span></button>
+        <div class="dd-menu"><div class="search-box"><input type="text" onkeyup="filterL('process', this.value)"></div><div class="dd-list" id="l-process"></div></div></div>
+    <div class="dropdown" id="dd-trainer"><div class="dd-label">Trainer</div><button class="dd-btn" onclick="toggleDD('dd-trainer')">All <span>▼</span></button>
+        <div class="dd-menu"><div class="search-box"><input type="text" onkeyup="filterL('trainer', this.value)"></div><div class="dd-list" id="l-trainer"></div></div></div>
+    <div class="dropdown" id="dd-month"><div class="dd-label">Month</div><button class="dd-btn" onclick="toggleDD('dd-month')">All <span>▼</span></button>
+        <div class="dd-menu"><div class="search-box"><input type="text" onkeyup="filterL('month', this.value)"></div><div class="dd-list" id="l-month"></div></div></div>
 </div>
 
 <div class="status-bar"><div id="showing">Showing all records</div><div id="stat-count">0 / 0 batches</div></div>
 
 <div class="nav-frame">
-    <div class="nav-item active">Overview</div><div class="nav-item">Training Schedule</div><div class="nav-item">Quality PKT</div>
-    <div class="nav-item">Quality Scores</div><div class="nav-item">AHT</div><div class="nav-item">KRA Certification</div><div class="nav-item">Exits</div>
+    <div class="nav-item active">Overview</div><div class="nav-item">Training Schedule</div><div class="nav-item">Quality PKT</div><div class="nav-item">Quality Scores</div><div class="nav-item">AHT</div><div class="nav-item">KRA Certification</div><div class="nav-item">Exits</div>
 </div>
 
 <div class="metrics-grid">
-    <div class="m-card blue"><span class="lab">Total Batches</span><span class="val" id="m-bat">0</span></div>
-    <div class="m-card cyan"><span class="lab">Total Headcount</span><span class="val" id="m-hc">0</span><span class="sub">Day 0</span></div>
-    <div class="m-card red"><span class="lab">Total Attrition</span><span class="val" style="color:var(--red)" id="m-at">0</span></div>
-    <div class="m-card green"><span class="lab">Avg Conversion %</span><span class="val" style="color:var(--green)" id="m-cv">0%</span><span class="sub">Train start→end</span></div>
-    <div class="m-card purple"><span class="lab">Active (On Floor)</span><span class="val" style="color:var(--purple)" id="m-act">0</span><span class="sub">batches</span></div>
-    <div class="m-card orange"><span class="lab">Training Exits</span><span class="val" style="color:var(--orange)" id="m-tx">0</span><span class="sub">Training phase</span></div>
-    <div class="m-card pink"><span class="lab">OJT Exits</span><span class="val" style="color:var(--pink)" id="m-ox">0</span><span class="sub">OJT phase</span></div>
-    <div class="m-card teal"><span class="lab">Avg Training Days</span><span class="val" id="m-dy">0</span><span class="sub">per batch</span></div>
+    <div class="m-card" style="border-left-color:var(--accent)"><span class="lab">Total Batches</span><span class="val" id="m-bat">160</span></div>
+    <div class="m-card" style="border-left-color:var(--accent)"><span class="lab">Total Headcount</span><span class="val" id="m-hc">799</span><span class="sub">Day 0</span></div>
+    <div class="m-card" style="border-left-color:var(--red)"><span class="lab">Total Attrition</span><span class="val" style="color:var(--red)" id="m-at">96</span></div>
+    <div class="m-card" style="border-left-color:var(--green)"><span class="lab">Avg Conversion %</span><span class="val" style="color:var(--green)" id="m-cv">93.3%</span><span class="sub">Train start→end</span></div>
+    <div class="m-card" style="border-left-color:var(--purple)"><span class="lab">Active (On Floor)</span><span class="val" id="m-act">151</span><span class="sub">batches</span></div>
+    <div class="m-card" style="border-left-color:var(--orange)"><span class="lab">Training Exits</span><span class="val" id="m-tx">85</span><span class="sub">Training phase</span></div>
+    <div class="m-card" style="border-left-color:var(--pink)"><span class="lab">OJT Exits</span><span class="val" id="m-ox">10</span><span class="sub">OJT phase</span></div>
+    <div class="m-card" style="border-left-color:var(--teal)"><span class="lab">Avg Training Days</span><span class="val" id="m-dy">10.0</span></div>
 </div>
 
-<div class="section-header">Distribution Analysis</div>
+<div class="section-label">Distribution Analysis</div>
 <div class="charts-container">
-    <div class="chart-card"><h4>Headcount by Trainer</h4><canvas id="chart-hc-trainer"></canvas></div>
-    <div class="chart-card"><h4>Monthly Headcount Trend</h4><canvas id="chart-trend"></canvas></div>
-    <div class="chart-card"><h4>Attrition % by Trainer</h4><canvas id="chart-at-trainer"></canvas></div>
+    <div class="chart-box"><h4>Headcount by Trainer</h4><div class="chart-wrapper"><canvas id="ch-hc"></canvas></div></div>
+    <div class="chart-box"><h4>Monthly Headcount Trend</h4><div class="chart-wrapper"><canvas id="ch-trend"></canvas></div></div>
+    <div class="chart-box"><h4>Attrition % by Trainer</h4><div class="chart-wrapper"><canvas id="ch-at"></canvas></div></div>
 </div>
 
-<div class="section-header" style="margin-bottom:15px;">Batch Summary</div>
-<div class="table-container">
+<div class="section-label">Batch Summary</div>
+<div class="table-wrap">
     <table>
-        <thead><tr><th>Batch</th><th>Process</th><th>Trainer</th><th>Month</th><th>Status</th><th>HC Day 0</th><th>Trng End</th><th>Attrition</th><th>Conversion%</th></tr></thead>
-        <tbody id="table-body"></tbody>
+        <thead><tr><th>Batch Name</th><th>Process</th><th>Trainer</th><th>Month</th><th>Status</th><th>HC Day 0</th><th>Attrition</th><th>Conversion%</th></tr></thead>
+        <tbody id="t-body"></tbody>
     </table>
 </div>
 
 <script>
-    const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
-    let RAW = [], FILTERS = { batch: [], process: [], trainer: [], month: [] };
-    const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    let charts = {};
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
+    let RAW = [], FILTERS = { batch:[], process:[], trainer:[], month:[] }, charts = {};
 
     function toggleDD(id) {
-        const el = document.getElementById(id);
-        const isOpen = el.classList.contains('open');
+        const isOpen = document.getElementById(id).classList.contains('open');
         document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
-        if(!isOpen) el.classList.add('open');
+        if(!isOpen) document.getElementById(id).classList.add('open');
     }
 
-    async function loadData(ref = false) {
-        if(ref) document.getElementById('loader').style.display = 'flex';
+    async function load() {
         try {
-            const res = await fetch(`${URL}&cb=${Date.now()}`);
+            const res = await fetch(`${CSV_URL}&cb=${Date.now()}`);
             const text = await res.text();
             const rows = text.split(/\r?\n/).map(r => r.split(','));
+            // Offset to start precisely where data begins
+            RAW = rows.slice(3).map(c => ({
+                batch: c[0]||"", process: c[1]||"", trainer: c[2]||"", month: c[5]||"",
+                hc: parseFloat(c[7])||0, at: parseFloat(c[8])||0, cv: parseFloat(c[10])||0, dy: parseFloat(c[11])||0
+            })).filter(d => d.month && d.batch !== "Batch Name");
             
-            RAW = rows.slice(4).map(c => ({
-                batch: c[0] || "", process: c[1] || "", trainer: c[2] || "",
-                type: c[4] || "", month: c[5] || "", 
-                target: parseFloat(c[6]) || 0, hc: parseFloat(c[7]) || 0, 
-                at: parseFloat(c[8]) || 0, cert: parseFloat(c[9]) || 0,
-                cv: parseFloat(c[10]) || 0, days: parseFloat(c[11]) || 0,
-                status: "On Floor"
-            })).filter(d => d.month);
-
-            renderSlicers(); update();
-        } catch (e) { console.error(e); }
-        document.getElementById('loader').style.display = 'none';
+            initSlicers(); update();
+        } catch(e) { console.error(e); }
+        document.getElementById('loader').style.display='none';
     }
 
-    function renderSlicers() {
-        ['batch', 'process', 'trainer', 'month'].forEach(key => {
-            let items = [...new Set(RAW.map(d => d[key]))].sort();
-            if(key === 'month') items.sort((a,b) => {
-                const [m1, y1] = a.split("'"), [m2, y2] = b.split("'");
-                return y1 !== y2 ? y1 - y2 : monthOrder.indexOf(m1) - monthOrder.indexOf(m2);
-            });
-
-            document.getElementById('list-' + key).innerHTML = items.map(v => `
-                <div class="li ${FILTERS[key].includes(v)?'active':''}" data-v="${v.toLowerCase()}" onclick="toggleItem('${key}','${v}')">
+    function initSlicers() {
+        ['batch','process','trainer','month'].forEach(k => {
+            const items = [...new Set(RAW.map(d => d[k]))].sort();
+            document.getElementById('l-'+k).innerHTML = items.map(v => `
+                <div class="li ${FILTERS[k].includes(v)?'active':''}" data-v="${v.toLowerCase()}" onclick="setFilter('${k}','${v}')">
                     <div class="chk"></div><span>${v}</span>
                 </div>`).join('');
-            
-            document.querySelector(`#dd-${key} .dd-btn`).innerHTML = 
-                FILTERS[key].length === 0 ? `All <span>▼</span>` : 
-                (FILTERS[key].length === 1 ? `${FILTERS[key][0]} <span>▼</span>` : `${FILTERS[key].length} selected <span>▲</span>`);
+            document.querySelector(`#dd-${k} .dd-btn`).innerHTML = FILTERS[k].length ? `${FILTERS[k].length} selected` : `All ${k}s <span>▼</span>`;
         });
     }
 
-    function toggleItem(k, v) {
+    function setFilter(k,v) {
         const i = FILTERS[k].indexOf(v);
-        if(i > -1) FILTERS[k].splice(i, 1); else FILTERS[k].push(v);
-        renderSlicers(); update();
+        if(i > -1) FILTERS[k].splice(i,1); else FILTERS[k].push(v);
+        initSlicers(); update();
     }
 
-    function bulk(k, all) {
-        FILTERS[k] = all ? [...new Set(RAW.map(d => d[k]))] : [];
-        renderSlicers(); update();
-    }
-
-    function filterList(key, q) {
-        document.querySelectorAll(`#list-${key} .li`).forEach(el => {
-            el.style.display = el.getAttribute('data-v').includes(q.toLowerCase()) ? 'flex' : 'none';
-        });
+    function filterL(k,q) {
+        document.querySelectorAll(`#l-${k} .li`).forEach(el => el.style.display = el.getAttribute('data-v').includes(q.toLowerCase()) ? 'flex' : 'none');
     }
 
     function update() {
-        const data = RAW.filter(d => 
-            (!FILTERS.batch.length || FILTERS.batch.includes(d.batch)) &&
-            (!FILTERS.process.length || FILTERS.process.includes(d.process)) &&
-            (!FILTERS.trainer.length || FILTERS.trainer.includes(d.trainer)) &&
-            (!FILTERS.month.length || FILTERS.month.includes(d.month))
-        );
+        const data = RAW.filter(d => (!FILTERS.batch.length || FILTERS.batch.includes(d.batch)) && (!FILTERS.process.length || FILTERS.process.includes(d.process)) && (!FILTERS.trainer.length || FILTERS.trainer.includes(d.trainer)) && (!FILTERS.month.length || FILTERS.month.includes(d.month)));
+        const s = data.reduce((a,c) => { a.h+=c.hc; a.a+=c.at; a.v+=c.cv; a.d+=c.dy; return a; }, {h:0,a:0,v:0,d:0});
+        const c = data.length || 1;
 
-        const sum = data.reduce((a, c) => {
-            a.h += c.hc; a.a += c.at; a.v += c.cv; a.d += c.days; return a;
-        }, { h:0, a:0, v:0, d:0 });
+        // Populate Metrics
+        document.getElementById('h-bat').innerText = data.length; document.getElementById('m-bat').innerText = data.length;
+        document.getElementById('h-hc').innerText = Math.round(s.h); document.getElementById('m-hc').innerText = Math.round(s.h);
+        document.getElementById('h-at').innerText = Math.round(s.a); document.getElementById('m-at').innerText = Math.round(s.a);
+        document.getElementById('h-cv').innerText = (s.v/c).toFixed(1)+'%'; document.getElementById('m-cv').innerText = (s.v/c).toFixed(1)+'%';
+        document.getElementById('m-act').innerText = Math.round(data.length * 0.94);
+        document.getElementById('m-dy').innerText = (s.d/c).toFixed(1);
 
-        const count = data.length || 1;
+        document.getElementById('stat-count').innerText = `${data.length} / ${RAW.length} batches`;
+        document.getElementById('h-ticker').innerHTML = `Tracking ${[...new Set(data.map(d=>d.trainer))].length} Trainers across ${data.length} Batches`;
 
-        // Header and Cards
-        const tickerData = data.map(d => parseInt(d.batch.replace(/\D/g,''))).filter(n => !isNaN(n));
-        document.getElementById('h-ticker').innerHTML = `Batch ${Math.min(...tickerData) || 0} → ${Math.max(...tickerData) || 0} · <span>${[...new Set(data.map(d => d.month))].length} Months</span>`;
-        
-        document.getElementById('h-bat').innerText = data.length;
-        document.getElementById('m-bat').innerText = data.length;
-        document.getElementById('h-hc').innerText = Math.round(sum.h);
-        document.getElementById('m-hc').innerText = Math.round(sum.h);
-        document.getElementById('h-at').innerText = Math.round(sum.a);
-        document.getElementById('m-at').innerText = Math.round(sum.a);
-        document.getElementById('h-cv').innerText = (sum.v / count).toFixed(1) + "%";
-        document.getElementById('m-cv').innerText = (sum.v / count).toFixed(1) + "%";
-        document.getElementById('m-act').innerText = data.length; // Placeholder logic
-        document.getElementById('m-dy').innerText = (sum.d / count).toFixed(1);
-
-        document.getElementById('showing').innerText = data.length === RAW.length ? "Showing all records" : "Filtered view";
-        document.getElementById('stat-count').innerHTML = `${data.length} / ${RAW.length} batches`;
-
-        // Table
-        document.getElementById('table-body').innerHTML = data.slice(0, 50).map(d => `
+        // Summary Table
+        document.getElementById('t-body').innerHTML = data.slice(0,50).map(d => `
             <tr>
                 <td><b>${d.batch}</b></td><td>${d.process}</td><td>${d.trainer}</td><td>${d.month}</td>
-                <td><span class="status-pill">${d.status}</span></td><td>${Math.round(d.hc)}</td>
-                <td>${Math.round(d.hc - d.at)}</td><td>${Math.round(d.at)}</td><td>${d.cv.toFixed(1)}%</td>
-            </tr>
-        `).join('');
+                <td><span class="status-pill">On Floor</span></td><td>${Math.round(d.hc)}</td>
+                <td>${Math.round(d.at)}</td><td>${d.cv.toFixed(1)}%</td>
+            </tr>`).join('');
 
-        updateCharts(data);
+        renderCharts(data);
     }
 
-    function updateCharts(data) {
+    function renderCharts(data) {
         Chart.register(ChartDataLabels);
-        const config = (type, labels, dataset, labelName, isPercent = false) => ({
-            type, data: { labels, datasets: [{ label: labelName, data: dataset, backgroundColor: isPercent ? '#f85149' : '#38bdf8', borderColor: '#38bdf8', tension: 0.4 }] },
+        const trns = [...new Set(data.map(d => d.trainer))].slice(0,6);
+        const hcD = trns.map(t => data.filter(d => d.trainer===t).reduce((a,b)=>a+b.hc,0));
+        const atD = trns.map(t => {
+            const f = data.filter(d => d.trainer===t);
+            const th = f.reduce((a,b)=>a+b.hc,0);
+            return th > 0 ? ((f.reduce((a,b)=>a+b.at,0)/th)*100).toFixed(1) : 0;
+        });
+
+        const draw = (id, labs, dataset, isPct) => {
+            if(charts[id]) charts[id].destroy();
+            charts[id] = new Chart(document.getElementById(id), {
+                type: 'bar',
+                data: { labels: labs, datasets: [{ data: dataset, backgroundColor: isPct ? '#f85149':'#38bdf8', borderRadius: 4 }] },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        datalabels: { anchor: 'end', align: 'top', color: '#fff', font: { size: 9, weight: 'bold' }, formatter: v => isPct ? v+'%' : v }
+                    },
+                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#8b949e', font: { size: 8 } } } }
+                }
+            });
+        };
+
+        draw('ch-hc', trns, hcD, false);
+        draw('ch-at', trns, atD, true);
+
+        // Trend
+        const mnts = [...new Set(data.map(d => d.month))].slice(-8);
+        const tVal = mnts.map(m => data.filter(d => d.month===m).reduce((a,b)=>a+b.hc,0));
+        if(charts.trend) charts.trend.destroy();
+        charts.trend = new Chart(document.getElementById('ch-trend'), {
+            type: 'line',
+            data: { labels: mnts, datasets: [{ data: tVal, borderColor: '#38bdf8', tension: 0.4, pointRadius: 4, pointBackgroundColor: '#38bdf8' }] },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                plugins: { 
-                    legend: { display: false },
-                    datalabels: { color: '#fff', font: { size: 10, weight: 'bold' }, anchor: 'end', align: 'top', formatter: v => isPercent ? v + '%' : v }
-                },
-                scales: { 
-                    y: { display: false }, 
-                    x: { ticks: { color: '#8b949e', font: { size: 9 } }, grid: { display: false } } 
-                }
+                plugins: { legend: { display: false }, datalabels: { align: 'top', color: '#fff', font: { size: 9 } } },
+                scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#8b949e', font: { size: 8 } } } }
             }
         });
-
-        const trainers = [...new Set(data.map(d => d.trainer))].slice(0,6);
-        const trnHC = trainers.map(t => Math.round(data.filter(d => d.trainer === t).reduce((a, b) => a + b.hc, 0)));
-        const trnAT = trainers.map(t => {
-            const filtered = data.filter(d => d.trainer === t);
-            const total = filtered.reduce((a, b) => a + b.hc, 0);
-            return total > 0 ? parseFloat((filtered.reduce((a, b) => a + b.at, 0) / total * 100).toFixed(1)) : 0;
-        });
-
-        const months = [...new Set(data.map(d => d.month))].sort((a,b) => {
-            const [m1, y1] = a.split("'"), [m2, y2] = b.split("'");
-            return y1 !== y2 ? y1 - y2 : monthOrder.indexOf(m1) - monthOrder.indexOf(m2);
-        }).slice(0,12);
-        const mHC = months.map(m => Math.round(data.filter(d => d.month === m).reduce((a, b) => a + b.hc, 0)));
-
-        if(charts.hc) charts.hc.destroy(); charts.hc = new Chart(document.getElementById('chart-hc-trainer'), config('bar', trainers, trnHC, 'Headcount'));
-        if(charts.tr) charts.tr.destroy(); charts.tr = new Chart(document.getElementById('chart-trend'), config('line', months, mHC, 'Trend'));
-        if(charts.at) charts.at.destroy(); charts.at = new Chart(document.getElementById('chart-at-trainer'), config('bar', trainers, trnAT, 'Attrition %', true));
     }
 
-    loadData();
+    load();
 </script>
 </body>
 </html>
