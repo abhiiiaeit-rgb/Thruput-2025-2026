@@ -3,155 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OJT Training Dashboard - Fixed</title>
+    <title>OJT Training Dashboard - Pro</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap');
         :root {
             --bg: #0d1117; --surface: #161b22; --accent: #38bdf8;
             --border: #30363d; --text: #e6edf3; --text-dim: #8b949e;
-            --red: #f85149; --green: #3fb950; --orange: #f0883e;
+            --red: #f85149; --green: #3fb950;
         }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
-        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; }
+
         /* Header */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-        .live-status { font-size: 11px; color: var(--accent); font-family: 'JetBrains Mono'; }
-        .top-stats { display: flex; gap: 20px; text-align: right; }
-        .ts-item { display: flex; flex-direction: column; }
-        .ts-val { font-family: 'JetBrains Mono'; font-size: 20px; font-weight: 700; }
-        .ts-lbl { font-size: 9px; color: var(--text-dim); text-transform: uppercase; }
+        .header { padding: 25px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .h-left h1 { font-size: 20px; font-weight: 600; }
+        .top-metrics { display: flex; gap: 30px; }
+        .tm-val { display: block; font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono'; color: var(--accent); }
+        .tm-lbl { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Slicers */
-        .slicer-area { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; background: #090c10; padding: 15px; border-radius: 8px; align-items: flex-end; }
-        .s-grp { display: flex; flex-direction: column; gap: 5px; min-width: 160px; position: relative; }
-        .s-lbl { font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
-        select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 6px; font-size: 12px; cursor: pointer; outline: none; }
-        .btn-reset { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        /* Slicer Bar - Static Display (No Dropdowns) */
+        .slicer-area { padding: 20px 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; background: #090c10; }
+        .s-grp { display: flex; flex-direction: column; gap: 10px; background: var(--surface); padding: 15px; border-radius: 8px; border: 1px solid var(--border); height: 200px; }
+        .s-lbl { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        
+        .tick-list { overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; gap: 4px; }
+        .tick-item { display: flex; align-items: center; gap: 10px; font-size: 12px; cursor: pointer; padding: 6px 8px; border-radius: 4px; transition: 0.2s; }
+        .tick-item:hover { background: #21262d; }
+        
+        .checkbox { width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .tick-item.active .checkbox { background: var(--accent); border-color: var(--accent); }
+        .tick-item.active .checkbox::after { content: '✓'; color: #000; font-size: 11px; font-weight: 900; }
+        .tick-item.active span { color: var(--accent); font-weight: 600; }
 
-        /* KPI Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent); }
-        .card.red { border-left-color: var(--red); }
-        .card.green { border-left-color: var(--green); }
-        .card.orange { border-left-color: var(--orange); }
-        .c-lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px; }
-        .c-val { font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono'; }
+        /* KPI Grid */
+        .main-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; padding: 30px; }
+        .card { background: var(--surface); border: 1px solid var(--border); padding: 24px; border-radius: 8px; position: relative; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--accent); }
+        .card.red::before { background: var(--red); }
+        .card.green::before { background: var(--green); }
+        .c-l { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 12px; display: block; }
+        .c-v { font-size: 32px; font-weight: 700; font-family: 'JetBrains Mono'; }
 
-        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 99; }
+        .btn-reset { background: var(--accent); color: #000; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; align-self: center; }
+
+        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 2000; }
     </style>
 </head>
 <body>
 
-<div id="loader">Fetching Live Data...</div>
+<div id="loader"><p>🔄 Fetching Live Training Data...</p></div>
 
 <div class="header">
-    <div>
-        <h1>OJT Training Dashboard</h1>
-        <div class="live-status" id="status">Live System Active</div>
-    </div>
-    <div class="top-stats">
-        <div class="ts-item"><span class="ts-val" id="h-batches">0</span><span class="ts-lbl">Batches</span></div>
-        <div class="ts-item"><span class="ts-val" id="h-hc">0</span><span class="ts-lbl">Headcount</span></div>
-        <div class="ts-item"><span class="ts-val" id="h-at">0</span><span class="ts-lbl">Attrition</span></div>
+    <div class="h-left"><h1>OJT Dashboard</h1></div>
+    <div class="top-metrics">
+        <div class="tm"><span class="tm-val" id="h-hc">0</span><span class="tm-lbl">Total HC</span></div>
+        <div class="tm"><span class="tm-val" id="h-at">0</span><span class="tm-lbl">Total Attrition</span></div>
+        <button class="btn-reset" onclick="location.reload()">Reset Data</button>
     </div>
 </div>
 
 <div class="slicer-area">
-    <div class="s-grp"><span class="s-lbl">🔍 Batch</span><select id="sel-batch" onchange="updateDash()"><option value="All">All</option></select></div>
-    <div class="s-grp"><span class="s-lbl">⚡ Batch Type</span><select id="sel-type" onchange="updateDash()"><option value="All">All</option></select></div>
-    <div class="s-grp"><span class="s-lbl">🏭 Process</span><select id="sel-process" onchange="updateDash()"><option value="All">All</option></select></div>
-    <div class="s-grp"><span class="s-lbl">👤 Trainer</span><select id="sel-trainer" onchange="updateDash()"><option value="All">All</option></select></div>
-    <div class="s-grp"><span class="s-lbl">📅 Month</span><select id="sel-month" onchange="updateDash()"><option value="All">All</option></select></div>
-    <button class="btn-reset" onclick="location.reload()">Reset All</button>
+    <div class="s-grp">
+        <div class="s-lbl">🏭 Process</div>
+        <div class="tick-list" id="list-process"></div>
+    </div>
+
+    <div class="s-grp">
+        <div class="s-lbl">⚡ Batch Type</div>
+        <div class="tick-list" id="list-type"></div>
+    </div>
+
+    <div class="s-grp">
+        <div class="s-lbl">👤 Trainer Name</div>
+        <div class="tick-list" id="list-trainer"></div>
+    </div>
+
+    <div class="s-grp">
+        <div class="s-lbl">📅 Timeline</div>
+        <div class="tick-list" id="list-month"></div>
+    </div>
 </div>
 
-<div class="grid">
-    <div class="card"><span class="c-lbl">Total Batches</span><div class="c-val" id="k-batches">0</div></div>
-    <div class="card"><span class="c-lbl">Total Headcount</span><div class="c-val" id="k-hc">0</div></div>
-    <div class="card red"><span class="c-lbl">Total Attrition</span><div class="c-val" id="k-at">0</div></div>
-    <div class="card green"><span class="c-lbl">Avg Conversion %</span><div class="c-val" id="k-cv">0%</div></div>
-    <div class="card orange"><span class="c-lbl">Floor Deployment</span><div class="c-val" id="k-fl">0</div></div>
+<div class="main-grid">
+    <div class="card"><span class="c-l">Total Batches</span><div class="c-v" id="k-batches">0</div></div>
+    <div class="card"><span class="c-l">Headcount</span><div class="c-v" id="k-hc">0</div></div>
+    <div class="card red"><span class="c-l">Attrition</span><div class="c-v" id="k-at">0</div></div>
+    <div class="card green"><span class="c-l">Avg Conversion</span><div class="c-v" id="k-cv">0%</div></div>
 </div>
 
 <script>
-    // 1. ADD YOUR PUBLISHED CSV URL HERE
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
+    const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv&v=" + Date.now();
+    const MONTH_MAP = {"Jan":0, "Feb":1, "Mar":2, "Apr":3, "May":4, "Jun":5, "Jul":6, "Aug":7, "Sep":8, "Oct":9, "Nov":10, "Dec":11};
     
-    let RAW = [];
+    let RAW_DATA = [];
+    let FILTERS = { process: [], type: [], trainer: [], month: [] };
 
-    async function fetchData() {
+    async function init() {
         try {
-            const response = await fetch(CSV_URL + "&cache=" + new Date().getTime());
-            const text = await response.text();
-            const rows = text.split('\n').map(r => r.split(','));
+            const res = await fetch(URL);
+            const csv = await res.text();
+            const rows = csv.split(/\r?\n/).map(row => row.split(','));
 
-            // Column Mapping (Correct these indices if your sheet changes)
-            RAW = rows.slice(1).map(c => ({
-                batch: (c[0] || "").trim(),
+            RAW_DATA = rows.slice(1).map(c => ({
                 process: (c[1] || "").trim(),
                 trainer: (c[2] || "").trim(),
                 type: (c[4] || "").trim(),
                 month: (c[5] || "").trim(),
                 hc: parseFloat(c[8]) || 0,
                 attr: parseFloat(c[10]) || 0,
-                conv: parseFloat(c[19]) || 0,
-                floor: parseFloat(c[22]) || 0
-            })).filter(d => d.batch !== "");
+                conv: parseFloat(c[19]) || 0
+            })).filter(d => d.month !== "");
 
-            populateDropdowns();
-            updateDash();
             document.getElementById('loader').style.display = 'none';
-        } catch (err) {
-            document.getElementById('status').innerHTML = "⚠️ Fetch Error";
-            console.error(err);
+            buildAllLists();
+            updateDashboard();
+        } catch (e) {
+            console.error("Fetch failed", e);
         }
     }
 
-    function populateDropdowns() {
-        const fields = { batch: 'sel-batch', type: 'sel-type', process: 'sel-process', trainer: 'sel-trainer', month: 'sel-month' };
-        Object.keys(fields).forEach(key => {
-            const unique = [...new Set(RAW.map(d => d[key]))].sort();
-            const el = document.getElementById(fields[key]);
-            unique.forEach(val => {
-                if(val) el.innerHTML += `<option value="${val}">${val}</option>`;
-            });
+    function buildAllLists() {
+        Object.keys(FILTERS).forEach(key => {
+            let items = [...new Set(RAW_DATA.map(d => d[key]))].filter(v => v);
+            
+            // Sequential Year-Month Sort logic
+            if(key === 'month') {
+                items.sort((a,b) => {
+                    const [mA, yA] = a.split("'");
+                    const [mB, yB] = b.split("'");
+                    return (parseInt(yA) - parseInt(yB)) || (MONTH_MAP[mA] - MONTH_MAP[mB]);
+                });
+            } else {
+                items.sort();
+            }
+
+            const container = document.getElementById('list-' + key);
+            container.innerHTML = items.map(val => `
+                <div class="tick-item ${FILTERS[key].includes(val) ? 'active' : ''}" onclick="toggleFilter('${key}', '${val}')">
+                    <div class="checkbox"></div>
+                    <span>${val}</span>
+                </div>
+            `).join('');
         });
     }
 
-    function updateDash() {
-        const fBatch = document.getElementById('sel-batch').value;
-        const fType = document.getElementById('sel-type').value;
-        const fProc = document.getElementById('sel-process').value;
-        const fTrain = document.getElementById('sel-trainer').value;
-        const fMonth = document.getElementById('sel-month').value;
-
-        const filtered = RAW.filter(d => 
-            (fBatch === 'All' || d.batch === fBatch) &&
-            (fType === 'All' || d.type === fType) &&
-            (fProc === 'All' || d.process === fProc) &&
-            (fTrain === 'All' || d.trainer === fTrain) &&
-            (fMonth === 'All' || d.month === fMonth)
-        );
-
-        const sums = filtered.reduce((acc, curr) => {
-            acc.hc += curr.hc; acc.at += curr.attr; acc.cv += curr.conv; acc.fl += curr.floor;
-            return acc;
-        }, { hc: 0, at: 0, cv: 0, fl: 0 });
-
-        const avgConv = filtered.length ? (sums.cv / filtered.length).toFixed(1) : 0;
-
-        // Update UI
-        document.getElementById('h-batches').innerText = filtered.length;
-        document.getElementById('k-batches').innerText = filtered.length;
-        document.getElementById('h-hc').innerText = Math.round(sums.hc);
-        document.getElementById('k-hc').innerText = Math.round(sums.hc);
-        document.getElementById('h-at').innerText = Math.round(sums.at);
-        document.getElementById('k-at').innerText = Math.round(sums.at);
-        document.getElementById('k-cv').innerText = avgConv + "%";
-        document.getElementById('k-fl').innerText = Math.round(sums.fl);
+    function toggleFilter(key, val) {
+        const idx = FILTERS[key].indexOf(val);
+        if(idx > -1) FILTERS[key].splice(idx, 1);
+        else FILTERS[key].push(val);
+        
+        buildAllLists();
+        updateDashboard();
     }
 
-    fetchData();
+    function updateDashboard() {
+        const filtered = RAW_DATA.filter(d => 
+            (!FILTERS.process.length || FILTERS.process.includes(d.process)) &&
+            (!FILTERS.type.length || FILTERS.type.includes(d.type)) &&
+            (!FILTERS.trainer.length || FILTERS.trainer.includes(d.trainer)) &&
+            (!FILTERS.month.length || FILTERS.month.includes(d.month))
+        );
+
+        const sums = filtered.reduce((a, c) => {
+            a.hc += c.hc; a.at += c.attr; a.cv += c.conv; return a;
+        }, { hc:0, at:0, cv:0 });
+
+        const avgCv = filtered.length ? (sums.cv / filtered.length).toFixed(1) : 0;
+
+        document.getElementById('h-hc').innerText = Math.round(sums.hc);
+        document.getElementById('h-at').innerText = Math.round(sums.at);
+        document.getElementById('k-batches').innerText = filtered.length;
+        document.getElementById('k-hc').innerText = Math.round(sums.hc);
+        document.getElementById('k-at').innerText = Math.round(sums.at);
+        document.getElementById('k-cv').innerText = avgCv + "%";
+    }
+
+    init();
 </script>
 </body>
 </html>
