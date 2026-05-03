@@ -1,235 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>OJT Training Dashboard - Corrected</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OJT Training Dashboard - Pro</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap');
+
         :root {
-            --bg: #0f172a; --surface: #1e293b; --surface2: #334155;
-            --border: #334155; --text: #f8fafc; --text2: #cbd5e1; 
-            --accent: #38bdf8; --red: #f43f5e; --green: #10b981;
-            --r: 12px; --rs: 8px;
+            --bg: #0b0e14; --surface: #161b22; --accent: #38bdf8;
+            --border: #30363d; --text: #e6edf3; --text-dim: #8b949e;
+            --red: #f85149; --green: #3fb950; --purple: #a371f7;
+            --orange: #f0883e; --pink: #db61a2;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-        
-        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
-        .spinner { width: 40px; height: 40px; border: 4px solid var(--surface2); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; }
 
-        .header { background: rgba(15, 23, 42, 0.9); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); }
-        .hstats { display: flex; gap: 20px; }
-        .hstat { text-align: center; background: var(--surface); padding: 5px 15px; border-radius: var(--rs); border: 1px solid var(--border); }
-        .hstat .v { font-size: 18px; font-weight: 700; color: var(--accent); font-family: 'DM Mono', monospace; }
-        .hstat .l { font-size: 8px; color: var(--text2); text-transform: uppercase; }
+        /* Header Styles */
+        .header { padding: 20px 30px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .title-area h1 { font-size: 22px; margin-bottom: 4px; }
+        .sub-text { font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+        .top-metrics { display: flex; gap: 24px; text-align: right; }
+        .top-metric .m-val { font-size: 24px; font-weight: 700; color: var(--accent); display: block; }
+        .top-metric .m-lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 
-        .slicer-bar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
-        .dd-wrap { position: relative; display: flex; flex-direction: column; gap: 4px; }
-        .dd-label { font-size: 10px; font-weight: 700; color: var(--text2); text-transform: uppercase; margin-left: 2px; }
-        
-        .dd-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: var(--rs); padding: 8px 12px; font-size: 11px; cursor: pointer; min-width: 140px; display: flex; justify-content: space-between; align-items: center; }
-        .arrow { font-size: 10px; transition: transform 0.3s; }
-        .open .arrow { transform: rotate(180deg); }
+        /* Slicer Bar */
+        .slicers { display: flex; gap: 15px; padding: 0 30px; align-items: flex-end; flex-wrap: wrap; }
+        .slicer-group { display: flex; flex-direction: column; gap: 8px; min-width: 180px; position: relative; }
+        .slicer-label { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+        .dd-trigger { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; width: 100%; transition: 0.2s; }
+        .dd-trigger:hover { border-color: var(--accent); }
+        .dd-trigger.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
 
-        .dd-panel { position: absolute; top: calc(100% + 5px); left: 0; width: 220px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); z-index: 1100; display: none; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        /* Dropdown Panels */
+        .dd-panel { position: absolute; top: calc(100% + 5px); left: 0; width: 240px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; z-index: 1000; display: none; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .dd-panel.show { display: flex; }
-        .dd-search-area { padding: 8px; border-bottom: 1px solid var(--border); }
-        .dd-search-area input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 6px; border-radius: 6px; font-size: 12px; outline: none; }
-        .dd-controls { padding: 8px 12px; border-bottom: 1px solid var(--border); display: flex; gap: 15px; font-size: 10px; font-weight: 600; }
-        .act-sel { color: var(--accent); cursor: pointer; }
-        .act-clr { color: var(--red); cursor: pointer; }
-        .dd-list { max-height: 200px; overflow-y: auto; padding: 5px 0; }
-        .dd-item { padding: 8px 12px; display: flex; align-items: center; gap: 10px; font-size: 12px; cursor: pointer; }
-        .dd-item:hover { background: var(--surface2); }
+        .dd-search { padding: 10px; border-bottom: 1px solid var(--border); }
+        .dd-search input { width: 100%; background: #0d1117; border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 6px; outline: none; font-size: 12px; }
+        .dd-actions { padding: 8px 12px; display: flex; gap: 12px; font-size: 12px; border-bottom: 1px solid var(--border); }
+        .act-btn { cursor: pointer; font-weight: 600; }
+        .act-sel { color: var(--accent); }
+        .act-clr { color: var(--red); }
+        .dd-list { max-height: 250px; overflow-y: auto; padding: 5px 0; }
+        .dd-item { padding: 8px 15px; display: flex; align-items: center; gap: 10px; font-size: 13px; cursor: pointer; transition: 0.2s; }
+        .dd-item:hover { background: #21262d; }
         .dd-item input { accent-color: var(--accent); cursor: pointer; }
 
-        .btn-reset { background: var(--surface2); color: var(--text); border: none; padding: 8px 15px; border-radius: var(--rs); cursor: pointer; font-size: 11px; margin-left: auto; }
+        /* Tags Container */
+        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 15px 30px; min-height: 45px; }
+        .tag { background: rgba(56, 189, 248, 0.15); border: 1px solid var(--accent); color: var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; display: flex; align-items: center; gap: 6px; }
 
-        .main { padding: 24px; }
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
-        .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; border-top: 4px solid var(--accent); transition: 0.3s; }
-        .kpi-card.red { border-top-color: var(--red); }
-        .kpi-card.green { border-top-color: var(--green); }
-        .kpi-card .lbl { font-size: 10px; color: var(--text2); text-transform: uppercase; margin-bottom: 10px; font-weight: 700; }
-        .kpi-card .val { font-size: 32px; font-weight: 700; font-family: 'DM Mono', monospace; }
+        /* KPI Cards */
+        .grid-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; padding: 0 30px 30px; }
+        .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 12px; border-bottom: 4px solid var(--accent); position: relative; }
+        .card.red { border-bottom-color: var(--red); }
+        .card.green { border-bottom-color: var(--green); }
+        .card.purple { border-bottom-color: var(--purple); }
+        .card.orange { border-bottom-color: var(--orange); }
+        .card.pink { border-bottom-color: var(--pink); }
+        .c-lbl { font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 12px; }
+        .c-val { font-size: 32px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+        .btn-reset { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 12px; margin-left: auto; align-self: flex-end; }
+        .btn-reset:hover { background: #21262d; }
+
+        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
+        .spin { width: 30px; height: 30px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: rot 0.8s linear infinite; margin-bottom: 15px; }
+        @keyframes rot { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <div id="loader">
-    <div class="spinner"></div>
-    <p id="l-msg">Fetching Live Sheet Data...</p>
+    <div class="spin"></div>
+    <p id="load-msg">Fetching Live Sheet Data...</p>
 </div>
 
 <div class="header">
-    <div><h1>OJT Training Dashboard</h1><p style="color:var(--accent); font-size:10px;">Live Data Feed</p></div>
-    <div class="hstats">
-        <div class="hstat"><div class="v" id="hBatches">0</div><div class="l">Batches</div></div>
-        <div class="hstat"><div class="v" id="hHC">0</div><div class="l">Headcount</div></div>
-        <div class="hstat"><div class="v" id="hAttr">0</div><div class="l">Attrition</div></div>
+    <div class="title-area">
+        <h1>OJT Training Dashboard</h1>
+        <div class="sub-text" id="sub-info">Loading details...</div>
+    </div>
+    <div class="top-metrics">
+        <div class="top-metric"><span class="m-val" id="h-batches">0</span><span class="m-lbl">Batches</span></div>
+        <div class="top-metric"><span class="m-val" id="h-hc">0</span><span class="m-lbl">Headcount</span></div>
+        <div class="top-metric"><span class="m-val" id="h-attr">0</span><span class="m-lbl">Attrition</span></div>
+        <div class="top-metric"><span class="m-val" id="h-conv">0%</span><span class="m-lbl">Avg Conv%</span></div>
     </div>
 </div>
 
-<div class="slicer-bar">
-    <div class="dd-wrap" id="wrap-batch">
-        <div class="dd-label">Batch</div>
-        <button class="dd-btn" onclick="toggleDD('batch')"><span id="lbl-batch">All</span> <span class="arrow">▼</span></button>
-        <div id="panel-batch" class="dd-panel"><div class="dd-search-area"><input type="text" placeholder="Search..." onkeyup="searchDD('batch', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('batch', true)">All</span><span class="act-clr" onclick="bulk('batch', false)">Clear</span></div><div class="dd-list" id="list-batch"></div></div>
+<div class="slicers">
+    <div class="slicer-group" id="group-batch">
+        <div class="slicer-label">🔍 BATCH</div>
+        <button class="dd-trigger" onclick="toggleDD('batch')"><span>All</span> <small>▼</small></button>
+        <div class="dd-panel" id="panel-batch">
+            <div class="dd-search"><input type="text" placeholder="Search batches..." onkeyup="filterList('batch', this.value)"></div>
+            <div class="dd-actions"><span class="act-btn act-sel" onclick="bulkSel('batch', true)">Select All</span><span class="act-btn act-clr" onclick="bulkSel('batch', false)">Clear</span></div>
+            <div class="dd-list" id="list-batch"></div>
+        </div>
     </div>
 
-    <div class="dd-wrap" id="wrap-process">
-        <div class="dd-label">Process</div>
-        <button class="dd-btn" onclick="toggleDD('process')"><span id="lbl-process">All</span> <span class="arrow">▼</span></button>
-        <div id="panel-process" class="dd-panel"><div class="dd-search-area"><input type="text" placeholder="Search..." onkeyup="searchDD('process', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('process', true)">All</span><span class="act-clr" onclick="bulk('process', false)">Clear</span></div><div class="dd-list" id="list-process"></div></div>
+    <div class="slicer-group" id="group-process">
+        <div class="slicer-label">🏭 PROCESS</div>
+        <button class="dd-trigger" onclick="toggleDD('process')"><span>All</span> <small>▼</small></button>
+        <div class="dd-panel" id="panel-process">
+            <div class="dd-search"><input type="text" placeholder="Search processes..." onkeyup="filterList('process', this.value)"></div>
+            <div class="dd-actions"><span class="act-btn act-sel" onclick="bulkSel('process', true)">Select All</span><span class="act-btn act-clr" onclick="bulkSel('process', false)">Clear</span></div>
+            <div class="dd-list" id="list-process"></div>
+        </div>
     </div>
 
-    <div class="dd-wrap" id="wrap-type">
-        <div class="dd-label">Batch Type</div>
-        <button class="dd-btn" onclick="toggleDD('type')"><span id="lbl-type">All</span> <span class="arrow">▼</span></button>
-        <div id="panel-type" class="dd-panel"><div class="dd-search-area"><input type="text" placeholder="New/Transit..." onkeyup="searchDD('type', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('type', true)">All</span><span class="act-clr" onclick="bulk('type', false)">Clear</span></div><div class="dd-list" id="list-type"></div></div>
+    <div class="slicer-group" id="group-trainer">
+        <div class="slicer-label">👤 TRAINER NAME</div>
+        <button class="dd-trigger" onclick="toggleDD('trainer')"><span>All</span> <small>▼</small></button>
+        <div class="dd-panel" id="panel-trainer">
+            <div class="dd-search"><input type="text" placeholder="Search trainers..." onkeyup="filterList('trainer', this.value)"></div>
+            <div class="dd-actions"><span class="act-btn act-sel" onclick="bulkSel('trainer', true)">Select All</span><span class="act-btn act-clr" onclick="bulkSel('trainer', false)">Clear</span></div>
+            <div class="dd-list" id="list-trainer"></div>
+        </div>
     </div>
 
-    <div class="dd-wrap" id="wrap-trainer">
-        <div class="dd-label">Trainer</div>
-        <button class="dd-btn" onclick="toggleDD('trainer')"><span id="lbl-trainer">All</span> <span class="arrow">▼</span></button>
-        <div id="panel-trainer" class="dd-panel"><div class="dd-search-area"><input type="text" placeholder="Search..." onkeyup="searchDD('trainer', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('trainer', true)">All</span><span class="act-clr" onclick="bulk('trainer', false)">Clear</span></div><div class="dd-list" id="list-trainer"></div></div>
+    <div class="slicer-group" id="group-month">
+        <div class="slicer-label">🗓️ MONTH</div>
+        <button class="dd-trigger" onclick="toggleDD('month')"><span>All</span> <small>▼</small></button>
+        <div class="dd-panel" id="panel-month">
+            <div class="dd-search"><input type="text" placeholder="Search months..." onkeyup="filterList('month', this.value)"></div>
+            <div class="dd-actions"><span class="act-btn act-sel" onclick="bulkSel('month', true)">Select All</span><span class="act-btn act-clr" onclick="bulkSel('month', false)">Clear</span></div>
+            <div class="dd-list" id="list-month"></div>
+        </div>
     </div>
 
-    <div class="dd-wrap" id="wrap-month">
-        <div class="dd-label">Month</div>
-        <button class="dd-btn" onclick="toggleDD('month')"><span id="lbl-month">All</span> <span class="arrow">▼</span></button>
-        <div id="panel-month" class="dd-panel"><div class="dd-search-area"><input type="text" placeholder="Search..." onkeyup="searchDD('month', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('month', true)">All</span><span class="act-clr" onclick="bulk('month', false)">Clear</span></div><div class="dd-list" id="list-month"></div></div>
-    </div>
-
-    <button class="btn-reset" onclick="resetAll()">↺ Reset All</button>
+    <button class="btn-reset" onclick="window.location.reload()">↺ Reset All</button>
 </div>
 
-<div class="main">
-    <div class="kpi-grid">
-        <div class="kpi-card"><div class="lbl">Total Batches</div><div class="val" id="k-batches">0</div></div>
-        <div class="kpi-card"><div class="lbl">Total Headcount</div><div class="val" id="k-hc">0</div></div>
-        <div class="kpi-card red"><div class="lbl">Total Attrition</div><div class="val" id="k-attr">0</div></div>
-        <div class="kpi-card green"><div class="lbl">Avg Conv %</div><div class="val" id="k-conv">0%</div></div>
-    </div>
+<div class="tags-container" id="tags-area"></div>
+
+<div class="grid-kpi">
+    <div class="card"><div class="c-lbl">Total Batches</div><div class="c-val" id="k-batches">0</div></div>
+    <div class="card"><div class="c-lbl">Total Headcount</div><div class="c-val" id="k-hc">0</div></div>
+    <div class="card red"><div class="c-lbl">Total Attrition</div><div class="c-val" id="k-attr">0</div></div>
+    <div class="card green"><div class="c-lbl">Avg Conversion %</div><div class="c-val" id="k-conv">0%</div></div>
+    <div class="card purple"><div class="c-lbl">Active (On Floor)</div><div class="c-val" id="k-floor">0</div></div>
+    <div class="card orange"><div class="c-lbl">Training Exits</div><div class="c-val" id="k-texit">0</div></div>
+    <div class="card pink"><div class="c-lbl">OJT Exits</div><div class="c-val" id="k-oexit">0</div></div>
 </div>
 
 <script>
-    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
-    const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
+    const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
-    let RAW = [];
-    let filters = { batch: [], process: [], type: [], trainer: [], month: [] };
+    let DATA = [];
+    let FILTERS = { batch: [], process: [], trainer: [], month: [] };
 
     async function init() {
         try {
-            const res = await fetch(sheetURL);
+            const res = await fetch(CSV_URL);
             const text = await res.text();
             const rows = text.split('\n').map(r => r.split(','));
             
-            RAW = rows.slice(1).map(c => ({
+            DATA = rows.slice(1).map(c => ({
                 batch: c[0]?.trim() || "",
                 process: c[1]?.trim() || "",
                 trainer: c[2]?.trim() || "",
-                type: c[4]?.trim() || "", // Batch Type (New/Transit)
                 month: c[5]?.trim() || "",
                 hc: parseFloat(c[8]) || 0,
                 attr: parseFloat(c[10]) || 0,
-                conv: parseFloat(c[19]) || 0
+                conv: parseFloat(c[19]) || 0,
+                texits: parseFloat(c[20]) || 0,
+                oexits: parseFloat(c[21]) || 0,
+                floor: parseFloat(c[22]) || 0
             })).filter(d => d.batch && !d.batch.toLowerCase().includes("batch") && d.batch !== "");
 
             document.getElementById('loader').style.display = 'none';
-            renderAllFilters();
+            buildMenus();
             update();
-        } catch (e) { 
-            document.getElementById('l-msg').innerText = "Link Error: Check Google Sheet Publishing.";
+        } catch (err) {
+            document.getElementById('load-msg').innerText = "Link error: check sheet publishing.";
         }
     }
 
-    // Chronological sorting logic for Month dropdown
-    function sortMonthsChronologically(arr) {
-        return arr.sort((a, b) => {
-            const aParts = a.split("'");
-            const bParts = b.split("'");
-            const yearA = parseInt(aParts[1]) || 0;
-            const yearB = parseInt(bParts[1]) || 0;
-            if (yearA !== yearB) return yearA - yearB;
-            return monthOrder.indexOf(aParts[0]) - monthOrder.indexOf(bParts[0]);
-        });
-    }
-
-    function renderAllFilters(targetKey = '', searchVal = '') {
-        const keys = ['batch', 'process', 'type', 'trainer', 'month'];
-        keys.forEach(k => {
-            if (targetKey && targetKey !== k) return;
-            let vals = [...new Set(RAW.map(d => d[k]))].filter(v => v && v.toLowerCase().includes(searchVal.toLowerCase()));
+    function buildMenus() {
+        ['batch', 'process', 'trainer', 'month'].forEach(key => {
+            let unique = [...new Set(DATA.map(d => d[key]))];
             
-            if (k === 'month') vals = sortMonthsChronologically(vals);
-            else vals.sort();
+            if(key === 'month') {
+                unique.sort((a, b) => {
+                    const [m1, y1] = a.split("'"); const [m2, y2] = b.split("'");
+                    if(y1 !== y2) return y1 - y2;
+                    return MONTHS.indexOf(m1) - MONTHS.indexOf(m2);
+                });
+            } else { unique.sort(); }
 
-            document.getElementById('list-' + k).innerHTML = vals.map(v => `
-                <div class="dd-item" onclick="toggleItem('${k}', '${v}')">
-                    <input type="checkbox" ${filters[k].includes(v) ? 'checked' : ''} onclick="event.stopPropagation(); toggleItem('${k}', '${v}')">
-                    <span>${v}</span>
+            const list = document.getElementById('list-' + key);
+            list.innerHTML = unique.map(val => `
+                <div class="dd-item" onclick="toggleItem('${key}', '${val}')">
+                    <input type="checkbox" id="chk-${key}-${val}" ${FILTERS[key].includes(val) ? 'checked' : ''}>
+                    <span>${val}</span>
                 </div>
             `).join('');
         });
     }
 
     function toggleDD(key) {
-        const wrap = document.getElementById('wrap-' + key);
         const panel = document.getElementById('panel-' + key);
-        const wasOpen = wrap.classList.contains('open');
-        document.querySelectorAll('.dd-wrap').forEach(w => w.classList.remove('open'));
+        const isOpen = panel.classList.contains('show');
         document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('show'));
-        if (!wasOpen) { wrap.classList.add('open'); panel.classList.add('show'); }
+        document.querySelectorAll('.dd-trigger').forEach(t => t.classList.remove('active'));
+        if(!isOpen) {
+            panel.classList.add('show');
+            panel.previousElementSibling.classList.add('active');
+        }
     }
 
-    function toggleItem(k, v) {
-        const i = filters[k].indexOf(v);
-        if (i > -1) filters[k].splice(i, 1); else filters[k].push(v);
-        document.getElementById('lbl-' + k).innerText = filters[k].length ? filters[k].length + ' Selected' : 'All';
-        renderAllFilters(k); update();
+    function toggleItem(key, val) {
+        const idx = FILTERS[key].indexOf(val);
+        if(idx > -1) FILTERS[key].splice(idx, 1);
+        else FILTERS[key].push(val);
+        
+        const triggerSpan = document.querySelector(`#group-${key} .dd-trigger span`);
+        triggerSpan.innerText = FILTERS[key].length ? `${FILTERS[key].length} Selected` : 'All';
+        
+        update();
+        buildMenus();
+    }
+
+    function bulkSel(key, selectAll) {
+        if(selectAll) FILTERS[key] = [...new Set(DATA.map(d => d[key]))];
+        else FILTERS[key] = [];
+        
+        document.querySelector(`#group-${key} .dd-trigger span`).innerText = FILTERS[key].length ? `${FILTERS[key].length} Selected` : 'All';
+        update();
+        buildMenus();
+    }
+
+    function filterList(key, query) {
+        const items = document.querySelectorAll(`#list-${key} .dd-item`);
+        items.forEach(it => {
+            const text = it.querySelector('span').innerText.toLowerCase();
+            it.style.display = text.includes(query.toLowerCase()) ? 'flex' : 'none';
+        });
     }
 
     function update() {
-        const filteredData = RAW.filter(d => 
-            (!filters.batch.length || filters.batch.includes(d.batch)) &&
-            (!filters.process.length || filters.process.includes(d.process)) &&
-            (!filters.type.length || filters.type.includes(d.type)) &&
-            (!filters.trainer.length || filters.trainer.includes(d.trainer)) &&
-            (!filters.month.length || filters.month.includes(d.month))
+        const filtered = DATA.filter(d => 
+            (!FILTERS.batch.length || FILTERS.batch.includes(d.batch)) &&
+            (!FILTERS.process.length || FILTERS.process.includes(d.process)) &&
+            (!FILTERS.trainer.length || FILTERS.trainer.includes(d.trainer)) &&
+            (!FILTERS.month.length || FILTERS.month.includes(d.month))
         );
 
-        const totalHC = filteredData.reduce((acc, curr) => acc + curr.hc, 0);
-        const totalAttr = filteredData.reduce((acc, curr) => acc + curr.attr, 0);
-        const avgConv = filteredData.length ? (filteredData.reduce((acc, curr) => acc + (curr.conv > 1.5 ? curr.conv/100 : curr.conv), 0) / filteredData.length * 100).toFixed(1) : 0;
+        const totals = filtered.reduce((acc, c) => {
+            acc.hc += c.hc; acc.attr += c.attr; acc.conv += c.conv;
+            acc.floor += c.floor; acc.texit += c.texits; acc.oexit += c.oexits;
+            return acc;
+        }, { hc: 0, attr: 0, conv: 0, floor: 0, texit: 0, oexit: 0 });
 
-        // Updating KPI display
-        document.getElementById('hBatches').innerText = filteredData.length;
-        document.getElementById('k-batches').innerText = filteredData.length;
-        document.getElementById('hHC').innerText = Math.round(totalHC);
-        document.getElementById('k-hc').innerText = Math.round(totalHC);
-        document.getElementById('hAttr').innerText = Math.round(totalAttr);
-        document.getElementById('k-attr').innerText = Math.round(totalAttr);
+        // Update Dashboard Headers & KPIs
+        document.getElementById('h-batches').innerText = filtered.length;
+        document.getElementById('k-batches').innerText = filtered.length;
+        document.getElementById('h-hc').innerText = Math.round(totals.hc);
+        document.getElementById('k-hc').innerText = Math.round(totals.hc);
+        document.getElementById('h-attr').innerText = Math.round(totals.attr);
+        document.getElementById('k-attr').innerText = Math.round(totals.attr);
+        
+        const avgConv = filtered.length ? (totals.conv / filtered.length).toFixed(1) : 0;
+        document.getElementById('h-conv').innerText = avgConv + '%';
         document.getElementById('k-conv').innerText = avgConv + '%';
+
+        document.getElementById('k-floor').innerText = Math.round(totals.floor);
+        document.getElementById('k-texit').innerText = Math.round(totals.texit);
+        document.getElementById('k-oexit').innerText = Math.round(totals.oexit);
+
+        // Update Information Text
+        const mRange = [...new Set(filtered.map(d => d.month))];
+        document.getElementById('sub-info').innerText = `Batch ${filtered.length} Records • ${mRange[0] || 'N/A'} - ${mRange[mRange.length-1] || 'N/A'}`;
+
+        // Render Selection Tags
+        renderTags();
     }
 
-    function searchDD(k, v) { renderAllFilters(k, v); }
-    function bulk(k, sel) {
-        filters[k] = sel ? [...new Set(RAW.map(d => d[k]))] : [];
-        document.getElementById('lbl-' + k).innerText = filters[k].length ? 'All' : 'All';
-        renderAllFilters(k); update();
+    function renderTags() {
+        const area = document.getElementById('tags-area');
+        area.innerHTML = '';
+        Object.keys(FILTERS).forEach(key => {
+            FILTERS[key].forEach(val => {
+                const tag = document.createElement('div');
+                tag.className = 'tag';
+                tag.innerHTML = `${key.toUpperCase()}: ${val} <span style="cursor:pointer" onclick="toggleItem('${key}', '${val}')">✕</span>`;
+                area.appendChild(tag);
+            });
+        });
     }
-    function resetAll() { location.reload(); }
 
-    window.onclick = (e) => { if (!e.target.closest('.dd-wrap')) {
-        document.querySelectorAll('.dd-wrap').forEach(w => w.classList.remove('open'));
-        document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('show'));
-    }};
+    // Close dropdowns on outside click
+    window.onclick = (e) => {
+        if(!e.target.closest('.slicer-group')) {
+            document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('show'));
+            document.querySelectorAll('.dd-trigger').forEach(t => t.classList.remove('active'));
+        }
+    };
 
     init();
 </script>
