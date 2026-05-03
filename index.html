@@ -3,44 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OJT Pro Dashboard - Black Edition</title>
+    <title>OJT Analytics - Fixed Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap');
 
         :root {
-            --bg: #0d1117; 
-            --surface: #161b22; 
-            --accent: #38bdf8;
-            --border: #30363d; 
-            --text: #e6edf3; 
-            --text-dim: #8b949e;
-            --red: #f85149; 
-            --green: #3fb950;
+            --bg: #0d1117; --surface: #161b22; --accent: #38bdf8;
+            --border: #30363d; --text: #e6edf3; --text-dim: #8b949e;
+            --red: #f85149; --green: #3fb950;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; }
 
         /* Header */
-        .header { padding: 25px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000; }
-        .h-left h1 { font-size: 22px; font-weight: 600; }
+        .header { padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000; }
+        .h-left h1 { font-size: 20px; font-weight: 600; }
         .top-metrics { display: flex; gap: 30px; }
-        .tm-v { display: block; font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono'; color: var(--accent); }
+        .tm-v { display: block; font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono'; color: var(--accent); }
         .tm-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Navigation / Reset Bar */
-        .nav-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: #090c10; border-bottom: 1px solid var(--border); }
-        .filter-group { display: flex; gap: 12px; }
+        /* Nav/Filter Bar */
+        .nav-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 30px; background: #090c10; border-bottom: 1px solid var(--border); }
+        .filter-group { display: flex; gap: 10px; }
         
-        /* Dropdown Style */
-        .dropdown { position: relative; width: 180px; }
+        .dropdown { position: relative; width: 160px; }
         .dd-btn { 
-            width: 100%; padding: 10px 14px; background: var(--surface); 
+            width: 100%; padding: 10px; background: var(--surface); 
             border: 1px solid var(--border); color: var(--text); border-radius: 6px;
             cursor: pointer; text-align: left; font-size: 12px; font-weight: 600;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .dd-btn::after { content: '▼'; font-size: 8px; color: var(--text-dim); }
         .dd-menu { 
             position: absolute; top: 110%; left: 0; width: 100%; 
             background: var(--surface); border: 1px solid var(--border); 
@@ -49,80 +42,73 @@
         }
         .dropdown.open .dd-menu { display: block; }
 
-        /* List Items */
-        .li { padding: 10px 14px; display: flex; align-items: center; gap: 10px; font-size: 12px; cursor: pointer; color: var(--text-dim); }
+        .li { padding: 10px; display: flex; align-items: center; gap: 10px; font-size: 12px; cursor: pointer; color: var(--text-dim); }
         .li:hover { background: #21262d; color: var(--text); }
         .chk { width: 14px; height: 14px; border: 2px solid var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; }
         .li.active .chk { background: var(--accent); border-color: var(--accent); }
         .li.active .chk::after { content: '✓'; color: #000; font-size: 10px; font-weight: 900; }
-        .li.active { color: var(--text); font-weight: 600; background: rgba(56, 189, 248, 0.05); }
 
-        /* Buttons */
-        .btn { padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700; text-transform: uppercase; border: 1px solid var(--border); transition: 0.2s; }
-        .btn-reset { background: rgba(248, 81, 73, 0.1); color: var(--red); border-color: rgba(248, 81, 73, 0.2); }
-        .btn-reset:hover { background: var(--red); color: white; }
+        /* Control Buttons */
+        .btn-box { display: flex; gap: 8px; }
+        .btn { padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: 700; text-transform: uppercase; border: 1px solid var(--border); }
+        .btn-live { background: rgba(56, 189, 248, 0.1); color: var(--accent); border-color: var(--accent); }
+        .btn-reset { background: rgba(248, 81, 73, 0.1); color: var(--red); }
 
-        /* Active Tags */
-        .tag-area { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 30px; min-height: 40px; }
-        .tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); padding: 4px 10px; border-radius: 4px; font-size: 11px; display: flex; align-items: center; gap: 6px; }
-        .tag span { cursor: pointer; font-weight: bold; }
+        /* KPI Grid */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; padding: 20px 30px; }
+        .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent); }
+        .card.red { border-left-color: var(--red); }
+        .card.green { border-left-color: var(--green); }
+        .c-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; display: block; }
+        .c-v { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono'; }
 
-        /* KPI Grid - Combined from both images */
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; padding: 10px 30px; }
-        .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 8px; position: relative; overflow: hidden; }
-        .card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
-        .card.red::before { background: var(--red); }
-        .card.green::before { background: var(--green); }
-        
-        .c-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; display: block; letter-spacing: 0.5px; }
-        .c-v { font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono'; }
-        .c-sub { font-size: 11px; color: var(--text-dim); margin-top: 5px; }
+        .tag-area { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 30px 10px 30px; min-height: 30px; }
+        .tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); padding: 4px 8px; border-radius: 4px; font-size: 10px; display: flex; align-items: center; gap: 5px; }
 
-        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
-        .spinner { width: 30px; height: 30px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px; }
+        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; display: none; }
+        .spinner { width: 30px; height: 30px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><p style="font-size:11px; color:var(--text-dim)">INITIALIZING OJT FEED...</p></div>
+<div id="loader"><div class="spinner"></div><p style="font-size:11px; color:var(--text-dim); margin-top:10px">REFRESHING LIVE DATA...</p></div>
 
 <div class="header">
-    <div class="h-left"><h1>OJT Operational Analytics</h1></div>
+    <div class="h-left"><h1>OJT Dashboard</h1></div>
     <div class="top-metrics">
-        <div class="tm-item"><span class="tm-v" id="h-hc">0</span><span class="tm-l">Total HC</span></div>
-        <div class="tm-item"><span class="tm-v" id="h-at" style="color:var(--red)">0</span><span class="tm-l">Attrition</span></div>
+        <div class="tm-item"><span class="tm-v" id="h-hc">0</span><span class="tm-l">Global HC</span></div>
+        <div class="tm-item"><span class="tm-v" id="h-at" style="color:var(--red)">0</span><span class="tm-l">Global Attrition</span></div>
     </div>
 </div>
 
 <div class="nav-bar">
     <div class="filter-group">
         <div class="dropdown" id="dd-process"><button class="dd-btn" onclick="toggleDD('dd-process')">Process</button><div class="dd-menu" id="list-process"></div></div>
-        <div class="dropdown" id="dd-type"><button class="dd-btn" onclick="toggleDD('dd-type')">Batch Type</button><div class="dd-menu" id="list-type"></div></div>
+        <div class="dropdown" id="dd-type"><button class="dd-btn" onclick="toggleDD('dd-type')">Type</button><div class="dd-menu" id="list-type"></div></div>
         <div class="dropdown" id="dd-trainer"><button class="dd-btn" onclick="toggleDD('dd-trainer')">Trainer</button><div class="dd-menu" id="list-trainer"></div></div>
-        <div class="dropdown" id="dd-month"><button class="dd-btn" onclick="toggleDD('dd-month')">Timeline</button><div class="dd-menu" id="list-month"></div></div>
+        <div class="dropdown" id="dd-month"><button class="dd-btn" onclick="toggleDD('dd-month')">Month</button><div class="dd-menu" id="list-month"></div></div>
     </div>
-    <button class="btn btn-reset" onclick="resetAll()">✕ Reset All Filters</button>
+    <div class="btn-box">
+        <button class="btn btn-live" onclick="loadData(true)">⚡ Live Refresh</button>
+        <button class="btn btn-reset" onclick="resetAll()">✕ Reset All</button>
+    </div>
 </div>
 
 <div class="tag-area" id="tag-box"></div>
 
 <div class="kpi-grid">
-    <div class="card"><span class="c-l">Total Batches</span><div class="c-v" id="k-batches">0</div></div>
     <div class="card"><span class="c-l">Target HC</span><div class="c-v" id="k-target">0</div></div>
     <div class="card"><span class="c-l">Actual HC</span><div class="c-v" id="k-hc">0</div></div>
-    <div class="card red"><span class="c-l">Attrition</span><div class="c-v" id="k-at">0</div></div>
-    <div class="card green"><span class="c-l">Avg. Conversion %</span><div class="c-v" id="k-cv">0%</div></div>
-    <div class="card"><span class="c-l">Certification %</span><div class="c-v" id="k-cert">0%</div></div>
-    <div class="card"><span class="c-l">Total Training Days</span><div class="c-v" id="k-days">0</div></div>
+    <div class="card red"><span class="c-l">Attrition Count</span><div class="c-v" id="k-at">0</div></div>
+    <div class="card green"><span class="c-l">Conversion %</span><div class="c-v" id="k-cv">0%</div></div>
+    <div class="card"><span class="c-l">Cert %</span><div class="c-v" id="k-cert">0%</div></div>
+    <div class="card"><span class="c-l">Training Days</span><div class="c-v" id="k-days">0</div></div>
 </div>
 
 <script>
-    const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv&cache=" + Date.now();
-    const MONTH_ORDER = {"Jan":0, "Feb":1, "Mar":2, "Apr":3, "May":4, "Jun":5, "Jul":6, "Aug":7, "Sep":8, "Oct":9, "Nov":10, "Dec":11};
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
+    const MONTH_MAP = {"Jan":1,"Feb":2,"Mar":3,"Apr":4,"May":5,"Jun":6,"Jul":7,"Aug":8,"Sep":9,"Oct":10,"Nov":11,"Dec":12};
     
     let RAW_DATA = [];
     let FILTERS = { process: [], type: [], trainer: [], month: [] };
@@ -135,38 +121,40 @@
         if(!isOpen) el.classList.add('open');
     }
 
-    async function loadData() {
+    async function loadData(isRefresh = false) {
+        if(isRefresh) document.getElementById('loader').style.display = 'flex';
         try {
-            const res = await fetch(URL);
-            const csv = await res.text();
-            const rows = csv.split(/\r?\n/).map(r => r.split(','));
+            const response = await fetch(`${SHEET_URL}&cachebust=${Date.now()}`);
+            const text = await response.text();
+            const rows = text.split(/\r?\n/).map(r => r.split(','));
 
             RAW_DATA = rows.slice(1).map(c => ({
                 process: (c[1] || "").trim(),
                 trainer: (c[2] || "").trim(),
                 type: (c[4] || "").trim(),
                 month: (c[5] || "").trim(),
-                target: parseFloat(c[7]) || 0,   // Target HC
-                hc: parseFloat(c[8]) || 0,       // Actual HC
-                attr: parseFloat(c[10]) || 0,    // Attrition
-                cert: parseFloat(c[15]) || 0,    // Certification %
-                days: parseFloat(c[16]) || 0,    // Training Days
-                conv: parseFloat(c[19]) || 0     // Conversion %
+                target: parseFloat(c[7]) || 0,
+                hc: parseFloat(c[8]) || 0,
+                at: parseFloat(c[10]) || 0, // Attrition Fixed
+                cert: parseFloat(c[15]) || 0,
+                days: parseFloat(c[16]) || 0,
+                cv: parseFloat(c[19]) || 0
             })).filter(d => d.month !== "");
 
-            document.getElementById('loader').style.display = 'none';
             renderSlicers();
             updateDashboard();
-        } catch (e) { console.error("CSV Load Fail"); }
+        } catch (e) { console.error("Load Error"); }
+        setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
     }
 
     function renderSlicers() {
         Object.keys(FILTERS).forEach(key => {
             let items = [...new Set(RAW_DATA.map(d => d[key]))].filter(v => v);
+            
             if(key === 'month') {
                 items.sort((a,b) => {
                     const [mA, yA] = a.split("'"); const [mB, yB] = b.split("'");
-                    return (parseInt(yA) - parseInt(yB)) || (MONTH_ORDER[mA] - MONTH_ORDER[mB]);
+                    return (parseInt(yA) - parseInt(yB)) || (MONTH_MAP[mA] - MONTH_MAP[mB]);
                 });
             } else items.sort();
 
@@ -180,9 +168,8 @@
     }
 
     function toggleFilter(key, val) {
-        const idx = FILTERS[key].indexOf(val);
-        if(idx > -1) FILTERS[key].splice(idx, 1);
-        else FILTERS[key].push(val);
+        const i = FILTERS[key].indexOf(val);
+        if(i > -1) FILTERS[key].splice(i, 1); else FILTERS[key].push(val);
         renderSlicers(); updateDashboard();
     }
 
@@ -192,38 +179,35 @@
     }
 
     function updateDashboard() {
-        const filtered = RAW_DATA.filter(d => 
+        const data = RAW_DATA.filter(d => 
             (!FILTERS.process.length || FILTERS.process.includes(d.process)) &&
             (!FILTERS.type.length || FILTERS.type.includes(d.type)) &&
             (!FILTERS.trainer.length || FILTERS.trainer.includes(d.trainer)) &&
             (!FILTERS.month.length || FILTERS.month.includes(d.month))
         );
 
-        const sums = filtered.reduce((a, c) => {
-            a.target += c.target; a.hc += c.hc; a.at += c.attr; 
-            a.cv += c.conv; a.cert += c.cert; a.days += c.days; return a;
-        }, { target:0, hc:0, at:0, cv:0, cert:0, days:0 });
+        const s = data.reduce((a, c) => {
+            a.t += c.target; a.h += c.hc; a.a += c.at; 
+            a.v += c.cv; a.c += c.cert; a.d += c.days; return a;
+        }, { t:0, h:0, a:0, v:0, c:0, d:0 });
 
-        const count = filtered.length || 1;
+        const count = data.length || 1;
 
-        document.getElementById('h-hc').innerText = Math.round(sums.hc);
-        document.getElementById('h-at').innerText = Math.round(sums.at);
-        
-        document.getElementById('k-batches').innerText = filtered.length;
-        document.getElementById('k-target').innerText = Math.round(sums.target);
-        document.getElementById('k-hc').innerText = Math.round(sums.hc);
-        document.getElementById('k-at').innerText = Math.round(sums.at);
-        document.getElementById('k-cv').innerText = (sums.cv / count).toFixed(1) + "%";
-        document.getElementById('k-cert').innerText = (sums.cert / count).toFixed(1) + "%";
-        document.getElementById('k-days').innerText = Math.round(sums.days);
+        document.getElementById('h-hc').innerText = Math.round(s.h);
+        document.getElementById('h-at').innerText = Math.round(s.a);
+        document.getElementById('k-target').innerText = Math.round(s.t);
+        document.getElementById('k-hc').innerText = Math.round(s.h);
+        document.getElementById('k-at').innerText = Math.round(s.a);
+        document.getElementById('k-cv').innerText = (s.v / count).toFixed(1) + "%";
+        document.getElementById('k-cert').innerText = (s.c / count).toFixed(1) + "%";
+        document.getElementById('k-days').innerText = Math.round(s.d);
 
         const box = document.getElementById('tag-box');
         box.innerHTML = '';
         Object.keys(FILTERS).forEach(k => {
             FILTERS[k].forEach(v => {
-                const t = document.createElement('div');
-                t.className = 'tag';
-                t.innerHTML = `${v} <span onclick="toggleFilter('${k}', '${v}')">×</span>`;
+                const t = document.createElement('div'); t.className = 'tag';
+                t.innerHTML = `${v} <span onclick="toggleFilter('${k}', '${v}')" style="cursor:pointer">×</span>`;
                 box.appendChild(t);
             });
         });
