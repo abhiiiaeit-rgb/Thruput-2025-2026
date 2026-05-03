@@ -14,7 +14,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* HEADER REDESIGN */
+        /* HEADER DESIGN */
         .header { 
             padding: 12px 30px; 
             display: flex; 
@@ -24,53 +24,53 @@
             background: var(--bg); 
             position: sticky; top: 0; z-index: 1000;
         }
-        .h-left { display: flex; align-items: center; gap: 20px; }
-        .brand { border-right: 1px solid var(--border); padding-right: 20px; line-height: 1; }
-        .brand h1 { font-size: 14px; font-weight: 800; color: #fff; text-transform: uppercase; white-space: nowrap; }
+        .h-left { display: flex; align-items: center; gap: 15px; flex: 1; }
+        .brand { border-right: 1px solid var(--border); padding-right: 15px; line-height: 1; }
+        .brand h1 { font-size: 13px; font-weight: 800; color: #fff; text-transform: uppercase; white-space: nowrap; }
         .brand p { font-size: 9px; color: var(--accent); font-weight: 700; text-transform: uppercase; margin-top: 2px; }
         
-        .h-summary { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim); }
+        .h-summary { font-family: 'JetBrains Mono'; font-size: 10.5px; color: var(--text-dim); white-space: nowrap; }
         .h-summary span { color: var(--accent); font-weight: 700; }
 
-        .h-right { display: flex; align-items: center; gap: 25px; }
-        .hk-item { display: flex; align-items: baseline; gap: 6px; }
-        .hk-v { font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono'; color: #fff; }
-        .hk-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
+        .h-right { display: flex; align-items: center; gap: 20px; }
+        .hk-item { display: flex; flex-direction: column; align-items: flex-end; line-height: 1; }
+        .hk-v { font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono'; color: #fff; }
+        .hk-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-top: 3px; }
 
         /* NAV BAR */
-        .nav-bar { display: flex; gap: 10px; padding: 10px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; }
-        .dropdown { position: relative; width: 150px; }
+        .nav-bar { display: flex; gap: 8px; padding: 10px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; }
+        .dropdown { position: relative; width: 140px; }
         .dd-btn { width: 100%; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px; font-weight: 600; display: flex; justify-content: space-between; }
         .dd-menu { position: absolute; top: 115%; left: 0; width: 220px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; max-height: 300px; overflow-y: auto; display: none; z-index: 1001; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .dropdown.open .dd-menu { display: block; }
-        .dd-actions { display: flex; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); }
+        .dd-actions { display: flex; border-bottom: 1px solid var(--border); }
         .dd-actions button { flex: 1; padding: 8px; background: transparent; border: none; color: var(--accent); font-size: 9px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
         
         .li { padding: 8px 12px; display: flex; align-items: center; gap: 10px; font-size: 11px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.02); }
         .li:hover { background: #21262d; }
         .li.active { color: var(--accent); }
-        .chk { width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 3px; }
+        .chk { width: 13px; height: 13px; border: 1px solid var(--border); border-radius: 3px; }
         .li.active .chk { background: var(--accent); border-color: var(--accent); }
 
-        /* KPI CARDS */
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; padding: 20px 30px; }
+        /* KPI GRID */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; padding: 20px 30px; }
         .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent); }
         .c-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 800; margin-bottom: 6px; display: block; }
-        .c-v { font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono'; }
+        .c-v { font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono'; }
 
         #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
-        .spinner { width: 30px; height: 30px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .spinner { width: 25px; height: 25px; border: 2px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><p style="margin-top:15px; font-size:10px; color:var(--text-dim);">SYNCING LIVE DATA...</p></div>
+<div id="loader"><div class="spinner"></div><p style="margin-top:12px; font-size:10px; color:var(--text-dim);">LOADING CORES...</p></div>
 
 <div class="header">
     <div class="h-left">
         <div class="brand"><h1>New Hire</h1><p>Thruput Live</p></div>
-        <div class="h-summary" id="h-sum-text">Fetching details...</div>
+        <div class="h-summary" id="h-sum-text">Connecting...</div>
     </div>
     <div class="h-right">
         <div class="hk-item"><span class="hk-v" id="h-count">0</span><span class="hk-l">Batches</span></div>
@@ -85,7 +85,7 @@
     <div class="dropdown" id="dd-process"><button class="dd-btn" onclick="toggleDD('dd-process')">🏭 Process</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('process',1)">All</button><button onclick="bulk('process',0)">Clear</button></div><div id="list-process"></div></div></div>
     <div class="dropdown" id="dd-trainer"><button class="dd-btn" onclick="toggleDD('dd-trainer')">👤 Trainer</button><div class="dd-menu"><div id="list-trainer"></div></div></div>
     <div class="dropdown" id="dd-month"><button class="dd-btn" onclick="toggleDD('dd-month')">📅 Month</button><div class="dd-menu"><div id="list-month"></div></div></div>
-    <button onclick="loadData(true)" style="padding:8px 15px; background:transparent; border:1px solid var(--border); color:var(--text); border-radius:6px; font-size:10px; font-weight:800; cursor:pointer; margin-left:auto;">REFRESH</button>
+    <button onclick="loadData(true)" style="padding:7px 12px; background:transparent; border:1px solid var(--border); color:var(--text); border-radius:6px; font-size:10px; font-weight:800; cursor:pointer; margin-left:auto;">REFRESH</button>
 </div>
 
 <div class="kpi-grid">
@@ -115,7 +115,6 @@
             const res = await fetch(`${URL}&cb=${Date.now()}`);
             const text = await res.text();
             
-            // Clean parsing to handle quotes and numbers correctly
             const rows = text.split(/\r?\n/).map(row => {
                 let res = [], cell = '', inQ = false;
                 for (let char of row) {
@@ -126,35 +125,49 @@
                 res.push(cell.trim()); return res;
             });
 
-            // FIND DATA ENTRY POINT (Skips merged decorative headers)
-            let hIdx = rows.findIndex(r => r.some(c => c.toLowerCase().includes("process")));
-            if(hIdx === -1) hIdx = 0;
+            // DATA MAPPING BASED ON YOUR INPUT (Column A=0, B=1, C=2...)
+            // Finding the row where actual data starts (Look for "Batch" in Column A)
+            let startIdx = rows.findIndex(r => r[0] && r[0].toLowerCase().includes("batch") && !r[0].toLowerCase().includes("analytics"));
+            
+            // If it can't find "Batch", it skips the top 2 decorative rows by default
+            if(startIdx === -1) startIdx = 2; 
 
-            const head = rows[hIdx].map(h => h.toLowerCase());
-            const find = (k) => head.findIndex(h => h.includes(k));
+            // Find metric columns by scanning the header row
+            const header = rows[startIdx].map(h => h.toLowerCase());
+            const find = (k) => header.findIndex(h => h.includes(k));
 
-            const idx = {
-                b: find("batch no"), p: find("process"), t: find("trainer"), 
-                m: find("month"), tg: find("target"), hc: find("headcount"), 
-                at: find("attrition"), cr: find("cert"), d: find("days"), cv: find("conv")
-            };
+            // Metric Indices (Usually further right in your sheet)
+            const idxTG = find("target");
+            const idxHC = find("headcount");
+            const idxAT = find("attrition");
+            const idxCR = find("cert");
+            const idxCV = find("conv");
+            const idxDY = find("days");
 
-            RAW = rows.slice(hIdx + 1).map(c => {
+            RAW = rows.slice(startIdx + 1).map(c => {
                 const n = (v) => {
                     if(!v) return 0;
                     let val = parseFloat(String(v).replace(/[^0-9.]/g, ''));
                     return isNaN(val) ? 0 : val;
                 };
                 return {
-                    batch: c[idx.b] || "N/A", process: c[idx.p] || "N/A", trainer: c[idx.t] || "N/A",
-                    month: c[idx.m] || "", target: n(c[idx.tg]), hc: n(c[idx.hc]), 
-                    at: n(c[idx.at]), cert: n(c[idx.cr]), days: n(c[idx.d]), cv: n(c[idx.cv])
+                    batch: c[0] || "N/A",      // Column A
+                    process: c[1] || "N/A",    // Column B
+                    trainer: c[2] || "N/A",    // Column C
+                    status: c[3] || "",        // Column D
+                    type: c[4] || "",          // Column E
+                    month: c[5] || "",         // Column F
+                    target: n(c[idxTG]),
+                    hc: n(c[idxHC]),
+                    at: n(c[idxAT]),
+                    cert: n(c[idxCR]),
+                    days: n(c[idxDY]),
+                    cv: n(c[idxCV])
                 };
             }).filter(d => d.month && d.month.length > 2);
 
-            renderSlicers(); 
-            update();
-        } catch (e) { console.error("Sync Error:", e); }
+            renderSlicers(); update();
+        } catch (e) { console.error(e); }
         document.getElementById('loader').style.display = 'none';
     }
 
@@ -194,8 +207,8 @@
         const count = data.length || 1;
         
         // Header Summary Calculation
-        const bNum = data.map(d => parseInt(d.batch.replace(/\D/g,''))).filter(n => !isNaN(n));
-        const bRange = bNum.length ? `Batch ${Math.min(...bNum)} → ${Math.max(...bNum)}` : 'No Batches';
+        const bNums = data.map(d => parseInt(d.batch.replace(/\D/g,''))).filter(n => !isNaN(n));
+        const bRange = bNums.length ? `Batch ${Math.min(...bNums)} → ${Math.max(...bNums)}` : 'N/A';
         const months = [...new Set(data.map(d => d.month))];
         const mRange = months.length > 1 ? `${months[0]} – ${months[months.length-1]}` : (months[0] || 'N/A');
         const trn = [...new Set(data.map(d => d.trainer))].length;
@@ -203,13 +216,13 @@
 
         document.getElementById('h-sum-text').innerHTML = `(<span>${bRange}</span> · <span>${mRange}</span> · <span>${trn} Trainers</span> · <span>${prc} Processes</span>)`;
 
-        // Top Right KPI Bar
+        // Top Right KPI Line
         document.getElementById('h-count').innerText = data.length;
         document.getElementById('h-hc').innerText = Math.round(s.h).toLocaleString();
         document.getElementById('h-at').innerText = Math.round(s.a).toLocaleString();
         document.getElementById('h-conv').innerText = (s.v / count).toFixed(1) + "%";
 
-        // Grid Cards
+        // KPI Cards
         document.getElementById('k-target').innerText = Math.round(s.t).toLocaleString();
         document.getElementById('k-hc').innerText = Math.round(s.h).toLocaleString();
         document.getElementById('k-at').innerText = Math.round(s.a).toLocaleString();
