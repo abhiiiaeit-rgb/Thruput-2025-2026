@@ -10,17 +10,15 @@
         :root {
             --bg:#0c0f1a; --surface:#141824; --surface2:#1c2235; --surface3:#232b42;
             --border:#2a3450; --border2:#3a4a6a; --text:#e8edf5; --text2:#8a9bc4;
-            --text3:#5a6a8a; --accent:#4f8ef7; --r:12px; --rs:8px;
+            --text3:#5a6a8a; --accent:#4f8ef7; --red:#f05a5a; --green:#2dd4a0; --r:12px; --rs:8px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
         
-        /* Loading Overlay */
         #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.5s; }
         .spinner { width: 40px; height: 40px; border: 4px solid var(--surface3); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Header & Layout */
         .header { background: linear-gradient(135deg,#0d1530 0%,#1a2550 50%,#0d1530 100%); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; }
         .hstats { display: flex; gap: 20px; }
         .hstat { text-align: center; }
@@ -30,25 +28,28 @@
         .slicer-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; position: sticky; top: 57px; z-index: 150; }
         .dd-wrap { display: flex; flex-direction: column; gap: 4px; position: relative; }
         .dd-wrap label { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; }
-        .dd-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); border-radius: var(--rs); padding: 8px 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; min-width: 160px; }
-        
+        .dd-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); border-radius: var(--rs); padding: 8px 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; min-width: 150px; }
         .dd-panel { position: absolute; top: calc(100% + 4px); left: 0; min-width: 200px; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--r); z-index: 300; display: none; flex-direction: column; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
         .dd-panel.open { display: flex; }
-        .dd-list { max-height: 250px; overflow-y: auto; padding: 5px 0; }
-        .dd-item { display: flex; align-items: center; gap: 10px; padding: 8px 15px; cursor: pointer; transition: 0.2s; }
+        .dd-list { max-height: 200px; overflow-y: auto; padding: 5px 0; }
+        .dd-item { display: flex; align-items: center; gap: 10px; padding: 8px 15px; cursor: pointer; }
         .dd-item:hover { background: var(--surface3); }
         .dd-item input { accent-color: var(--accent); }
 
         .btn-reset { background: var(--surface3); border: 1px solid var(--border2); color: var(--text2); border-radius: var(--rs); padding: 8px 16px; cursor: pointer; font-size: 12px; }
-        .btn-reset:hover { background: var(--accent); color: #fff; }
-
-        .main { padding: 24px; }
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
-        .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; border-top: 3px solid var(--accent); }
-        .kpi-card .lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; margin-bottom: 8px; font-weight: 600; }
-        .kpi-card .val { font-size: 32px; font-weight: 700; font-family: 'DM Mono', monospace; }
         
-        #error-msg { display: none; color: #ff6b6b; background: rgba(255,107,107,0.1); padding: 15px; border-radius: var(--rs); margin: 20px; border: 1px solid #ff6b6b; }
+        .main { padding: 24px; }
+        .tab-menu { display: flex; gap: 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+        .tab-item { padding: 10px 0; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; font-size: 13px; }
+        .tab-item.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+        .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 15px; position: relative; border-left: 3px solid var(--accent); }
+        .kpi-card.attrition { border-left-color: var(--red); }
+        .kpi-card.conversion { border-left-color: var(--green); }
+        .kpi-card .lbl { font-size: 9px; color: var(--text3); text-transform: uppercase; margin-bottom: 8px; font-weight: 600; }
+        .kpi-card .val { font-size: 24px; font-weight: 700; font-family: 'DM Mono', monospace; }
+        .kpi-card .sub { font-size: 10px; color: var(--text3); margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -60,17 +61,16 @@
 
 <div class="header">
     <div>
-        <h1 style="margin:0;">OJT Training Dashboard</h1>
-        <p style="color: var(--text3); font-size: 11px; margin-top:2px;">Live Data Feed Active</p>
+        <h1>OJT Training Dashboard</h1>
+        <p style="color: var(--text3); font-size: 10px; margin-top:2px;">Real-time Performance Metrics</p>
     </div>
     <div class="hstats">
         <div class="hstat"><div class="v" id="hTotal">0</div><div class="l">Batches</div></div>
         <div class="hstat"><div class="v" id="hHC">0</div><div class="l">Headcount</div></div>
+        <div class="hstat"><div class="v" id="hAttr">0</div><div class="l">Attrition</div></div>
         <div class="hstat"><div class="v" id="hConv">0%</div><div class="l">Avg Conv%</div></div>
     </div>
 </div>
-
-<div id="error-msg"></div>
 
 <div class="slicer-bar">
     <div class="dd-wrap"><label>Batch</label><button class="dd-btn" onclick="toggleDD('dd-batch')"><span id="lbl-batch">All</span> ▾</button><div id="dd-batch" class="dd-panel"><div class="dd-list" id="list-batch"></div></div></div>
@@ -78,14 +78,25 @@
     <div class="dd-wrap"><label>Trainer</label><button class="dd-btn" onclick="toggleDD('dd-trainer')"><span id="lbl-trainer">All</span> ▾</button><div id="dd-trainer" class="dd-panel"><div class="dd-list" id="list-trainer"></div></div></div>
     <div class="dd-wrap"><label>Month</label><button class="dd-btn" onclick="toggleDD('dd-month')"><span id="lbl-month">All</span> ▾</button><div id="dd-month" class="dd-panel"><div class="dd-list" id="list-month"></div></div></div>
     <div class="dd-wrap"><label>Batch Type</label><button class="dd-btn" onclick="toggleDD('dd-batchtype')"><span id="lbl-batchtype">All</span> ▾</button><div id="dd-batchtype" class="dd-panel"><div class="dd-list" id="list-batchtype"></div></div></div>
-    <button class="btn-reset" onclick="resetFilters()">↺ Reset Filters</button>
+    <button class="btn-reset" onclick="resetFilters()">↺ Reset All</button>
 </div>
 
 <div class="main">
+    <div class="tab-menu">
+        <div class="tab-item active">Overview</div>
+        <div class="tab-item">Training Schedule</div>
+        <div class="tab-item">Quality Scores</div>
+        <div class="tab-item">Exits</div>
+    </div>
+
     <div class="kpi-grid">
-        <div class="kpi-card"><div class="lbl">Total Batches</div><div class="val" id="kpi-batches">0</div></div>
-        <div class="kpi-card"><div class="lbl">Total Headcount</div><div class="val" id="kpi-hc">0</div></div>
-        <div class="kpi-card"><div class="lbl">Overall Conversion</div><div class="val" id="kpi-conv">0%</div></div>
+        <div class="kpi-card"><div class="lbl">Total Batches</div><div class="val" id="k-batches">0</div></div>
+        <div class="kpi-card"><div class="lbl">Total Headcount</div><div class="val" id="k-hc">0</div><div class="sub">Day 0</div></div>
+        <div class="kpi-card attrition"><div class="lbl">Total Attrition</div><div class="val" id="k-attr">0</div></div>
+        <div class="kpi-card conversion"><div class="lbl">Avg Conversion %</div><div class="val" id="k-conv">0%</div><div class="sub">Train start → end</div></div>
+        <div class="kpi-card"><div class="lbl">Active (On Floor)</div><div class="val" id="k-active">0</div><div class="sub">batches</div></div>
+        <div class="kpi-card"><div class="lbl">Training Exits</div><div class="val" id="k-texit">0</div><div class="sub">Training phase</div></div>
+        <div class="kpi-card"><div class="lbl">OJT Exits</div><div class="val" id="k-ojtexit">0</div><div class="sub">OJT phase</div></div>
     </div>
 </div>
 
@@ -95,60 +106,39 @@
     let RAW_DATA = [];
     let filters = { batch: [], process: [], trainer: [], month: [], batchtype: [] };
 
-    // Robust CSV Parser to handle quotes and commas
-    function parseCSV(text) {
-        const rows = [];
-        let col = "", inQuotes = false;
-        let currRow = [];
-        
-        for (let i = 0; i < text.length; i++) {
-            let char = text[i], next = text[i+1];
-            if (char === '"' && inQuotes && next === '"') { col += '"'; i++; }
-            else if (char === '"') { inQuotes = !inQuotes; }
-            else if (char === ',' && !inQuotes) { currRow.push(col); col = ""; }
-            else if (char === '\n' && !inQuotes) { currRow.push(col); rows.push(currRow); currRow = []; col = ""; }
-            else { col += char; }
-        }
-        if (col || currRow.length) { currRow.push(col); rows.push(currRow); }
-        return rows;
-    }
-
     async function init() {
         try {
             const res = await fetch(sheetURL);
-            if (!res.ok) throw new Error("Could not fetch data from Google Sheets.");
             const text = await res.text();
-            const data = parseCSV(text);
+            const rows = text.split('\n').map(r => r.split(',')).filter(r => r.length > 1);
             
-            // Map data starting from row 1 (skipping header)
-            RAW_DATA = data.slice(1).map(cols => ({
+            RAW_DATA = rows.slice(1).map(cols => ({
                 batch: cols[0]?.trim() || "",
                 process: cols[1]?.trim() || "",
                 trainer: cols[2]?.trim() || "",
+                status: cols[3]?.trim() || "",
                 batch_type: cols[4]?.trim() || "",
                 month: cols[5]?.trim() || "",
                 hc: parseFloat(cols[8]) || 0,
+                attr: parseFloat(cols[16]) || 0,
+                texit: parseFloat(cols[14]) || 0,
+                oexit: parseFloat(cols[15]) || 0,
                 conv: parseFloat(cols[19]) || 0
             })).filter(d => d.batch !== "" && d.batch.toLowerCase() !== "batch");
 
-            document.getElementById('loader').style.opacity = '0';
-            setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-            
+            document.getElementById('loader').style.display = 'none';
             renderFilters();
             updateDashboard();
         } catch (err) {
-            const errBox = document.getElementById('error-msg');
-            errBox.style.display = 'block';
-            errBox.innerText = "Error: " + err.message + ". Please ensure your Google Sheet is 'Published to Web' as a CSV.";
-            document.getElementById('loader').style.display = 'none';
+            console.error(err);
+            document.querySelector('#loader p').innerText = "Error loading data. Verify sheet publishing.";
         }
     }
 
     function renderFilters() {
         const create = (key, field, id) => {
             const unique = [...new Set(RAW_DATA.map(d => d[field]))].filter(v => v && v !== "Batch Type").sort();
-            const list = document.getElementById('list-' + id);
-            list.innerHTML = unique.map(v => `
+            document.getElementById('list-' + id).innerHTML = unique.map(v => `
                 <div class="dd-item" onclick="handleCheck('${key}', '${v}')">
                     <input type="checkbox" ${filters[key].includes(v) ? 'checked' : ''}>
                     <span>${v}</span>
@@ -164,8 +154,7 @@
 
     function handleCheck(key, val) {
         const i = filters[key].indexOf(val);
-        if (i > -1) filters[key].splice(i, 1);
-        else filters[key].push(val);
+        if (i > -1) filters[key].splice(i, 1); else filters[key].push(val);
         document.getElementById('lbl-' + key).innerText = filters[key].length ? filters[key].length + ' Selected' : 'All';
         updateDashboard();
     }
@@ -180,9 +169,39 @@
         );
 
         const hc = Math.round(filtered.reduce((s, d) => s + d.hc, 0));
-        const cv = filtered.length ? (filtered.reduce((s, d) => s + d.conv, 0) / filtered.length * 100).toFixed(1) : "0.0";
+        const attr = Math.round(filtered.reduce((s, d) => s + d.attr, 0));
+        const active = filtered.filter(d => d.status.toLowerCase() === "active").length;
+        const conv = filtered.length ? (filtered.reduce((s, d) => s + d.conv, 0) / filtered.length * 100).toFixed(1) : 0;
 
         document.getElementById('hTotal').innerText = filtered.length;
-        document.getElementById('kpi-batches').innerText = filtered.length;
+        document.getElementById('k-batches').innerText = filtered.length;
         document.getElementById('hHC').innerText = hc;
-        document.getElementById('kpi-hc').
+        document.getElementById('k-hc').innerText = hc;
+        document.getElementById('hAttr').innerText = attr;
+        document.getElementById('k-attr').innerText = attr;
+        document.getElementById('hConv').innerText = conv + '%';
+        document.getElementById('k-conv').innerText = conv + '%';
+        document.getElementById('k-active').innerText = active;
+        document.getElementById('k-texit').innerText = Math.round(filtered.reduce((s, d) => s + d.texit, 0));
+        document.getElementById('k-ojtexit').innerText = Math.round(filtered.reduce((s, d) => s + d.oexit, 0));
+    }
+
+    function toggleDD(id) {
+        const p = document.getElementById(id);
+        const open = p.classList.contains('open');
+        document.querySelectorAll('.dd-panel').forEach(el => el.classList.remove('open'));
+        if (!open) p.classList.add('open');
+    }
+
+    function resetFilters() {
+        filters = { batch: [], process: [], trainer: [], month: [], batchtype: [] };
+        document.querySelectorAll('.dd-btn span').forEach(s => s.innerText = 'All');
+        renderFilters();
+        updateDashboard();
+    }
+
+    window.onclick = e => { if (!e.target.closest('.dd-wrap')) document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('open')); };
+    init();
+</script>
+</body>
+</html>
