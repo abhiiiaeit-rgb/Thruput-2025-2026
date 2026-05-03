@@ -3,106 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OJT Operational Analytics</title>
+    <title>OJT Analytics - Data Fixed</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap');
-
         :root {
             --bg: #0d1117; --surface: #161b22; --accent: #38bdf8;
             --border: #30363d; --text: #e6edf3; --text-dim: #8b949e;
             --red: #f85149; --green: #3fb950;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; }
 
-        /* HEADER STYLE */
-        .header { 
-            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000; 
-        }
-        
-        /* Left Header Stats */
+        /* Header Style per your requirement */
+        .header { padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000; }
         .h-stats { display: flex; gap: 25px; align-items: center; }
-        .hs-item { text-align: center; }
+        .hs-item { text-align: left; }
         .hs-v { display: block; font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono'; color: var(--text); }
-        .hs-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
-        .hs-v.accent { color: var(--accent); }
-        .hs-v.red { color: var(--red); }
-
-        /* Right Header Breadcrumbs */
+        .hs-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; }
         .h-bread { text-align: right; font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim); }
-        .h-bread span { color: var(--accent); font-weight: 600; }
+        .h-bread span { color: var(--accent); }
 
-        /* NAVIGATION BAR */
         .nav-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 30px; background: #090c10; border-bottom: 1px solid var(--border); }
         .filter-group { display: flex; gap: 10px; }
-        
         .dropdown { position: relative; width: 150px; }
-        .dd-btn { 
-            width: 100%; padding: 8px 12px; background: var(--surface); 
-            border: 1px solid var(--border); color: var(--text); border-radius: 6px;
-            cursor: pointer; text-align: left; font-size: 12px; font-weight: 600;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .dd-btn:hover { border-color: var(--accent); }
-        .dd-btn::after { content: '▼'; font-size: 8px; color: var(--text-dim); }
-
-        .dd-menu { 
-            position: absolute; top: 115%; left: 0; width: 100%; 
-            background: var(--surface); border: 1px solid var(--border); 
-            border-radius: 8px; max-height: 280px; overflow-y: auto; display: none; z-index: 1001;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+        .dd-btn { width: 100%; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+        .dd-menu { position: absolute; top: 115%; left: 0; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; max-height: 280px; overflow-y: auto; display: none; z-index: 1001; }
         .dropdown.open .dd-menu { display: block; }
-
-        .li { 
-            padding: 10px 12px; display: flex; align-items: center; gap: 10px; 
-            font-size: 12px; cursor: pointer; color: var(--text-dim); transition: 0.1s;
-        }
+        .li { padding: 10px 12px; display: flex; align-items: center; gap: 10px; font-size: 12px; cursor: pointer; color: var(--text-dim); }
         .li:hover { background: #21262d; color: var(--text); }
-        .chk { width: 14px; height: 14px; border: 2px solid var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .chk { width: 14px; height: 14px; border: 2px solid var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; }
         .li.active .chk { background: var(--accent); border-color: var(--accent); }
         .li.active .chk::after { content: '✓'; color: #000; font-size: 10px; font-weight: 900; }
-        .li.active { color: var(--text); font-weight: 600; background: rgba(56, 189, 248, 0.05); }
+        .li.active { color: var(--text); background: rgba(56, 189, 248, 0.05); }
 
-        /* BUTTONS */
         .btn-box { display: flex; gap: 8px; }
         .btn { padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: 700; text-transform: uppercase; border: 1px solid var(--border); }
         .btn-live { background: rgba(56, 189, 248, 0.1); color: var(--accent); }
         .btn-reset { background: rgba(248, 81, 73, 0.1); color: var(--red); }
 
-        /* KPI GRID */
         .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; padding: 20px 30px; }
         .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent); }
-        .card.red { border-left-color: var(--red); }
-        .card.green { border-left-color: var(--green); }
         .c-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; display: block; }
         .c-v { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono'; }
-
         .tag-area { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 30px 10px 30px; min-height: 35px; }
-        .tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); padding: 4px 10px; border-radius: 4px; font-size: 10px; display: flex; align-items: center; gap: 6px; }
-        .tag span { cursor: pointer; font-weight: 800; margin-left: 5px; }
+        .tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); padding: 4px 10px; border-radius: 4px; font-size: 10px; display: flex; align-items: center; }
 
-        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; display: none; }
+        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
         .spinner { width: 30px; height: 30px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><p style="font-size:11px; color:var(--text-dim); margin-top:10px">REFRESHING LIVE FEED...</p></div>
+<div id="loader"><div class="spinner"></div><p style="font-size:11px; color:var(--text-dim); margin-top:10px">CONNECTING TO GOOGLE SHEETS...</p></div>
 
 <div class="header">
     <div class="h-stats">
         <div class="hs-item"><span class="hs-v" id="h-batches">0</span><span class="hs-l">Batches</span></div>
-        <div class="hs-item"><span class="hs-v accent" id="h-hc">0</span><span class="hs-l">Headcount</span></div>
-        <div class="hs-item"><span class="hs-v red" id="h-at">0</span><span class="hs-l">Attrition</span></div>
+        <div class="hs-item"><span class="hs-v" id="h-hc">0</span><span class="hs-l">Headcount</span></div>
+        <div class="hs-item"><span class="hs-v" id="h-at" style="color:var(--red)">0</span><span class="hs-l">Attrition</span></div>
         <div class="hs-item"><span class="hs-v" id="h-conv" style="color:var(--green)">0%</span><span class="hs-l">Avg Conv%</span></div>
     </div>
-    <div class="h-bread" id="h-bread-text">
-        Loading Summary...
-    </div>
+    <div class="h-bread" id="h-bread-text">Initializing Summary...</div>
 </div>
 
 <div class="nav-bar">
@@ -123,21 +85,20 @@
 <div class="kpi-grid">
     <div class="card"><span class="c-l">Target HC</span><div class="c-v" id="k-target">0</div></div>
     <div class="card"><span class="c-l">Actual HC</span><div class="c-v" id="k-hc">0</div></div>
-    <div class="card red"><span class="c-l">Attrition Count</span><div class="c-v" id="k-at">0</div></div>
-    <div class="card green"><span class="c-l">Conversion %</span><div class="c-v" id="k-cv">0%</div></div>
+    <div class="card" style="border-left-color:var(--red)"><span class="c-l">Attrition Count</span><div class="c-v" id="k-at">0</div></div>
+    <div class="card" style="border-left-color:var(--green)"><span class="c-l">Conversion %</span><div class="c-v" id="k-cv">0%</div></div>
     <div class="card"><span class="c-l">Certification %</span><div class="c-v" id="k-cert">0%</div></div>
     <div class="card"><span class="c-l">Training Days</span><div class="c-v" id="k-days">0</div></div>
 </div>
 
 <script>
-    const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
     const MONTH_MAP = {"Jan":0,"Feb":1,"Mar":2,"Apr":3,"May":4,"Jun":5,"Jul":6,"Aug":7,"Sep":8,"Oct":9,"Nov":10,"Dec":11};
     
     let RAW_DATA = [];
     let FILTERS = { process: [], trainer: [], type: [], month: [] };
 
     window.onclick = (e) => { if (!e.target.closest('.dropdown')) document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open')); }
-    
     function toggleDD(id) {
         const el = document.getElementById(id);
         const isOpen = el.classList.contains('open');
@@ -148,23 +109,27 @@
     async function loadData(isRefresh = false) {
         if(isRefresh) document.getElementById('loader').style.display = 'flex';
         try {
-            const res = await fetch(`${URL}&cb=${Date.now()}`);
+            const res = await fetch(`${SHEET_URL}&cb=${Date.now()}`);
             const text = await res.text();
             const rows = text.split(/\r?\n/).map(r => r.split(',').map(cell => cell.replace(/^"|"$/g, '').trim()));
             
             const header = rows[0].map(h => h.toLowerCase());
+            
+            // Helper to find index by keyword
+            const findIdx = (key) => header.findIndex(h => h.includes(key));
+
             const idx = {
-                batch: header.indexOf("batch no"),
-                proc: header.indexOf("process"),
-                trn: header.indexOf("trainer name"),
-                typ: header.indexOf("batch type"),
-                mth: header.indexOf("month"),
-                tgt: header.indexOf("target headcount"),
-                act: header.indexOf("headcount"),
-                atr: header.indexOf("attrition"),
-                crt: header.indexOf("certification %"),
-                day: header.indexOf("training days"),
-                cnv: header.indexOf("conversion %")
+                batch: findIdx("batch no"),
+                proc: findIdx("process"),
+                trn: findIdx("trainer"),
+                typ: findIdx("batch type"),
+                mth: findIdx("month"),
+                tgt: findIdx("target headcount"),
+                act: findIdx("headcount"),
+                atr: findIdx("attrition"),
+                crt: findIdx("certification"),
+                day: findIdx("training days"),
+                cnv: findIdx("conversion")
             };
 
             RAW_DATA = rows.slice(1).map(c => ({
@@ -181,16 +146,16 @@
                 cv: parseFloat(c[idx.cnv]) || 0
             })).filter(d => d.month !== "");
 
+            console.log("Data Loaded successfully. Count:", RAW_DATA.length);
             renderSlicers();
             updateDashboard();
-        } catch (e) { console.error("Error loading data", e); }
-        setTimeout(() => document.getElementById('loader').style.display = 'none', 600);
+        } catch (e) { console.error("Critical Load Error", e); }
+        document.getElementById('loader').style.display = 'none';
     }
 
     function renderSlicers() {
         Object.keys(FILTERS).forEach(key => {
             let items = [...new Set(RAW_DATA.map(d => d[key]))].filter(v => v && v !== "N/A");
-            
             if(key === 'month') {
                 items.sort((a,b) => {
                     const [mA, yA] = a.split("'"); const [mB, yB] = b.split("'");
@@ -210,14 +175,12 @@
     function toggleFilter(key, val) {
         const i = FILTERS[key].indexOf(val);
         if(i > -1) FILTERS[key].splice(i, 1); else FILTERS[key].push(val);
-        renderSlicers(); 
-        updateDashboard();
+        renderSlicers(); updateDashboard();
     }
 
     function resetAll() {
         FILTERS = { process: [], trainer: [], type: [], month: [] };
-        renderSlicers(); 
-        updateDashboard();
+        renderSlicers(); updateDashboard();
     }
 
     function updateDashboard() {
@@ -229,42 +192,34 @@
         );
 
         const s = data.reduce((a, c) => {
-            a.t += c.target; a.h += c.hc; a.a += c.at; 
-            a.v += c.cv; a.c += c.cert; a.d += c.days; return a;
+            a.t += c.target; a.h += c.hc; a.a += c.at; a.v += c.cv; a.c += c.cert; a.d += c.days; return a;
         }, { t:0, h:0, a:0, v:0, c:0, d:0 });
 
         const count = data.length || 1;
-
-        // Update Header Stats
         document.getElementById('h-batches').innerText = data.length;
-        document.getElementById('h-hc').innerText = Math.round(s.h).toLocaleString();
-        document.getElementById('h-at').innerText = Math.round(s.a).toLocaleString();
+        document.getElementById('h-hc').innerText = Math.round(s.h);
+        document.getElementById('h-at').innerText = Math.round(s.a);
         document.getElementById('h-conv').innerText = (s.v / count).toFixed(1) + "%";
 
-        // Update KPI Grid
-        document.getElementById('k-target').innerText = Math.round(s.t).toLocaleString();
-        document.getElementById('k-hc').innerText = Math.round(s.h).toLocaleString();
-        document.getElementById('k-at').innerText = Math.round(s.a).toLocaleString();
+        document.getElementById('k-target').innerText = Math.round(s.t);
+        document.getElementById('k-hc').innerText = Math.round(s.h);
+        document.getElementById('k-at').innerText = Math.round(s.a);
         document.getElementById('k-cv').innerText = (s.v / count).toFixed(1) + "%";
         document.getElementById('k-cert').innerText = (s.c / count).toFixed(1) + "%";
-        document.getElementById('k-days').innerText = Math.round(s.d).toLocaleString();
+        document.getElementById('k-days').innerText = Math.round(s.d);
 
-        // Breadcrumb Summary (Right Side)
-        const batchMin = data.length ? Math.min(...data.map(d => d.batchNo)) : 0;
-        const batchMax = data.length ? Math.max(...data.map(d => d.batchNo)) : 0;
-        const trainers = [...new Set(data.map(d => d.trainer))].length;
-        const procs = [...new Set(data.map(d => d.process))].length;
-        
-        document.getElementById('h-bread-text').innerHTML = 
-            `Batch <span>${batchMin} → ${batchMax}</span> · Jan 2024 – Mar 2026 · <span>${trainers} Trainers</span> · <span>${procs} Processes</span>`;
+        const bMin = data.length ? Math.min(...data.map(d => d.batchNo)) : 0;
+        const bMax = data.length ? Math.max(...data.map(d => d.batchNo)) : 0;
+        const trn = [...new Set(data.map(d => d.trainer))].length;
+        const prc = [...new Set(data.map(d => d.process))].length;
+        document.getElementById('h-bread-text').innerHTML = `Batch <span>${bMin} → ${bMax}</span> · <span>${trn} Trainers</span> · <span>${prc} Processes</span>`;
 
-        // Tags
         const box = document.getElementById('tag-box');
         box.innerHTML = '';
         Object.keys(FILTERS).forEach(k => {
             FILTERS[k].forEach(v => {
                 const t = document.createElement('div'); t.className = 'tag';
-                t.innerHTML = `${v} <span onclick="toggleFilter('${k}', '${v}')">×</span>`;
+                t.innerHTML = `${v} <span onclick="toggleFilter('${k}', '${v}')" style="margin-left:8px;cursor:pointer">×</span>`;
                 box.appendChild(t);
             });
         });
