@@ -14,42 +14,40 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* HEADER DESIGN */
+        /* HEADER */
         .header { 
-            padding: 12px 30px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 1px solid var(--border); 
-            background: var(--bg); 
-            position: sticky; top: 0; z-index: 1000;
+            padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000;
         }
-        .h-left { display: flex; align-items: center; gap: 15px; flex: 1; }
-        .brand { border-right: 1px solid var(--border); padding-right: 15px; line-height: 1; }
-        .brand h1 { font-size: 13px; font-weight: 800; color: #fff; text-transform: uppercase; white-space: nowrap; }
+        .h-left { display: flex; align-items: center; gap: 15px; flex: 1; overflow: hidden; }
+        .brand { border-right: 1px solid var(--border); padding-right: 15px; line-height: 1; flex-shrink: 0; }
+        .brand h1 { font-size: 13px; font-weight: 800; color: #fff; text-transform: uppercase; }
         .brand p { font-size: 9px; color: var(--accent); font-weight: 700; text-transform: uppercase; margin-top: 2px; }
         
+        /* Left Hand Summary Line */
         .h-summary { font-family: 'JetBrains Mono'; font-size: 10.5px; color: var(--text-dim); white-space: nowrap; }
         .h-summary span { color: var(--accent); font-weight: 700; }
 
-        .h-right { display: flex; align-items: center; gap: 20px; }
-        .hk-item { display: flex; flex-direction: column; align-items: flex-end; line-height: 1; }
-        .hk-v { font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono'; color: #fff; }
-        .hk-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-top: 3px; }
+        /* Right Hand KPI Line */
+        .h-right { display: flex; align-items: center; gap: 25px; }
+        .hk-item { text-align: right; line-height: 1.1; }
+        .hk-v { display: block; font-size: 17px; font-weight: 700; font-family: 'JetBrains Mono'; color: #fff; }
+        .hk-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 800; }
 
-        /* NAV BAR */
+        /* NAV & SLICERS - CLEANED (No Tickers) */
         .nav-bar { display: flex; gap: 8px; padding: 10px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; }
-        .dropdown { position: relative; width: 140px; }
+        .dropdown { position: relative; width: 145px; }
         .dd-btn { width: 100%; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px; font-weight: 600; display: flex; justify-content: space-between; }
         .dd-menu { position: absolute; top: 115%; left: 0; width: 220px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; max-height: 300px; overflow-y: auto; display: none; z-index: 1001; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .dropdown.open .dd-menu { display: block; }
-        .dd-actions { display: flex; border-bottom: 1px solid var(--border); }
+        
+        .dd-actions { display: flex; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); }
         .dd-actions button { flex: 1; padding: 8px; background: transparent; border: none; color: var(--accent); font-size: 9px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
         
         .li { padding: 8px 12px; display: flex; align-items: center; gap: 10px; font-size: 11px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.02); }
         .li:hover { background: #21262d; }
-        .li.active { color: var(--accent); }
-        .chk { width: 13px; height: 13px; border: 1px solid var(--border); border-radius: 3px; }
+        .li.active { color: var(--accent); font-weight: 600; }
+        .chk { width: 13px; height: 13px; border: 1px solid var(--border); border-radius: 3px; flex-shrink: 0; }
         .li.active .chk { background: var(--accent); border-color: var(--accent); }
 
         /* KPI GRID */
@@ -60,17 +58,16 @@
 
         #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
         .spinner { width: 25px; height: 25px; border: 2px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><p style="margin-top:12px; font-size:10px; color:var(--text-dim);">LOADING CORES...</p></div>
+<div id="loader"><div class="spinner"></div><p style="margin-top:12px; font-size:10px; color:var(--text-dim);">FETCHING OJT RECORDS...</p></div>
 
 <div class="header">
     <div class="h-left">
         <div class="brand"><h1>New Hire</h1><p>Thruput Live</p></div>
-        <div class="h-summary" id="h-sum-text">Connecting...</div>
+        <div class="h-summary" id="h-sum-text">Initializing Dashboard...</div>
     </div>
     <div class="h-right">
         <div class="hk-item"><span class="hk-v" id="h-count">0</span><span class="hk-l">Batches</span></div>
@@ -81,10 +78,10 @@
 </div>
 
 <div class="nav-bar">
-    <div class="dropdown" id="dd-batch"><button class="dd-btn" onclick="toggleDD('dd-batch')">🔍 Batch</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('batch',1)">All</button><button onclick="bulk('batch',0)">Clear</button></div><div id="list-batch"></div></div></div>
+    <div class="dropdown" id="dd-batch"><button class="dd-btn" onclick="toggleDD('dd-batch')">🔍 Batch</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('batch',1)">Select All</button><button onclick="bulk('batch',0)">Clear</button></div><div id="list-batch"></div></div></div>
     <div class="dropdown" id="dd-process"><button class="dd-btn" onclick="toggleDD('dd-process')">🏭 Process</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('process',1)">All</button><button onclick="bulk('process',0)">Clear</button></div><div id="list-process"></div></div></div>
-    <div class="dropdown" id="dd-trainer"><button class="dd-btn" onclick="toggleDD('dd-trainer')">👤 Trainer</button><div class="dd-menu"><div id="list-trainer"></div></div></div>
-    <div class="dropdown" id="dd-month"><button class="dd-btn" onclick="toggleDD('dd-month')">📅 Month</button><div class="dd-menu"><div id="list-month"></div></div></div>
+    <div class="dropdown" id="dd-trainer"><button class="dd-btn" onclick="toggleDD('dd-trainer')">👤 Trainer Name</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('trainer',1)">All</button><button onclick="bulk('trainer',0)">Clear</button></div><div id="list-trainer"></div></div></div>
+    <div class="dropdown" id="dd-month"><button class="dd-btn" onclick="toggleDD('dd-month')">📅 Month</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('month',1)">All</button><button onclick="bulk('month',0)">Clear</button></div><div id="list-month"></div></div></div>
     <button onclick="loadData(true)" style="padding:7px 12px; background:transparent; border:1px solid var(--border); color:var(--text); border-radius:6px; font-size:10px; font-weight:800; cursor:pointer; margin-left:auto;">REFRESH</button>
 </div>
 
@@ -125,46 +122,32 @@
                 res.push(cell.trim()); return res;
             });
 
-            // DATA MAPPING BASED ON YOUR INPUT (Column A=0, B=1, C=2...)
-            // Finding the row where actual data starts (Look for "Batch" in Column A)
-            let startIdx = rows.findIndex(r => r[0] && r[0].toLowerCase().includes("batch") && !r[0].toLowerCase().includes("analytics"));
-            
-            // If it can't find "Batch", it skips the top 2 decorative rows by default
-            if(startIdx === -1) startIdx = 2; 
+            // Start scanning from Row 3 (Index 2) to skip decorative headers
+            const startIdx = 2; 
+            const head = rows[startIdx].map(h => h.toLowerCase());
+            const find = (k) => head.findIndex(h => h.includes(k));
 
-            // Find metric columns by scanning the header row
-            const header = rows[startIdx].map(h => h.toLowerCase());
-            const find = (k) => header.findIndex(h => h.includes(k));
-
-            // Metric Indices (Usually further right in your sheet)
-            const idxTG = find("target");
-            const idxHC = find("headcount");
-            const idxAT = find("attrition");
-            const idxCR = find("cert");
-            const idxCV = find("conv");
-            const idxDY = find("days");
+            // Map metric indices
+            const idxTG = find("target"), idxHC = find("headcount"), idxAT = find("attrition");
+            const idxCR = find("cert"), idxCV = find("conv"), idxDY = find("days");
 
             RAW = rows.slice(startIdx + 1).map(c => {
                 const n = (v) => {
-                    if(!v) return 0;
                     let val = parseFloat(String(v).replace(/[^0-9.]/g, ''));
                     return isNaN(val) ? 0 : val;
                 };
+                // Exact Column Mapping: A=0, B=1, C=2, D=3, E=4, F=5
                 return {
-                    batch: c[0] || "N/A",      // Column A
-                    process: c[1] || "N/A",    // Column B
-                    trainer: c[2] || "N/A",    // Column C
-                    status: c[3] || "",        // Column D
-                    type: c[4] || "",          // Column E
-                    month: c[5] || "",         // Column F
-                    target: n(c[idxTG]),
-                    hc: n(c[idxHC]),
-                    at: n(c[idxAT]),
-                    cert: n(c[idxCR]),
-                    days: n(c[idxDY]),
-                    cv: n(c[idxCV])
+                    batch: c[0] || "N/A",
+                    process: c[1] || "N/A",
+                    trainer: c[2] || "N/A",
+                    status: c[3] || "",
+                    type: c[4] || "",
+                    month: c[5] || "",
+                    target: n(c[idxTG]), hc: n(c[idxHC]), at: n(c[idxAT]),
+                    cert: n(c[idxCR]), days: n(c[idxDY]), cv: n(c[idxCV])
                 };
-            }).filter(d => d.month && d.month.length > 2);
+            }).filter(d => d.month && d.month.length > 2 && d.batch !== "N/A");
 
             renderSlicers(); update();
         } catch (e) { console.error(e); }
@@ -173,7 +156,10 @@
 
     function renderSlicers() {
         ['batch', 'process', 'trainer', 'month'].forEach(key => {
-            const items = [...new Set(RAW.map(d => d[key]))].filter(v => v && v !== "N/A").sort((a,b) => a.localeCompare(b, undefined, {numeric:true}));
+            const items = [...new Set(RAW.map(d => d[key]))]
+                .filter(v => v && v !== "N/A" && v !== "Trainer Name" && v !== "Batch No")
+                .sort((a,b) => a.localeCompare(b, undefined, {numeric:true}));
+            
             document.getElementById('list-' + key).innerHTML = items.map(v => `
                 <div class="li ${FILTERS[key].includes(v)?'active':''}" onclick="event.stopPropagation();toggleItem('${key}','${v.replace(/'/g, "\\'")}')">
                     <div class="chk"></div><span>${v}</span>
@@ -188,7 +174,7 @@
     }
 
     function bulk(k, all) {
-        FILTERS[k] = all ? [...new Set(RAW.map(d => d[k]))] : [];
+        FILTERS[k] = all ? [...new Set(RAW.map(d => d[k]))].filter(v => v !== "N/A") : [];
         renderSlicers(); update();
     }
 
@@ -206,18 +192,24 @@
 
         const count = data.length || 1;
         
-        // Header Summary Calculation
-        const bNums = data.map(d => parseInt(d.batch.replace(/\D/g,''))).filter(n => !isNaN(n));
-        const bRange = bNums.length ? `Batch ${Math.min(...bNums)} → ${Math.max(...bNums)}` : 'N/A';
+        // Exact Batch Count (No ticker interference)
+        const totalBatches = data.length;
+
+        // Date Range Logic: 2024 to 2026
         const months = [...new Set(data.map(d => d.month))];
-        const mRange = months.length > 1 ? `${months[0]} – ${months[months.length-1]}` : (months[0] || 'N/A');
-        const trn = [...new Set(data.map(d => d.trainer))].length;
-        const prc = [...new Set(data.map(d => d.process))].length;
+        const mStart = "Jan 2024"; // Force starting from 2024 as requested
+        const mEnd = months[months.length-1] || "Mar 2026";
+        
+        // Trainer & Process Count (Fixed to skip duplicates and empty values)
+        const trn = [...new Set(data.map(d => d.trainer))].filter(v => v && v !== "N/A" && v !== "Trainer Name").length;
+        const prc = [...new Set(data.map(d => d.process))].filter(v => v && v !== "N/A" && v !== "Process").length;
 
-        document.getElementById('h-sum-text').innerHTML = `(<span>${bRange}</span> · <span>${mRange}</span> · <span>${trn} Trainers</span> · <span>${prc} Processes</span>)`;
+        // Update Left Summary
+        document.getElementById('h-sum-text').innerHTML = 
+            `(<span>Batch ${totalBatches > 0 ? RAW[0].batch.replace(/\D/g,'') : '0'} → ${totalBatches > 0 ? RAW[RAW.length-1].batch.replace(/\D/g,'') : '0'}</span> · <span>${mStart} – ${mEnd}</span> · <span>${trn} Trainers</span> · <span>${prc} Processes</span>)`;
 
-        // Top Right KPI Line
-        document.getElementById('h-count').innerText = data.length;
+        // Update Top Right KPIs
+        document.getElementById('h-count').innerText = totalBatches;
         document.getElementById('h-hc').innerText = Math.round(s.h).toLocaleString();
         document.getElementById('h-at').innerText = Math.round(s.a).toLocaleString();
         document.getElementById('h-conv').innerText = (s.v / count).toFixed(1) + "%";
