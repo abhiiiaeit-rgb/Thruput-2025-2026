@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OJT Analytics - Fixed Edition</title>
+    <title>OJT Analytics - Clean Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap');
 
@@ -18,22 +18,23 @@
 
         /* Header */
         .header { padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000; }
-        .h-left h1 { font-size: 20px; font-weight: 600; }
+        .h-left h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.5px; }
         .top-metrics { display: flex; gap: 30px; }
         .tm-v { display: block; font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono'; color: var(--accent); }
         .tm-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Nav/Filter Bar */
+        /* Nav Bar */
         .nav-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 30px; background: #090c10; border-bottom: 1px solid var(--border); }
         .filter-group { display: flex; gap: 10px; }
         
         .dropdown { position: relative; width: 160px; }
         .dd-btn { 
-            width: 100%; padding: 10px; background: var(--surface); 
+            width: 100%; padding: 10px 14px; background: var(--surface); 
             border: 1px solid var(--border); color: var(--text); border-radius: 6px;
             cursor: pointer; text-align: left; font-size: 12px; font-weight: 600;
             display: flex; justify-content: space-between; align-items: center;
         }
+        .dd-btn::after { content: '▼'; font-size: 8px; color: var(--text-dim); }
         .dd-menu { 
             position: absolute; top: 110%; left: 0; width: 100%; 
             background: var(--surface); border: 1px solid var(--border); 
@@ -42,28 +43,33 @@
         }
         .dropdown.open .dd-menu { display: block; }
 
-        .li { padding: 10px; display: flex; align-items: center; gap: 10px; font-size: 12px; cursor: pointer; color: var(--text-dim); }
+        .li { padding: 10px 14px; display: flex; align-items: center; gap: 10px; font-size: 12px; cursor: pointer; color: var(--text-dim); }
         .li:hover { background: #21262d; color: var(--text); }
-        .chk { width: 14px; height: 14px; border: 2px solid var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; }
+        .chk { width: 14px; height: 14px; border: 2px solid var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .li.active .chk { background: var(--accent); border-color: var(--accent); }
         .li.active .chk::after { content: '✓'; color: #000; font-size: 10px; font-weight: 900; }
+        .li.active { color: var(--text); background: rgba(56, 189, 248, 0.05); }
 
         /* Control Buttons */
         .btn-box { display: flex; gap: 8px; }
-        .btn { padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: 700; text-transform: uppercase; border: 1px solid var(--border); }
+        .btn { padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: 700; text-transform: uppercase; border: 1px solid var(--border); transition: 0.2s; }
         .btn-live { background: rgba(56, 189, 248, 0.1); color: var(--accent); border-color: var(--accent); }
-        .btn-reset { background: rgba(248, 81, 73, 0.1); color: var(--red); }
+        .btn-reset { background: rgba(248, 81, 73, 0.1); color: var(--red); border-color: rgba(248, 81, 73, 0.2); }
+        .btn:hover { opacity: 0.8; }
 
         /* KPI Grid */
         .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; padding: 20px 30px; }
-        .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent); }
-        .card.red { border-left-color: var(--red); }
-        .card.green { border-left-color: var(--green); }
-        .c-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; display: block; }
+        .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 8px; position: relative; }
+        .card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); }
+        .card.red::before { background: var(--red); }
+        .card.green::before { background: var(--green); }
+        .c-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; display: block; letter-spacing: 0.5px; }
         .c-v { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono'; }
 
-        .tag-area { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 30px 10px 30px; min-height: 30px; }
-        .tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); padding: 4px 8px; border-radius: 4px; font-size: 10px; display: flex; align-items: center; gap: 5px; }
+        /* Selection Tags */
+        .tag-area { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 30px 10px 30px; min-height: 35px; }
+        .tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); padding: 4px 10px; border-radius: 4px; font-size: 10px; display: flex; align-items: center; gap: 6px; }
+        .tag span { cursor: pointer; font-weight: bold; }
 
         #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; display: none; }
         .spinner { width: 30px; height: 30px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -75,10 +81,10 @@
 <div id="loader"><div class="spinner"></div><p style="font-size:11px; color:var(--text-dim); margin-top:10px">REFRESHING LIVE DATA...</p></div>
 
 <div class="header">
-    <div class="h-left"><h1>OJT Dashboard</h1></div>
+    <div class="h-left"><h1>OJT Operational Analytics</h1></div>
     <div class="top-metrics">
-        <div class="tm-item"><span class="tm-v" id="h-hc">0</span><span class="tm-l">Global HC</span></div>
-        <div class="tm-item"><span class="tm-v" id="h-at" style="color:var(--red)">0</span><span class="tm-l">Global Attrition</span></div>
+        <div class="tm-item"><span class="tm-v" id="h-hc">0</span><span class="tm-l">Total HC</span></div>
+        <div class="tm-item"><span class="tm-v" id="h-at" style="color:var(--red)">0</span><span class="tm-l">Total Attrition</span></div>
     </div>
 </div>
 
@@ -102,7 +108,7 @@
     <div class="card"><span class="c-l">Actual HC</span><div class="c-v" id="k-hc">0</div></div>
     <div class="card red"><span class="c-l">Attrition Count</span><div class="c-v" id="k-at">0</div></div>
     <div class="card green"><span class="c-l">Conversion %</span><div class="c-v" id="k-cv">0%</div></div>
-    <div class="card"><span class="c-l">Cert %</span><div class="c-v" id="k-cert">0%</div></div>
+    <div class="card"><span class="c-l">Certification %</span><div class="c-v" id="k-cert">0%</div></div>
     <div class="card"><span class="c-l">Training Days</span><div class="c-v" id="k-days">0</div></div>
 </div>
 
@@ -114,6 +120,7 @@
     let FILTERS = { process: [], type: [], trainer: [], month: [] };
 
     window.onclick = (e) => { if (!e.target.matches('.dd-btn')) document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open')); }
+    
     function toggleDD(id) {
         const el = document.getElementById(id);
         const isOpen = el.classList.contains('open');
@@ -124,7 +131,7 @@
     async function loadData(isRefresh = false) {
         if(isRefresh) document.getElementById('loader').style.display = 'flex';
         try {
-            const response = await fetch(`${SHEET_URL}&cachebust=${Date.now()}`);
+            const response = await fetch(`${SHEET_URL}&cb=${Date.now()}`);
             const text = await response.text();
             const rows = text.split(/\r?\n/).map(r => r.split(','));
 
@@ -135,7 +142,7 @@
                 month: (c[5] || "").trim(),
                 target: parseFloat(c[7]) || 0,
                 hc: parseFloat(c[8]) || 0,
-                at: parseFloat(c[10]) || 0, // Attrition Fixed
+                at: parseFloat(c[10]) || 0,
                 cert: parseFloat(c[15]) || 0,
                 days: parseFloat(c[16]) || 0,
                 cv: parseFloat(c[19]) || 0
@@ -143,8 +150,8 @@
 
             renderSlicers();
             updateDashboard();
-        } catch (e) { console.error("Load Error"); }
-        setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+        } catch (e) { console.error("Sync Error"); }
+        setTimeout(() => document.getElementById('loader').style.display = 'none', 600);
     }
 
     function renderSlicers() {
