@@ -15,16 +15,18 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
         
+        /* Loader Styles */
         #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
         .spinner { width: 40px; height: 40px; border: 4px solid var(--surface3); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* Header & KPI Styles */
         .header { background: linear-gradient(135deg,#0d1530 0%,#1a2550 50%,#0d1530 100%); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; }
         .hstats { display: flex; gap: 20px; }
-        .hstat { text-align: center; }
         .hstat .v { font-size: 20px; font-weight: 700; color: var(--accent); font-family: 'DM Mono', monospace; }
         .hstat .l { font-size: 9px; color: var(--text3); text-transform: uppercase; }
 
+        /* Slicer Bar & Dropdowns */
         .slicer-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; position: sticky; top: 57px; z-index: 150; }
         .dd-wrap { display: flex; flex-direction: column; gap: 4px; position: relative; }
         .dd-wrap label { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; }
@@ -34,7 +36,7 @@
         .dd-panel.open { display: flex; }
         
         .dd-search-box { padding: 10px; border-bottom: 1px solid var(--border); }
-        .dd-search-box input { width: 100%; background: var(--surface3); border: 1px solid var(--border); color: #fff; padding: 7px 10px; border-radius: 4px; font-size: 12px; outline: none; border-color: var(--border2); }
+        .dd-search-box input { width: 100%; background: var(--surface3); border: 1px solid var(--border); color: #fff; padding: 7px 10px; border-radius: 4px; font-size: 12px; outline: none; }
         
         .dd-controls { padding: 8px 15px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; font-size: 11px; }
         .dd-action { color: var(--accent); cursor: pointer; font-weight: 600; }
@@ -44,7 +46,6 @@
         .dd-item { display: flex; align-items: center; gap: 10px; padding: 8px 15px; cursor: pointer; }
         .dd-item:hover { background: var(--surface3); }
         .dd-item input { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
-        .dd-item span { font-size: 12px; color: var(--text2); }
 
         .btn-reset { background: var(--surface3); border: 1px solid var(--border2); color: var(--text2); border-radius: var(--rs); padding: 8px 16px; cursor: pointer; font-size: 12px; margin-left: auto; }
 
@@ -59,11 +60,11 @@
 
 <div id="loader">
     <div class="spinner"></div>
-    <p>Loading Dashboard Elements...</p>
+    <p id="loading-msg">Loading Dashboard Elements...</p>
 </div>
 
 <div class="header">
-    <div><h1>OJT Training Dashboard</h1><p style="color:var(--text3); font-size:10px;">Enhanced Search & Filter Controls</p></div>
+    <div><h1>OJT Training Dashboard</h1><p style="color:var(--text3); font-size:10px;">Live Data Connection</p></div>
     <div class="hstats">
         <div class="hstat"><div class="v" id="hTotal">0</div><div class="l">Batches</div></div>
         <div class="hstat"><div class="v" id="hHC">0</div><div class="l">Headcount</div></div>
@@ -74,7 +75,7 @@
 <div class="slicer-bar">
     <div class="dd-wrap"><label>Batch</label><button class="dd-btn" onclick="toggleDD('dd-batch')"><span id="lbl-batch">All</span> ▾</button>
         <div id="dd-batch" class="dd-panel">
-            <div class="dd-search-box"><input type="text" placeholder="Search batches..." onkeyup="filterList('batch', this.value)"></div>
+            <div class="dd-search-box"><input type="text" placeholder="Search..." onkeyup="filterList('batch', this.value)"></div>
             <div class="dd-controls"><span class="dd-action" onclick="bulkSelect('batch', true)">Select All</span><span class="dd-action clear" onclick="bulkSelect('batch', false)">Clear</span></div>
             <div class="dd-list" id="list-batch"></div>
         </div>
@@ -82,7 +83,7 @@
 
     <div class="dd-wrap"><label>Process</label><button class="dd-btn" onclick="toggleDD('dd-process')"><span id="lbl-process">All</span> ▾</button>
         <div id="dd-process" class="dd-panel">
-            <div class="dd-search-box"><input type="text" placeholder="Search processes..." onkeyup="filterList('process', this.value)"></div>
+            <div class="dd-search-box"><input type="text" placeholder="Search..." onkeyup="filterList('process', this.value)"></div>
             <div class="dd-controls"><span class="dd-action" onclick="bulkSelect('process', true)">Select All</span><span class="dd-action clear" onclick="bulkSelect('process', false)">Clear</span></div>
             <div class="dd-list" id="list-process"></div>
         </div>
@@ -90,7 +91,7 @@
 
     <div class="dd-wrap"><label>Trainer Name</label><button class="dd-btn" onclick="toggleDD('dd-trainer')"><span id="lbl-trainer">All</span> ▾</button>
         <div id="dd-trainer" class="dd-panel">
-            <div class="dd-search-box"><input type="text" placeholder="Search trainers..." onkeyup="filterList('trainer', this.value)"></div>
+            <div class="dd-search-box"><input type="text" placeholder="Search..." onkeyup="filterList('trainer', this.value)"></div>
             <div class="dd-controls"><span class="dd-action" onclick="bulkSelect('trainer', true)">Select All</span><span class="dd-action clear" onclick="bulkSelect('trainer', false)">Clear</span></div>
             <div class="dd-list" id="list-trainer"></div>
         </div>
@@ -98,7 +99,7 @@
 
     <div class="dd-wrap"><label>Month</label><button class="dd-btn" onclick="toggleDD('dd-month')"><span id="lbl-month">All</span> ▾</button>
         <div id="dd-month" class="dd-panel">
-            <div class="dd-search-box"><input type="text" placeholder="Search months..." onkeyup="filterList('month', this.value)"></div>
+            <div class="dd-search-box"><input type="text" placeholder="Search..." onkeyup="filterList('month', this.value)"></div>
             <div class="dd-controls"><span class="dd-action" onclick="bulkSelect('month', true)">Select All</span><span class="dd-action clear" onclick="bulkSelect('month', false)">Clear</span></div>
             <div class="dd-list" id="list-month"></div>
         </div>
@@ -107,81 +108,4 @@
     <button class="btn-reset" onclick="resetFilters()">↺ Reset All</button>
 </div>
 
-<div class="main">
-    <div class="kpi-grid">
-        <div class="kpi-card"><div class="lbl">Total Batches</div><div class="val" id="k-batches">0</div></div>
-        <div class="kpi-card"><div class="lbl">Total Headcount</div><div class="val" id="k-hc">0</div></div>
-        <div class="kpi-card"><div class="lbl">Avg Conversion</div><div class="val" id="k-conv">0%</div></div>
-    </div>
-</div>
-
-<script>
-    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
-    let RAW_DATA = [];
-    let filters = { batch: [], process: [], trainer: [], month: [] };
-
-    async function init() {
-        try {
-            const res = await fetch(sheetURL);
-            const text = await res.text();
-            const rows = text.split('\n').map(r => r.split(',')).filter(r => r.length > 1);
-            RAW_DATA = rows.slice(1).map(cols => ({
-                batch: cols[0]?.trim(), process: cols[1]?.trim(), trainer: cols[2]?.trim(), month: cols[5]?.trim(),
-                hc: parseFloat(cols[8]) || 0, conv: parseFloat(cols[19]) || 0
-            })).filter(d => d.batch && d.batch.toLowerCase() !== "batch");
-            
-            document.getElementById('loader').style.display = 'none';
-            renderAllFilters();
-            updateDashboard();
-        } catch (e) { console.error("Error loading data:", e); }
-    }
-
-    function renderAllFilters() {
-        renderDropdown('batch', 'batch', 'batch');
-        renderDropdown('process', 'process', 'process');
-        renderDropdown('trainer', 'trainer', 'trainer');
-        renderDropdown('month', 'month', 'month');
-    }
-
-    function renderDropdown(key, field, id, search = '') {
-        const unique = [...new Set(RAW_DATA.map(d => d[field]))].filter(v => v && v.toLowerCase().includes(search.toLowerCase())).sort();
-        document.getElementById('list-' + id).innerHTML = unique.map(v => `
-            <div class="dd-item" onclick="toggleFilter('${key}', '${v}')">
-                <input type="checkbox" ${filters[key].includes(v) ? 'checked' : ''} onclick="event.stopPropagation(); toggleFilter('${key}', '${v}')">
-                <span>${v}</span>
-            </div>
-        `).join('');
-    }
-
-    function filterList(key, val) {
-        const fieldMap = { batch:'batch', process:'process', trainer:'trainer', month:'month' };
-        renderDropdown(key, fieldMap[key], key, val);
-    }
-
-    function toggleFilter(key, val) {
-        const i = filters[key].indexOf(val);
-        if (i > -1) filters[key].splice(i, 1); else filters[key].push(val);
-        updateUI(key);
-    }
-
-    function bulkSelect(key, selectAll) {
-        const fieldMap = { batch:'batch', process:'process', trainer:'trainer', month:'month' };
-        if (selectAll) {
-            filters[key] = [...new Set(RAW_DATA.map(d => d[fieldMap[key]]))].filter(v => v);
-        } else {
-            filters[key] = [];
-        }
-        updateUI(key);
-    }
-
-    function updateUI(key) {
-        const label = document.getElementById('lbl-' + key);
-        label.innerText = filters[key].length ? (filters[key].length === 1 ? filters[key][0] : filters[key].length + ' Selected') : 'All';
-        renderAllFilters();
-        updateDashboard();
-    }
-
-    function updateDashboard() {
-        const filtered = RAW_DATA.filter(d => 
-            (!filters.batch.length || filters.batch.includes(d.batch)) &&
-            (!filters.process.length || filters.process.includes(d.
+<div class
