@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OJT Analytics - Data Fixed</title>
+    <title>OJT Analytics - Total Fix</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap');
         :root {
@@ -14,10 +14,8 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; }
 
-        /* Header Style per your requirement */
         .header { padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000; }
         .h-stats { display: flex; gap: 25px; align-items: center; }
-        .hs-item { text-align: left; }
         .hs-v { display: block; font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono'; color: var(--text); }
         .hs-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; }
         .h-bread { text-align: right; font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim); }
@@ -27,27 +25,27 @@
         .filter-group { display: flex; gap: 10px; }
         .dropdown { position: relative; width: 150px; }
         .dd-btn { width: 100%; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
-        .dd-menu { position: absolute; top: 115%; left: 0; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; max-height: 280px; overflow-y: auto; display: none; z-index: 1001; }
+        .dd-menu { position: absolute; top: 115%; left: 0; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; max-height: 280px; overflow-y: auto; display: none; z-index: 1001; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
         .dropdown.open .dd-menu { display: block; }
         .li { padding: 10px 12px; display: flex; align-items: center; gap: 10px; font-size: 12px; cursor: pointer; color: var(--text-dim); }
         .li:hover { background: #21262d; color: var(--text); }
         .chk { width: 14px; height: 14px; border: 2px solid var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; }
         .li.active .chk { background: var(--accent); border-color: var(--accent); }
         .li.active .chk::after { content: '✓'; color: #000; font-size: 10px; font-weight: 900; }
-        .li.active { color: var(--text); background: rgba(56, 189, 248, 0.05); }
 
         .btn-box { display: flex; gap: 8px; }
-        .btn { padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: 700; text-transform: uppercase; border: 1px solid var(--border); }
-        .btn-live { background: rgba(56, 189, 248, 0.1); color: var(--accent); }
-        .btn-reset { background: rgba(248, 81, 73, 0.1); color: var(--red); }
+        .btn { padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: 700; text-transform: uppercase; border: 1px solid var(--border); transition: 0.2s; }
+        .btn-live { background: rgba(56, 189, 248, 0.1); color: var(--accent); border-color: var(--accent); }
+        .btn-reset { background: rgba(248, 81, 73, 0.1); color: var(--red); border-color: var(--red); }
 
         .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; padding: 20px 30px; }
         .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent); }
         .c-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; display: block; }
         .c-v { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono'; }
+
         .tag-area { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 30px 10px 30px; min-height: 35px; }
         .tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); padding: 4px 10px; border-radius: 4px; font-size: 10px; display: flex; align-items: center; }
-
+        
         #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
         .spinner { width: 30px; height: 30px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -55,7 +53,7 @@
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><p style="font-size:11px; color:var(--text-dim); margin-top:10px">CONNECTING TO GOOGLE SHEETS...</p></div>
+<div id="loader"><div class="spinner"></div><p style="font-size:11px; color:var(--text-dim); margin-top:10px">CONNECTING LIVE TO GOOGLE SHEETS...</p></div>
 
 <div class="header">
     <div class="h-stats">
@@ -64,7 +62,7 @@
         <div class="hs-item"><span class="hs-v" id="h-at" style="color:var(--red)">0</span><span class="hs-l">Attrition</span></div>
         <div class="hs-item"><span class="hs-v" id="h-conv" style="color:var(--green)">0%</span><span class="hs-l">Avg Conv%</span></div>
     </div>
-    <div class="h-bread" id="h-bread-text">Initializing Summary...</div>
+    <div class="h-bread" id="h-bread-text">Loading Summary...</div>
 </div>
 
 <div class="nav-bar">
@@ -106,50 +104,60 @@
         if(!isOpen) el.classList.add('open');
     }
 
+    // High-precision CSV Parser for Google Sheets
+    function parseCSV(text) {
+        const result = [];
+        let row = [];
+        let col = '';
+        let inQuotes = false;
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+            if (char === '"' && text[i+1] === '"') { col += '"'; i++; }
+            else if (char === '"') { inQuotes = !inQuotes; }
+            else if (char === ',' && !inQuotes) { row.push(col.trim()); col = ''; }
+            else if (char === '\n' && !inQuotes) { row.push(col.trim()); result.push(row); row = []; col = ''; }
+            else { col += char; }
+        }
+        if (col || row.length) { row.push(col.trim()); result.push(row); }
+        return result;
+    }
+
     async function loadData(isRefresh = false) {
         if(isRefresh) document.getElementById('loader').style.display = 'flex';
         try {
-            const res = await fetch(`${SHEET_URL}&cb=${Date.now()}`);
+            const res = await fetch(`${SHEET_URL}&cache=${Date.now()}`);
             const text = await res.text();
-            const rows = text.split(/\r?\n/).map(r => r.split(',').map(cell => cell.replace(/^"|"$/g, '').trim()));
-            
+            const rows = parseCSV(text);
             const header = rows[0].map(h => h.toLowerCase());
-            
-            // Helper to find index by keyword
-            const findIdx = (key) => header.findIndex(h => h.includes(key));
 
+            const find = (key) => header.findIndex(h => h.includes(key));
             const idx = {
-                batch: findIdx("batch no"),
-                proc: findIdx("process"),
-                trn: findIdx("trainer"),
-                typ: findIdx("batch type"),
-                mth: findIdx("month"),
-                tgt: findIdx("target headcount"),
-                act: findIdx("headcount"),
-                atr: findIdx("attrition"),
-                crt: findIdx("certification"),
-                day: findIdx("training days"),
-                cnv: findIdx("conversion")
+                b: find("batch no"), p: find("process"), t: find("trainer"), 
+                y: find("batch type"), m: find("month"), tg: find("target headcount"),
+                hc: find("headcount"), at: find("attrition"), cr: find("certification"),
+                d: find("training days"), cv: find("conversion")
             };
 
-            RAW_DATA = rows.slice(1).map(c => ({
-                batchNo: parseInt(c[idx.batch]) || 0,
-                process: c[idx.proc] || "N/A",
-                trainer: c[idx.trn] || "N/A",
-                type: c[idx.typ] || "N/A",
-                month: c[idx.mth] || "",
-                target: parseFloat(c[idx.tgt]) || 0,
-                hc: parseFloat(c[idx.act]) || 0,
-                at: parseFloat(c[idx.atr]) || 0,
-                cert: parseFloat(c[idx.crt]) || 0,
-                days: parseFloat(c[idx.day]) || 0,
-                cv: parseFloat(c[idx.cnv]) || 0
-            })).filter(d => d.month !== "");
+            RAW_DATA = rows.slice(1).map(c => {
+                const parseNum = (v) => parseFloat(v?.replace(/,/g, '')) || 0;
+                return {
+                    batchNo: parseNum(c[idx.b]),
+                    process: c[idx.p] || "N/A",
+                    trainer: c[idx.t] || "N/A",
+                    type: c[idx.y] || "N/A",
+                    month: c[idx.m] || "",
+                    target: parseNum(c[idx.tg]),
+                    hc: parseNum(c[idx.hc]),
+                    at: parseNum(c[idx.at]),
+                    cert: parseNum(c[idx.cr]),
+                    days: parseNum(c[idx.d]),
+                    cv: parseNum(c[idx.cv])
+                };
+            }).filter(d => d.month !== "");
 
-            console.log("Data Loaded successfully. Count:", RAW_DATA.length);
             renderSlicers();
             updateDashboard();
-        } catch (e) { console.error("Critical Load Error", e); }
+        } catch (e) { console.error("Load Failed:", e); }
         document.getElementById('loader').style.display = 'none';
     }
 
@@ -197,16 +205,16 @@
 
         const count = data.length || 1;
         document.getElementById('h-batches').innerText = data.length;
-        document.getElementById('h-hc').innerText = Math.round(s.h);
-        document.getElementById('h-at').innerText = Math.round(s.a);
+        document.getElementById('h-hc').innerText = Math.round(s.h).toLocaleString();
+        document.getElementById('h-at').innerText = Math.round(s.a).toLocaleString();
         document.getElementById('h-conv').innerText = (s.v / count).toFixed(1) + "%";
 
-        document.getElementById('k-target').innerText = Math.round(s.t);
-        document.getElementById('k-hc').innerText = Math.round(s.h);
-        document.getElementById('k-at').innerText = Math.round(s.a);
+        document.getElementById('k-target').innerText = Math.round(s.t).toLocaleString();
+        document.getElementById('k-hc').innerText = Math.round(s.h).toLocaleString();
+        document.getElementById('k-at').innerText = Math.round(s.a).toLocaleString();
         document.getElementById('k-cv').innerText = (s.v / count).toFixed(1) + "%";
         document.getElementById('k-cert').innerText = (s.c / count).toFixed(1) + "%";
-        document.getElementById('k-days').innerText = Math.round(s.d);
+        document.getElementById('k-days').innerText = Math.round(s.d).toLocaleString();
 
         const bMin = data.length ? Math.min(...data.map(d => d.batchNo)) : 0;
         const bMax = data.length ? Math.max(...data.map(d => d.batchNo)) : 0;
