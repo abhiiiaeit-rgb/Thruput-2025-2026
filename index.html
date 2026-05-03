@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Hire & OJT Analytics</title>
+    <title>New Hire Thruput Live</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap');
         :root {
             --bg: #0d1117; --surface: #161b22; --accent: #38bdf8;
             --border: #30363d; --text: #e6edf3; --text-dim: #8b949e;
@@ -14,47 +14,39 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; }
 
-        /* Header Layout */
+        /* HEADER LAYOUT */
         .header { padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000; }
-        .h-left-wrap { display: flex; align-items: center; gap: 30px; }
-        .brand { line-height: 1.2; border-right: 1px solid var(--border); padding-right: 25px; }
-        .brand h1 { font-size: 16px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
-        .brand p { font-size: 11px; color: var(--accent); font-weight: 600; }
+        .h-left { display: flex; align-items: center; gap: 30px; }
+        .brand { border-right: 1px solid var(--border); padding-right: 25px; line-height: 1.1; }
+        .brand h1 { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
+        .brand p { font-size: 10px; color: var(--accent); font-weight: 700; text-transform: uppercase; }
         
-        .h-stats { display: flex; gap: 20px; align-items: center; }
-        .hs-item { text-align: left; min-width: 70px; }
+        .h-stats { display: flex; gap: 25px; align-items: center; }
+        .hs-item { text-align: left; }
         .hs-v { display: block; font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono'; }
         .hs-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
         
-        .h-bread { text-align: right; font-family: 'JetBrains Mono'; font-size: 10px; color: var(--text-dim); line-height: 1.5; }
+        .h-bread { text-align: right; font-family: 'JetBrains Mono'; font-size: 10px; color: var(--text-dim); line-height: 1.4; }
         .h-bread span { color: var(--accent); }
 
-        /* Navigation */
+        /* NAVIGATION & DROPDOWNS */
         .nav-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 30px; background: #090c10; border-bottom: 1px solid var(--border); }
         .filter-group { display: flex; gap: 8px; }
-        .dropdown { position: relative; width: 135px; }
+        .dropdown { position: relative; width: 140px; }
         .dd-btn { width: 100%; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
         .dd-menu { position: absolute; top: 115%; left: 0; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; max-height: 250px; overflow-y: auto; display: none; z-index: 1001; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .dropdown.open .dd-menu { display: block; }
-        .li { padding: 8px 12px; display: flex; align-items: center; gap: 10px; font-size: 11px; cursor: pointer; color: var(--text-dim); transition: 0.1s; }
-        .li:hover { background: #21262d; color: var(--text); }
-        .chk { width: 12px; height: 12px; border: 1px solid var(--border); border-radius: 2px; flex-shrink: 0; }
+        .li { padding: 9px 12px; display: flex; align-items: center; gap: 10px; font-size: 11px; cursor: pointer; color: var(--text-dim); border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .li:hover { background: #21262d; color: #fff; }
+        .li.active { color: var(--accent); background: rgba(56, 189, 248, 0.05); }
+        .chk { width: 13px; height: 13px; border: 1px solid var(--border); border-radius: 2px; flex-shrink: 0; }
         .li.active .chk { background: var(--accent); border-color: var(--accent); }
-        .li.active { color: var(--text); background: rgba(56, 189, 248, 0.05); }
 
-        .btn-box { display: flex; gap: 6px; }
-        .btn { padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 9px; font-weight: 800; text-transform: uppercase; border: 1px solid var(--border); }
-        .btn-live { background: rgba(56, 189, 248, 0.1); color: var(--accent); border-color: var(--accent); }
-        .btn-reset { background: rgba(248, 81, 73, 0.1); color: var(--red); border-color: var(--red); }
-
-        /* Cards */
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; padding: 20px 30px; }
-        .card { background: var(--surface); border: 1px solid var(--border); padding: 18px; border-radius: 8px; border-left: 4px solid var(--accent); }
-        .c-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 5px; display: block; }
-        .c-v { font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono'; }
-
-        .tag-area { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 30px 10px 30px; min-height: 25px; }
-        .tag { background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); color: var(--accent); padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: 600; }
+        /* KPI CARDS */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; padding: 20px 30px; }
+        .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent); position: relative; overflow: hidden; }
+        .c-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 800; margin-bottom: 6px; display: block; letter-spacing: 0.5px; }
+        .c-v { font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono'; }
 
         #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
         .spinner { width: 25px; height: 25px; border: 2px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -63,13 +55,13 @@
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><p style="font-size:10px; color:var(--text-dim); margin-top:12px; letter-spacing:1px">SYNCING REAL-TIME DATA...</p></div>
+<div id="loader"><div class="spinner"></div><p style="font-size:10px; color:var(--text-dim); margin-top:12px; letter-spacing:1px">SYNCING LIVE THRUPUT...</p></div>
 
 <div class="header">
-    <div class="h-left-wrap">
+    <div class="h-left">
         <div class="brand">
             <h1>New Hire</h1>
-            <p>OJT Analytics</p>
+            <p>Thruput Live</p>
         </div>
         <div class="h-stats">
             <div class="hs-item"><span class="hs-v" id="h-batches">0</span><span class="hs-l">Batches</span></div>
@@ -78,23 +70,17 @@
             <div class="hs-item"><span class="hs-v" id="h-conv" style="color:var(--green)">0%</span><span class="hs-l">Avg Conv%</span></div>
         </div>
     </div>
-    <div class="h-bread" id="h-bread-text">Connecting...</div>
+    <div class="h-bread" id="h-bread-text">Connecting to OJT Data...</div>
 </div>
 
 <div class="nav-bar">
     <div class="filter-group">
         <div class="dropdown" id="dd-process"><button class="dd-btn" onclick="toggleDD('dd-process')">Process</button><div class="dd-menu" id="list-process"></div></div>
         <div class="dropdown" id="dd-trainer"><button class="dd-btn" onclick="toggleDD('dd-trainer')">Trainer</button><div class="dd-menu" id="list-trainer"></div></div>
-        <div class="dropdown" id="dd-type"><button class="dd-btn" onclick="toggleDD('dd-type')">Type</button><div class="dd-menu" id="list-type"></div></div>
         <div class="dropdown" id="dd-month"><button class="dd-btn" onclick="toggleDD('dd-month')">Month</button><div class="dd-menu" id="list-month"></div></div>
     </div>
-    <div class="btn-box">
-        <button class="btn btn-live" onclick="loadData(true)">Live Refresh</button>
-        <button class="btn btn-reset" onclick="resetAll()">Reset All</button>
-    </div>
+    <button onclick="loadData(true)" style="padding:8px 15px; background:rgba(56,189,248,0.1); border:1px solid var(--accent); color:var(--accent); border-radius:6px; font-size:10px; font-weight:800; cursor:pointer;">REFRESH LIVE</button>
 </div>
-
-<div class="tag-area" id="tag-box"></div>
 
 <div class="kpi-grid">
     <div class="card"><span class="c-l">Target HC</span><div class="c-v" id="k-target">0</div></div>
@@ -102,128 +88,112 @@
     <div class="card" style="border-left-color:var(--red)"><span class="c-l">Attrition</span><div class="c-v" id="k-at">0</div></div>
     <div class="card" style="border-left-color:var(--green)"><span class="c-l">Conversion</span><div class="c-v" id="k-cv">0%</div></div>
     <div class="card"><span class="c-l">Certification</span><div class="c-v" id="k-cert">0%</div></div>
-    <div class="card"><span class="c-l">Training Days</span><div class="c-v" id="k-days">0</div></div>
+    <div class="card"><span class="c-l">Total Days</span><div class="c-v" id="k-days">0</div></div>
 </div>
 
 <script>
-    const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
-    const MONTH_MAP = {"Jan":0,"Feb":1,"Mar":2,"Apr":3,"May":4,"Jun":5,"Jul":6,"Aug":7,"Sep":8,"Oct":9,"Nov":10,"Dec":11};
-    let RAW_DATA = [], FILTERS = { process: [], trainer: [], type: [], month: [] };
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
+    
+    let RAW_DATA = [], FILTERS = { process: [], trainer: [], month: [] };
 
     window.onclick = (e) => { if (!e.target.closest('.dropdown')) document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open')); }
     function toggleDD(id) {
         const el = document.getElementById(id);
-        const open = el.classList.contains('open');
+        const isOpen = el.classList.contains('open');
         document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
-        if(!open) el.classList.add('open');
+        if(!isOpen) el.classList.add('open');
     }
 
-    async function loadData(ref = false) {
-        if(ref) document.getElementById('loader').style.display = 'flex';
+    async function loadData(isRef = false) {
+        if(isRef) document.getElementById('loader').style.display = 'flex';
         try {
-            const res = await fetch(`${URL}&cb=${Date.now()}`);
-            const text = await res.text();
+            const response = await fetch(`${SHEET_URL}&cb=${Date.now()}`);
+            const text = await response.text();
             
-            // Comprehensive CSV Split (handles quotes and weird characters)
-            const allRows = text.split(/\r?\n/).map(row => {
-                const matches = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                return matches ? matches.map(m => m.replace(/^"|"$/g, '').trim()) : row.split(',').map(c => c.trim());
+            // Robust parsing: handles quotes and commas in numbers
+            const rows = text.split(/\r?\n/).map(r => {
+                return r.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g)?.map(m => m.replace(/^"|"$/g, '').trim()) || r.split(',').map(c => c.trim());
             });
 
-            // DATA HUNTER: Skip merged decorative headers. 
-            // We search for the row that contains "Process" or "Trainer Name"
-            let headIdx = allRows.findIndex(r => r.some(c => {
-                const lc = c.toLowerCase();
-                return lc === "process" || lc === "trainer name" || lc === "month";
-            }));
+            // FIND HEADER ROW (Searching for keywords to skip decorative headers)
+            let hIdx = rows.findIndex(r => r.some(c => c.toLowerCase().includes("process") || c.toLowerCase().includes("trainer")));
+            if(hIdx === -1) hIdx = 0;
 
-            if(headIdx === -1) headIdx = 0; // Fallback
-
-            const header = allRows[headIdx].map(h => h.toLowerCase());
-            const find = (k) => header.findIndex(h => h.includes(k));
+            const header = rows[hIdx].map(h => h.toLowerCase());
+            const find = (key) => header.findIndex(h => h.includes(key));
 
             const idx = {
                 b: find("batch no"), p: find("process"), t: find("trainer"), 
-                y: find("batch type"), m: find("month"), tg: find("target headcount"),
-                hc: find("headcount"), at: find("attrition"), cr: find("certification"),
-                d: find("training days"), cv: find("conversion")
+                m: find("month"), tg: find("target"),
+                hc: find("headcount"), at: find("attrition"), cr: find("certific"),
+                d: find("days"), cv: find("conv")
             };
 
-            RAW_DATA = allRows.slice(headIdx + 1).map(c => {
+            RAW_DATA = rows.slice(hIdx + 1).map(c => {
                 const n = (v) => parseFloat(String(v).replace(/[^0-9.]/g, '')) || 0;
                 return {
-                    batchNo: n(c[idx.b]), process: c[idx.p] || "Unknown", trainer: c[idx.t] || "Unknown",
-                    type: c[idx.y] || "N/A", month: c[idx.m] || "", target: n(c[idx.tg]),
+                    batchNo: n(c[idx.b]), process: c[idx.p] || "Other", trainer: c[idx.t] || "Other",
+                    month: c[idx.m] || "", target: n(c[idx.tg]),
                     hc: n(c[idx.hc]), at: n(c[idx.at]), cert: n(c[idx.cr]), days: n(c[idx.d]), cv: n(c[idx.cv])
                 };
-            }).filter(d => d.month && d.month.length > 2 && d.month.toLowerCase() !== "month");
+            }).filter(d => d.month && d.month.length > 2);
 
             renderSlicers(); updateDashboard();
-        } catch (e) { console.error("Data Sync Failed", e); }
+        } catch (err) { console.error("Fetch Error:", err); }
         document.getElementById('loader').style.display = 'none';
     }
 
     function renderSlicers() {
         Object.keys(FILTERS).forEach(key => {
-            let items = [...new Set(RAW_DATA.map(d => d[key]))].filter(v => v && v !== "Unknown");
-            if(key === 'month') items.sort((a,b) => {
-                const [mA, yA] = a.split("'"); const [mB, yB] = b.split("'");
-                return (parseInt(yA) - parseInt(yB)) || (MONTH_MAP[mA] - MONTH_MAP[mB]);
-            }); else items.sort();
-            document.getElementById('list-' + key).innerHTML = items.map(v => `
-                <div class="li ${FILTERS[key].includes(v)?'active':''}" onclick="event.stopPropagation();toggleFilter('${key}','${valClean(v)}')">
+            let items = [...new Set(RAW_DATA.map(d => d[key]))].filter(v => v).sort();
+            const container = document.getElementById('list-' + key);
+            container.innerHTML = items.map(v => `
+                <div class="li ${FILTERS[key].includes(v)?'active':''}" onclick="event.stopPropagation();toggleFilter('${key}','${v.replace(/'/g, "\\'")}')">
                     <div class="chk"></div><span>${v}</span>
                 </div>`).join('');
         });
     }
 
-    // Helper to handle single quotes in strings
-    const valClean = (v) => v.replace(/'/g, "\\'");
-
     function toggleFilter(k, v) {
         const i = FILTERS[k].indexOf(v);
-        if(i > -1) FILTERS[k].splice(i,1); else FILTERS[k].push(v);
-        renderSlicers(); updateDashboard();
-    }
-
-    function resetAll() {
-        FILTERS = { process: [], trainer: [], type: [], month: [] };
+        if(i > -1) FILTERS[k].splice(i, 1); else FILTERS[k].push(v);
         renderSlicers(); updateDashboard();
     }
 
     function updateDashboard() {
-        const data = RAW_DATA.filter(d => 
+        const filtered = RAW_DATA.filter(d => 
             (!FILTERS.process.length || FILTERS.process.includes(d.process)) &&
-            (!FILTERS.type.length || FILTERS.type.includes(d.type)) &&
             (!FILTERS.trainer.length || FILTERS.trainer.includes(d.trainer)) &&
             (!FILTERS.month.length || FILTERS.month.includes(d.month))
         );
 
-        const s = data.reduce((a, c) => {
+        const sum = filtered.reduce((a, c) => {
             a.t += c.target; a.h += c.hc; a.a += c.at; a.v += c.cv; a.c += c.cert; a.d += c.days; return a;
         }, { t:0, h:0, a:0, v:0, c:0, d:0 });
 
-        const count = data.length || 1;
-        document.getElementById('h-batches').innerText = data.length;
-        document.getElementById('h-hc').innerText = Math.round(s.h).toLocaleString();
-        document.getElementById('h-at').innerText = Math.round(s.a).toLocaleString();
-        document.getElementById('h-conv').innerText = (s.v / count).toFixed(1) + "%";
+        const avgCount = filtered.length || 1;
+        
+        // Header
+        document.getElementById('h-batches').innerText = filtered.length;
+        document.getElementById('h-hc').innerText = Math.round(sum.h).toLocaleString();
+        document.getElementById('h-at').innerText = Math.round(sum.a).toLocaleString();
+        document.getElementById('h-conv').innerText = (sum.v / avgCount).toFixed(1) + "%";
 
-        document.getElementById('k-target').innerText = Math.round(s.t).toLocaleString();
-        document.getElementById('k-hc').innerText = Math.round(s.h).toLocaleString();
-        document.getElementById('k-at').innerText = Math.round(s.a).toLocaleString();
-        document.getElementById('k-cv').innerText = (s.v / count).toFixed(1) + "%";
-        document.getElementById('k-cert').innerText = (s.c / count).toFixed(1) + "%";
-        document.getElementById('k-days').innerText = Math.round(s.d).toLocaleString();
+        // Cards
+        document.getElementById('k-target').innerText = Math.round(sum.t).toLocaleString();
+        document.getElementById('k-hc').innerText = Math.round(sum.h).toLocaleString();
+        document.getElementById('k-at').innerText = Math.round(sum.a).toLocaleString();
+        document.getElementById('k-cv').innerText = (sum.v / avgCount).toFixed(1) + "%";
+        document.getElementById('k-cert').innerText = (sum.c / avgCount).toFixed(1) + "%";
+        document.getElementById('k-days').innerText = Math.round(sum.d).toLocaleString();
 
-        const bMin = data.length ? Math.min(...data.map(d => d.batchNo)) : 0;
-        const bMax = data.length ? Math.max(...data.map(d => d.batchNo)) : 0;
-        const trn = [...new Set(data.map(d => d.trainer))].length;
-        const prc = [...new Set(data.map(d => d.process))].length;
-        document.getElementById('h-bread-text').innerHTML = `Batch <span>${bMin} → ${bMax}</span> · <span>${trn} Trainers</span> · <span>${prc} Processes</span>`;
-
-        const box = document.getElementById('tag-box');
-        box.innerHTML = FILTERS.process.concat(FILTERS.trainer, FILTERS.type, FILTERS.month).map(v => `<div class="tag">${v}</div>`).join('');
+        const bMin = filtered.length ? Math.min(...filtered.map(d => d.batchNo)) : 0;
+        const bMax = filtered.length ? Math.max(...filtered.map(d => d.batchNo)) : 0;
+        const trn = [...new Set(filtered.map(d => d.trainer))].length;
+        const prc = [...new Set(filtered.map(d => d.process))].length;
+        
+        document.getElementById('h-bread-text').innerHTML = 
+            `Batch <span>${bMin} → ${bMax}</span> · <span>${trn} Trainers</span> · <span>${prc} Processes</span>`;
     }
 
     loadData();
