@@ -5,129 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Hire Thruput Live</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap');
         :root {
             --bg: #0d1117; --surface: #161b22; --accent: #38bdf8;
             --border: #30363d; --text: #e6edf3; --text-dim: #8b949e;
             --red: #f85149; --green: #3fb950;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
 
-        /* HEADER */
-        .header { padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000; }
-        .h-left { display: flex; align-items: center; gap: 30px; }
-        .brand { border-right: 1px solid var(--border); padding-right: 25px; line-height: 1.1; }
-        .brand h1 { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
-        .brand p { font-size: 10px; color: var(--accent); font-weight: 700; text-transform: uppercase; }
+        /* HEADER REDESIGN */
+        .header { 
+            padding: 12px 30px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid var(--border); 
+            background: var(--bg); 
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .h-left { display: flex; align-items: center; gap: 20px; flex: 1; }
+        .brand { border-right: 1px solid var(--border); padding-right: 20px; line-height: 1; }
+        .brand h1 { font-size: 14px; font-weight: 800; color: #fff; text-transform: uppercase; white-space: nowrap; }
+        .brand p { font-size: 9px; color: var(--accent); font-weight: 700; text-transform: uppercase; margin-top: 2px; }
         
-        .h-stats { display: flex; gap: 20px; align-items: center; }
-        .hs-v { display: block; font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono'; }
-        .hs-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 800; }
+        /* The Left Summary Line */
+        .h-summary { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+        .h-summary span { color: var(--accent); font-weight: 700; }
 
-        /* NAV & SLICERS */
-        .nav-bar { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; }
-        .dropdown { position: relative; width: 160px; }
-        .dd-btn { width: 100%; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px; font-weight: 600; display: flex; justify-content: space-between; }
-        .dd-menu { position: absolute; top: 115%; left: 0; width: 220px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; max-height: 350px; overflow-y: auto; display: none; z-index: 1001; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+        /* The Right KPI Line */
+        .h-right { display: flex; align-items: center; gap: 25px; }
+        .hk-item { display: flex; align-items: baseline; gap: 6px; }
+        .hk-v { font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono'; color: #fff; }
+        .hk-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
+
+        /* NAV BAR */
+        .nav-bar { display: flex; gap: 10px; padding: 10px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; }
+        .dropdown { position: relative; width: 150px; }
+        .dd-btn { width: 100%; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px; font-weight: 600; display: flex; justify-content: space-between; }
+        .dd-menu { position: absolute; top: 115%; left: 0; width: 220px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; max-height: 300px; overflow-y: auto; display: none; z-index: 1001; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .dropdown.open .dd-menu { display: block; }
+        .dd-actions { display: flex; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); }
+        .dd-actions button { flex: 1; padding: 8px; background: transparent; border: none; color: var(--accent); font-size: 9px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
         
-        .dd-search { position: sticky; top: 0; background: var(--surface); padding: 8px; border-bottom: 1px solid var(--border); z-index: 2; }
-        .dd-search input { width: 100%; padding: 6px; background: var(--bg); border: 1px solid var(--border); color: #fff; font-size: 11px; border-radius: 4px; }
-        
-        .dd-actions { display: flex; border-bottom: 1px solid var(--border); }
-        .dd-actions button { flex: 1; padding: 8px; background: transparent; border: none; color: var(--accent); font-size: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
-        .dd-actions button:hover { background: rgba(56,189,248,0.1); }
-
         .li { padding: 8px 12px; display: flex; align-items: center; gap: 10px; font-size: 11px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.02); }
         .li:hover { background: #21262d; }
-        .li.active { color: var(--accent); background: rgba(56, 189, 248, 0.05); }
-        .chk { width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 3px; flex-shrink: 0; }
-        .li.active .chk { background: var(--accent); border-color: var(--accent); position: relative; }
-        .li.active .chk::after { content: '✓'; color: #000; font-size: 10px; position: absolute; left: 2px; top: -1px; font-weight: 900; }
+        .li.active { color: var(--accent); }
+        .chk { width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 3px; }
+        .li.active .chk { background: var(--accent); border-color: var(--accent); }
 
-        /* KPI GRID */
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; padding: 20px 30px; }
-        .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 10px; border-left: 4px solid var(--accent); transition: 0.3s; }
-        .card:hover { transform: translateY(-3px); border-color: var(--accent); }
-        .c-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 800; margin-bottom: 8px; }
+        /* KPI CARDS */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; padding: 20px 30px; }
+        .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent); }
+        .c-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 800; margin-bottom: 6px; display: block; }
         .c-v { font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono'; }
 
         #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
         .spinner { width: 30px; height: 30px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><p style="margin-top:15px; font-size:11px; color:var(--text-dim); letter-spacing:1px">LOADING LIVE BATCH DATA...</p></div>
+<div id="loader"><div class="spinner"></div><p style="margin-top:15px; font-size:10px; color:var(--text-dim); letter-spacing:1px">SEARCHING DATA CORES...</p></div>
 
 <div class="header">
     <div class="h-left">
         <div class="brand"><h1>New Hire</h1><p>Thruput Live</p></div>
-        <div class="h-stats">
-            <div class="hs-item"><span class="hs-v" id="h-hc">0</span><span class="hs-l">Actual HC</span></div>
-            <div class="hs-item"><span class="hs-v" id="h-at" style="color:var(--red)">0</span><span class="hs-l">Attrition</span></div>
-            <div class="hs-item"><span class="hs-v" id="h-conv" style="color:var(--green)">0%</span><span class="hs-l">Conversion</span></div>
-        </div>
+        <div class="h-summary" id="h-sum-text">Scanning spreadsheet...</div>
     </div>
-    <div id="h-bread" style="font-family:'JetBrains Mono'; font-size:10px; color:var(--text-dim)">Initializing...</div>
+    <div class="h-right">
+        <div class="hk-item"><span class="hk-v" id="h-count">0</span><span class="hk-l">Batches</span></div>
+        <div class="hk-item"><span class="hk-v" id="h-hc">0</span><span class="hk-l">Headcount</span></div>
+        <div class="hk-item"><span class="hk-v" id="h-at" style="color:var(--red)">0</span><span class="hk-l">Attrition</span></div>
+        <div class="hk-item"><span class="hk-v" id="h-conv" style="color:var(--green)">0%</span><span class="hk-l">Avg Conv%</span></div>
+    </div>
 </div>
 
 <div class="nav-bar">
-    <div class="dropdown" id="dd-batch">
-        <button class="dd-btn" onclick="toggleDD('dd-batch')">🔍 Batch <span id="cnt-batch"></span></button>
-        <div class="dd-menu">
-            <div class="dd-search"><input type="text" placeholder="Search batch..." oninput="filterList(this)"></div>
-            <div class="dd-actions">
-                <button onclick="bulkAction('batch', true)">Select All</button>
-                <button onclick="bulkAction('batch', false)">Clear</button>
-            </div>
-            <div id="list-batch"></div>
-        </div>
-    </div>
-
-    <div class="dropdown" id="dd-process">
-        <button class="dd-btn" onclick="toggleDD('dd-process')">🏭 Process <span id="cnt-process"></span></button>
-        <div class="dd-menu">
-            <div class="dd-actions"><button onclick="bulkAction('process', true)">All</button><button onclick="bulkAction('process', false)">Clear</button></div>
-            <div id="list-process"></div>
-        </div>
-    </div>
-
-    <div class="dropdown" id="dd-trainer">
-        <button class="dd-btn" onclick="toggleDD('dd-trainer')">👤 Trainer <span id="cnt-trainer"></span></button>
-        <div class="dd-menu">
-            <div id="list-trainer"></div>
-        </div>
-    </div>
-
-    <div class="dropdown" id="dd-month">
-        <button class="dd-btn" onclick="toggleDD('dd-month')">📅 Month <span id="cnt-month"></span></button>
-        <div class="dd-menu">
-            <div id="list-month"></div>
-        </div>
-    </div>
-
-    <button onclick="loadData(true)" style="padding:10px 15px; background:transparent; border:1px solid var(--accent); color:var(--accent); border-radius:6px; font-size:10px; font-weight:800; cursor:pointer;">REFRESH</button>
+    <div class="dropdown" id="dd-batch"><button class="dd-btn" onclick="toggleDD('dd-batch')">🔍 Batch</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('batch',1)">All</button><button onclick="bulk('batch',0)">Clear</button></div><div id="list-batch"></div></div></div>
+    <div class="dropdown" id="dd-process"><button class="dd-btn" onclick="toggleDD('dd-process')">🏭 Process</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('process',1)">All</button><button onclick="bulk('process',0)">Clear</button></div><div id="list-process"></div></div></div>
+    <div class="dropdown" id="dd-trainer"><button class="dd-btn" onclick="toggleDD('dd-trainer')">👤 Trainer</button><div class="dd-menu"><div id="list-trainer"></div></div></div>
+    <div class="dropdown" id="dd-month"><button class="dd-btn" onclick="toggleDD('dd-month')">📅 Month</button><div class="dd-menu"><div id="list-month"></div></div></div>
+    <button onclick="loadData(true)" style="padding:8px 15px; background:transparent; border:1px solid var(--border); color:var(--text); border-radius:6px; font-size:10px; font-weight:800; cursor:pointer; margin-left:auto;">REFRESH</button>
 </div>
 
 <div class="kpi-grid">
-    <div class="card"><div class="c-l">Target HC</div><div class="c-v" id="k-target">0</div></div>
-    <div class="card"><div class="c-l">Actual HC</div><div class="c-v" id="k-hc">0</div></div>
-    <div class="card" style="border-left-color:var(--red)"><div class="c-l">Attrition</div><div class="c-v" id="k-at">0</div></div>
-    <div class="card" style="border-left-color:var(--green)"><div class="c-l">Conversion %</div><div class="c-v" id="k-cv">0%</div></div>
-    <div class="card"><div class="c-l">Certification %</div><div class="c-v" id="k-cert">0%</div></div>
-    <div class="card"><div class="c-l">Training Days</div><div class="c-v" id="k-days">0</div></div>
+    <div class="card"><span class="c-l">Target HC</span><div class="c-v" id="k-target">0</div></div>
+    <div class="card"><span class="c-l">Actual HC</span><div class="c-v" id="k-hc">0</div></div>
+    <div class="card" style="border-left-color:var(--red)"><span class="c-l">Attrition</span><div class="c-v" id="k-at">0</div></div>
+    <div class="card" style="border-left-color:var(--green)"><span class="c-l">Conversion %</span><div class="c-v" id="k-cv">0%</div></div>
+    <div class="card"><span class="c-l">Certification %</span><div class="c-v" id="k-cert">0%</div></div>
+    <div class="card"><span class="c-l">Training Days</span><div class="c-v" id="k-days">0</div></div>
 </div>
 
 <script>
-    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
-    
-    let RAW_DATA = [], FILTERS = { batch: [], process: [], trainer: [], month: [] };
+    const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
+    let RAW = [], FILTERS = { batch: [], process: [], trainer: [], month: [] };
 
     window.onclick = (e) => { if (!e.target.closest('.dropdown')) document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open')); }
-    
     function toggleDD(id) {
         const el = document.getElementById(id);
         const isO = el.classList.contains('open');
@@ -138,13 +113,26 @@
     async function loadData(ref = false) {
         if(ref) document.getElementById('loader').style.display = 'flex';
         try {
-            const res = await fetch(`${SHEET_URL}&cb=${Date.now()}`);
+            const res = await fetch(`${URL}&cb=${Date.now()}`);
             const text = await res.text();
-            const rows = text.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/^"|"$/g, '').trim()));
+            
+            // SUPER PARSER: Handles quoted commas (e.g. "1,200")
+            const rows = text.split(/\r?\n/).map(row => {
+                let res = [], cell = '', inQ = false;
+                for (let char of row) {
+                    if (char === '"') inQ = !inQ;
+                    else if (char === ',' && !inQ) { res.push(cell.trim()); cell = ''; }
+                    else cell += char;
+                }
+                res.push(cell.trim()); return res;
+            });
 
-            let hIdx = rows.findIndex(r => r.some(c => c.toLowerCase().includes("batch") || c.toLowerCase().includes("process")));
-            const header = rows[hIdx].map(h => h.toLowerCase());
-            const find = (k) => header.findIndex(h => h.includes(k));
+            // Find Header by scanning for "Process"
+            let hIdx = rows.findIndex(r => r.some(c => c.toLowerCase().includes("process")));
+            if(hIdx === -1) hIdx = 0;
+
+            const head = rows[hIdx].map(h => h.toLowerCase());
+            const find = (k) => head.findIndex(h => h.includes(k));
 
             const idx = {
                 b: find("batch no"), p: find("process"), t: find("trainer"), 
@@ -152,59 +140,43 @@
                 at: find("attrition"), cr: find("cert"), d: find("days"), cv: find("conv")
             };
 
-            RAW_DATA = rows.slice(hIdx + 1).map(c => {
+            RAW = rows.slice(hIdx + 1).map(c => {
                 const n = (v) => parseFloat(String(v).replace(/[^0-9.]/g, '')) || 0;
-                let bName = c[idx.b] || "";
-                if(bName && !bName.toLowerCase().includes("batch")) bName = "Batch " + bName;
-                
                 return {
-                    batch: bName, process: c[idx.p] || "N/A", trainer: c[idx.t] || "N/A",
+                    batch: c[idx.b] || "N/A", process: c[idx.p] || "N/A", trainer: c[idx.t] || "N/A",
                     month: c[idx.m] || "", target: n(c[idx.tg]), hc: n(c[idx.hc]), 
                     at: n(c[idx.at]), cert: n(c[idx.cr]), days: n(c[idx.d]), cv: n(c[idx.cv])
                 };
             }).filter(d => d.month.length > 2);
 
-            renderAllSlicers();
-            updateDashboard();
+            renderSlicers(); update();
         } catch (e) { console.error(e); }
         document.getElementById('loader').style.display = 'none';
     }
 
-    function renderAllSlicers() {
+    function renderSlicers() {
         ['batch', 'process', 'trainer', 'month'].forEach(key => {
-            const unique = [...new Set(RAW_DATA.map(d => d[key]))].filter(v => v && v !== "N/A").sort((a,b) => a.localeCompare(b, undefined, {numeric: true}));
-            const container = document.getElementById('list-' + key);
-            container.innerHTML = unique.map(v => `
-                <div class="li ${FILTERS[key].includes(v)?'active':''}" data-val="${v}" onclick="event.stopPropagation();toggleItem('${key}','${v.replace(/'/g, "\\'")}')">
+            const items = [...new Set(RAW.map(d => d[key]))].filter(v => v && v !== "N/A").sort((a,b) => a.localeCompare(b, undefined, {numeric:true}));
+            document.getElementById('list-' + key).innerHTML = items.map(v => `
+                <div class="li ${FILTERS[key].includes(v)?'active':''}" onclick="event.stopPropagation();toggleItem('${key}','${v.replace(/'/g, "\\'")}')">
                     <div class="chk"></div><span>${v}</span>
                 </div>`).join('');
-            document.getElementById(`cnt-${key}`).innerText = FILTERS[key].length ? `(${FILTERS[key].length})` : '';
         });
     }
 
     function toggleItem(k, v) {
         const i = FILTERS[k].indexOf(v);
         if(i > -1) FILTERS[k].splice(i, 1); else FILTERS[k].push(v);
-        renderAllSlicers(); updateDashboard();
+        renderSlicers(); update();
     }
 
-    function bulkAction(k, isAll) {
-        if(isAll) FILTERS[k] = [...new Set(RAW_DATA.map(d => d[k]))].filter(v => v);
-        else FILTERS[k] = [];
-        renderAllSlicers(); updateDashboard();
+    function bulk(k, all) {
+        FILTERS[k] = all ? [...new Set(RAW.map(d => d[k]))] : [];
+        renderSlicers(); update();
     }
 
-    function filterList(input) {
-        const term = input.value.toLowerCase();
-        const items = input.closest('.dd-menu').querySelectorAll('.li');
-        items.forEach(it => {
-            const txt = it.innerText.toLowerCase();
-            it.style.display = txt.includes(term) ? 'flex' : 'none';
-        });
-    }
-
-    function updateDashboard() {
-        const data = RAW_DATA.filter(d => 
+    function update() {
+        const data = RAW.filter(d => 
             (!FILTERS.batch.length || FILTERS.batch.includes(d.batch)) &&
             (!FILTERS.process.length || FILTERS.process.includes(d.process)) &&
             (!FILTERS.trainer.length || FILTERS.trainer.includes(d.trainer)) &&
@@ -216,18 +188,30 @@
         }, { t:0, h:0, a:0, v:0, c:0, d:0 });
 
         const count = data.length || 1;
+        
+        // Dynamic Summary Header
+        const bNum = data.map(d => parseInt(d.batch.replace(/\D/g,''))).filter(n => !isNaN(n));
+        const bRange = bNum.length ? `Batch ${Math.min(...bNum)} → ${Math.max(...bNum)}` : 'No Batches';
+        const months = [...new Set(data.map(d => d.month))];
+        const mRange = months.length > 1 ? `${months[0]} – ${months[months.length-1]}` : (months[0] || '');
+        const trn = [...new Set(data.map(d => d.trainer))].length;
+        const prc = [...new Set(data.map(d => d.process))].length;
+
+        document.getElementById('h-sum-text').innerHTML = `(<span>${bRange}</span> · <span>${mRange}</span> · <span>${trn} Trainers</span> · <span>${prc} Processes</span>)`;
+
+        // Top Right KPIs
+        document.getElementById('h-count').innerText = data.length;
         document.getElementById('h-hc').innerText = Math.round(s.h).toLocaleString();
         document.getElementById('h-at').innerText = Math.round(s.a).toLocaleString();
         document.getElementById('h-conv').innerText = (s.v / count).toFixed(1) + "%";
 
+        // Grid Cards
         document.getElementById('k-target').innerText = Math.round(s.t).toLocaleString();
         document.getElementById('k-hc').innerText = Math.round(s.h).toLocaleString();
         document.getElementById('k-at').innerText = Math.round(s.a).toLocaleString();
         document.getElementById('k-cv').innerText = (s.v / count).toFixed(1) + "%";
         document.getElementById('k-cert').innerText = (s.c / count).toFixed(1) + "%";
         document.getElementById('k-days').innerText = Math.round(s.d).toLocaleString();
-        
-        document.getElementById('h-bread').innerText = `${data.length} Batches Selected | Showing Live Data`;
     }
 
     loadData();
