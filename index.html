@@ -29,11 +29,12 @@
         .hk-v { display: block; font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono'; color: var(--accent); }
         .hk-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
 
-        /* SLICER NAV */
-        .nav-bar { display: flex; gap: 12px; padding: 15px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; }
+        /* NAV BAR */
+        .nav-bar { display: flex; gap: 12px; padding: 15px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; flex-wrap: wrap; }
         .dropdown { position: relative; width: 160px; }
         .dd-label { font-size: 9px; color: var(--accent); font-weight: 800; text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
         .dd-btn { width: 100%; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+        .dd-btn::after { content: '▼'; font-size: 8px; margin-left: 5px; }
         
         .dd-menu { position: absolute; top: 110%; left: 0; width: 220px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; max-height: 350px; overflow-y: auto; display: none; z-index: 1001; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .dropdown.open .dd-menu { display: block; }
@@ -47,12 +48,10 @@
         .li.active .chk { background: var(--accent); border-color: var(--accent); }
         .li.active .chk::after { content: '✓'; color: #000; font-size: 10px; position: absolute; left: 2px; top: -1px; font-weight: 900; }
 
-        /* STATUS BAR - NEW */
         .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 30px; background: #0d1117; border-bottom: 1px solid var(--border); font-size: 11px; color: var(--text-dim); }
         .status-bar span { font-family: 'JetBrains Mono'; color: var(--text); }
 
-        /* KPI SECTION */
-        .section-drop { padding: 25px 30px; background: linear-gradient(180deg, #090c10 0%, #0d1117 100%); }
+        .section-drop { padding: 25px 30px; }
         .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
         .card { background: var(--surface); border: 1px solid var(--border); padding: 25px; border-radius: 10px; border-left: 4px solid var(--accent); }
         .c-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 800; margin-bottom: 8px; display: block; }
@@ -65,12 +64,12 @@
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><p style="margin-top:15px; font-size:11px; color:var(--text-dim); letter-spacing: 1px;">REFRESHING OJT ANALYTICS...</p></div>
+<div id="loader"><div class="spinner"></div><p style="margin-top:15px; font-size:11px; color:var(--text-dim);">UPDATING RECAP...</p></div>
 
 <div class="header">
     <div class="h-left">
         <h1>OJT Training Dashboard</h1>
-        <div class="h-summary" id="h-sum-text">Syncing data range...</div>
+        <div class="h-summary" id="h-sum-text">Recalculating...</div>
     </div>
     <div class="h-right">
         <div class="hk-item"><span class="hk-v" id="h-count">0</span><span class="hk-l">Batches</span></div>
@@ -81,12 +80,11 @@
 </div>
 
 <div class="nav-bar">
-    <div class="dropdown" id="dd-batch"><div class="dd-label">🔍 Batch</div><button class="dd-btn" onclick="toggleDD('dd-batch')">All <span>▼</span></button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('batch',1)">Select All</button><button onclick="bulk('batch',0)">Reset</button></div><div id="list-batch"></div></div></div>
-    <div class="dropdown" id="dd-process"><div class="dd-label">🏭 Process</div><button class="dd-btn" onclick="toggleDD('dd-process')">All <span>▼</span></button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('process',1)">Select All</button><button onclick="bulk('process',0)">Reset</button></div><div id="list-process"></div></div></div>
-    <div class="dropdown" id="dd-trainer"><div class="dd-label">👤 Trainer</div><button class="dd-btn" onclick="toggleDD('dd-trainer')">All <span>▼</span></button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('trainer',1)">Select All</button><button onclick="bulk('trainer',0)">Reset</button></div><div id="list-trainer"></div></div></div>
-    <div class="dropdown" id="dd-type"><div class="dd-label">⚡ Type</div><button class="dd-btn" onclick="toggleDD('dd-type')">All <span>▼</span></button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('type',1)">Select All</button><button onclick="bulk('type',0)">Reset</button></div><div id="list-type"></div></div></div>
-    <div class="dropdown" id="dd-month"><div class="dd-label">📅 Month</div><button class="dd-btn" onclick="toggleDD('dd-month')">All <span>▼</span></button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('month',1)">Select All</button><button onclick="bulk('month',0)">Reset</button></div><div id="list-month"></div></div></div>
-    <button onclick="loadData(true)" style="padding:10px 18px; background:var(--accent); border:none; color:#000; border-radius:6px; font-size:11px; font-weight:800; cursor:pointer; margin-left:auto;">LIVE REFRESH</button>
+    <div class="dropdown" id="dd-batch"><div class="dd-label">Batch</div><button class="dd-btn" onclick="toggleDD('dd-batch')">All</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('batch',1)">All</button><button onclick="bulk('batch',0)">Reset</button></div><div id="list-batch"></div></div></div>
+    <div class="dropdown" id="dd-process"><div class="dd-label">Process</div><button class="dd-btn" onclick="toggleDD('dd-process')">All</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('process',1)">All</button><button onclick="bulk('process',0)">Reset</button></div><div id="list-process"></div></div></div>
+    <div class="dropdown" id="dd-trainer"><div class="dd-label">Trainer</div><button class="dd-btn" onclick="toggleDD('dd-trainer')">All</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('trainer',1)">All</button><button onclick="bulk('trainer',0)">Reset</button></div><div id="list-trainer"></div></div></div>
+    <div class="dropdown" id="dd-type"><div class="dd-label">Type</div><button class="dd-btn" onclick="toggleDD('dd-type')">All</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('type',1)">All</button><button onclick="bulk('type',0)">Reset</button></div><div id="list-type"></div></div></div>
+    <div class="dropdown" id="dd-month"><div class="dd-label">Month</div><button class="dd-btn" onclick="toggleDD('dd-month')">All</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('month',1)">All</button><button onclick="bulk('month',0)">Reset</button></div><div id="list-month"></div></div></div>
 </div>
 
 <div class="status-bar">
@@ -110,6 +108,7 @@
     let RAW = [], FILTERS = { batch: [], process: [], trainer: [], month: [], type: [] };
     const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+    window.onclick = (e) => { if (!e.target.closest('.dropdown')) document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open')); }
     function toggleDD(id) {
         const el = document.getElementById(id);
         const isO = el.classList.contains('open');
@@ -124,11 +123,11 @@
             const text = await res.text();
             const rows = text.split(/\r?\n/).map(r => r.split(','));
             
-            // Map columns strictly
             RAW = rows.slice(3).map(c => ({
-                batch: c[0] || "N/A", process: c[1] || "N/A", trainer: c[2] || "N/A",
-                type: c[4] || "New", month: c[5] || "", target: parseFloat(c[6]) || 0,
-                hc: parseFloat(c[7]) || 0, at: parseFloat(c[8]) || 0, cert: parseFloat(c[9]) || 0,
+                batch: c[0] || "", process: c[1] || "", trainer: c[2] || "",
+                type: c[4] || "", month: c[5] || "", 
+                target: parseFloat(c[6]) || 0, hc: parseFloat(c[7]) || 0, 
+                at: parseFloat(c[8]) || 0, cert: parseFloat(c[9]) || 0,
                 cv: parseFloat(c[10]) || 0, days: parseFloat(c[11]) || 0
             })).filter(d => d.month);
 
@@ -137,19 +136,26 @@
         document.getElementById('loader').style.display = 'none';
     }
 
+    function sortMonths(arr) {
+        return arr.sort((a,b) => {
+            const [m1, y1] = a.split("'"), [m2, y2] = b.split("'");
+            return y1 !== y2 ? y1 - y2 : monthOrder.indexOf(m1) - monthOrder.indexOf(m2);
+        });
+    }
+
     function renderSlicers() {
         ['batch', 'process', 'trainer', 'month', 'type'].forEach(key => {
-            let items = [...new Set(RAW.map(d => d[key]))].sort();
-            if(key === 'month') {
-                items.sort((a,b) => {
-                    const [m1, y1] = a.split("'"), [m2, y2] = b.split("'");
-                    return y1 !== y2 ? y1 - y2 : monthOrder.indexOf(m1) - monthOrder.indexOf(m2);
-                });
-            }
+            let items = [...new Set(RAW.map(d => d[key]))].filter(v => v !== "");
+            if(key === 'month') items = sortMonths(items);
+            else items.sort();
+
             document.getElementById('list-' + key).innerHTML = items.map(v => `
                 <div class="li ${FILTERS[key].includes(v)?'active':''}" onclick="toggleItem('${key}','${v}')">
                     <div class="chk"></div><span>${v}</span>
                 </div>`).join('');
+            
+            const btn = document.querySelector(`#dd-${key} .dd-btn`);
+            btn.innerText = FILTERS[key].length === 0 ? "All" : (FILTERS[key].length === 1 ? FILTERS[key][0] : `${FILTERS[key].length} Selected`);
         });
     }
 
@@ -160,7 +166,7 @@
     }
 
     function bulk(k, all) {
-        FILTERS[k] = all ? [...new Set(RAW.map(d => d[k]))] : [];
+        FILTERS[k] = all ? [...new Set(RAW.map(d => d[k]))].filter(v => v !== "") : [];
         update(); renderSlicers();
     }
 
@@ -177,18 +183,27 @@
             a.t += c.target; a.h += c.hc; a.a += c.at; a.v += c.cv; a.c += c.cert; a.d += c.days; return a;
         }, { t:0, h:0, a:0, v:0, c:0, d:0 });
 
-        // Update Headers
-        document.getElementById('h-sum-text').innerHTML = `Batch 127 → 286 · Jan 2024 - Mar 2026 · 6 Trainers · 41 Processes`;
+        // DYNAMIC MONTH TICKER FIX
+        const selMonths = FILTERS.month.length ? sortMonths([...FILTERS.month]) : sortMonths([...new Set(data.map(d => d.month))]);
+        const mTicker = selMonths.length > 1 ? `${selMonths[0]} – ${selMonths[selMonths.length-1]}` : (selMonths[0] || "");
+
+        // DYNAMIC BATCH RANGE FIX
+        const bNums = data.map(d => parseInt(d.batch.replace(/\D/g,''))).filter(n => !isNaN(n));
+        const bTicker = bNums.length ? `Batch ${Math.min(...bNums)} → ${Math.max(...bNums)}` : "No Batches";
+
+        const trnCount = [...new Set(data.map(d => d.trainer))].length;
+        const prcCount = [...new Set(data.map(d => d.process))].length;
+
+        document.getElementById('h-sum-text').innerHTML = `${bTicker} · ${mTicker} · ${trnCount} Trainers · ${prcCount} Processes`;
+        
         document.getElementById('h-count').innerText = data.length;
         document.getElementById('h-hc').innerText = Math.round(s.h);
         document.getElementById('h-at').innerText = Math.round(s.a);
         document.getElementById('h-conv').innerText = (s.v / (data.length || 1)).toFixed(1) + "%";
 
-        // Update Status Bar
-        document.getElementById('status-text').innerText = data.length === RAW.length ? "Showing all records" : `Filtering ${data.length} records`;
+        document.getElementById('status-text').innerText = data.length === RAW.length ? "Showing all records" : "Filtered View";
         document.getElementById('status-count').innerHTML = `<span>${data.length}</span> / <span>${RAW.length}</span> batches`;
 
-        // Update KPIs
         document.getElementById('k-target').innerText = Math.round(s.t);
         document.getElementById('k-hc').innerText = Math.round(s.h);
         document.getElementById('k-at').innerText = Math.round(s.a);
