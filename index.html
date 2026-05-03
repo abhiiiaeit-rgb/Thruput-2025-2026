@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OJT Operational Analytics | Live Dashboard</title>
-    
+    <title>OJT Operational Analytics | Live</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap');
         
@@ -21,340 +19,212 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* HEADER SECTION */
-        .header { 
-            padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000;
-        }
-        .brand h1 { font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
+        /* HEADER */
+        .header { padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000; }
+        .brand h1 { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
         .brand span { color: var(--accent); }
-        .h-ticker { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim); margin-top: 5px; }
-        .h-ticker b { color: var(--accent); }
-
-        .h-metrics { display: flex; gap: 30px; }
+        .h-metrics { display: flex; gap: 25px; }
         .hm-item { text-align: right; }
-        .hm-v { display: block; font-size: 24px; font-weight: 800; font-family: 'JetBrains Mono'; line-height: 1; color: #fff; }
-        .hm-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 800; margin-top: 4px; }
+        .hm-v { display: block; font-size: 20px; font-weight: 800; font-family: 'JetBrains Mono'; }
+        .hm-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 800; }
 
-        /* SLICERS / FILTERS */
-        .nav-bar { display: flex; gap: 12px; padding: 12px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; }
-        .dropdown { position: relative; width: 175px; }
-        .dd-label { font-size: 9px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
-        .dd-btn { 
-            width: 100%; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); 
-            color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px; 
-            display: flex; justify-content: space-between; align-items: center; transition: 0.2s;
-        }
-        .dd-btn:hover { border-color: var(--accent); }
-        .dd-menu { 
-            position: absolute; top: 110%; left: 0; width: 250px; background: #1c2128; 
-            border: 1px solid var(--border); border-radius: 8px; display: none; z-index: 1001; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-        }
+        /* FILTERS */
+        .nav-bar { display: flex; gap: 10px; padding: 10px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; }
+        .dropdown { position: relative; width: 165px; }
+        .dd-label { font-size: 8px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
+        .dd-btn { width: 100%; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px; display: flex; justify-content: space-between; }
+        .dd-menu { position: absolute; top: 110%; left: 0; width: 220px; background: #1c2128; border: 1px solid var(--border); border-radius: 8px; display: none; z-index: 1001; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .dropdown.open .dd-menu { display: block; }
-        .search-container { padding: 10px; border-bottom: 1px solid var(--border); }
-        .search-container input { 
-            width: 100%; padding: 8px; background: #0d1117; border: 1px solid var(--border); 
-            color: #fff; border-radius: 4px; font-size: 12px; outline: none;
-        }
-        .dd-actions { display: flex; padding: 10px 15px; gap: 20px; border-bottom: 1px solid var(--border); font-size: 11px; }
-        .dd-actions span { color: var(--accent); cursor: pointer; font-weight: 700; }
-        .dd-list { max-height: 250px; overflow-y: auto; }
-        .li { padding: 12px 15px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .search-box { padding: 8px; border-bottom: 1px solid var(--border); }
+        .search-box input { width: 100%; padding: 6px; background: #0d1117; border: 1px solid var(--border); color: #fff; border-radius: 4px; font-size: 11px; outline: none; }
+        .dd-list { max-height: 200px; overflow-y: auto; }
+        .li { padding: 8px 12px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .li:hover { background: rgba(255,255,255,0.05); }
-        .li.active { color: var(--accent); font-weight: 600; background: rgba(56, 189, 248, 0.05); }
-        .chk { width: 16px; height: 16px; border: 1px solid var(--border); border-radius: 4px; position: relative; flex-shrink: 0; }
+        .li.active { color: var(--accent); background: rgba(56, 189, 248, 0.05); }
+        .chk { width: 12px; height: 12px; border: 1px solid var(--border); border-radius: 2px; }
         .li.active .chk { background: var(--accent); border-color: var(--accent); }
-        .li.active .chk::after { content: '✓'; color: #000; position: absolute; left: 3px; top: -1px; font-size: 11px; font-weight: 900; }
 
-        /* STATUS & NAV TAB FRAME */
-        .status-bar { padding: 10px 30px; font-size: 11px; color: var(--text-dim); display: flex; justify-content: space-between; background: var(--bg); border-bottom: 1px solid var(--border); }
-        .nav-frame { display: flex; gap: 30px; padding: 15px 30px; background: var(--surface); border-bottom: 1px solid var(--border); }
-        .nav-item { font-size: 12px; color: var(--text-dim); cursor: pointer; font-weight: 600; padding-bottom: 5px; transition: 0.2s; }
+        /* NAVIGATION TABS */
+        .nav-frame { display: flex; gap: 20px; padding: 12px 30px; background: var(--surface); border-bottom: 1px solid var(--border); }
+        .nav-item { font-size: 11px; color: var(--text-dim); cursor: pointer; font-weight: 600; padding-bottom: 4px; }
         .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
-        /* PRIMARY 8-METRIC GRID */
-        .metrics-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; padding: 20px 30px; }
-        .m-card { background: var(--surface); border: 1px solid var(--border); padding: 18px; border-radius: 10px; border-left: 4px solid var(--accent); transition: 0.3s; }
-        .m-card:hover { transform: translateY(-3px); border-color: var(--accent); }
-        .m-card .val { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono'; display: block; line-height: 1.1; color: #fff; }
-        .m-card .lab { font-size: 8px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display: block; }
-        .m-card .sub { font-size: 10px; color: var(--text-dim); margin-top: 4px; display: block; }
+        /* METRIC CARDS */
+        .metrics-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; padding: 15px 30px; }
+        .m-card { background: var(--surface); border: 1px solid var(--border); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent); }
+        .m-card .val { font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono'; display: block; }
+        .m-card .lab { font-size: 8px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 2px; display: block; }
 
-        /* DISTRIBUTION ANALYSIS SECTION */
-        .section-label { padding: 10px 30px; font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase; display: flex; align-items: center; gap: 12px; margin-top: 10px; }
-        .section-label::after { content: ''; height: 1px; flex: 1; background: var(--border); }
-        
-        .charts-container { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 20px; padding: 10px 30px 30px 30px; }
-        .chart-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 12px; height: 320px; display: flex; flex-direction: column; }
-        .chart-box h4 { font-size: 10px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 20px; text-align: center; }
-        .chart-wrapper { flex: 1; min-height: 0; }
+        /* CHARTS */
+        .section-label { padding: 15px 30px 5px 30px; font-size: 10px; font-weight: 800; color: var(--accent); text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .charts-container { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 15px; padding: 10px 30px 20px 30px; }
+        .chart-box { background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: 12px; height: 280px; }
+        .chart-box h4 { font-size: 9px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 15px; text-align: center; }
 
-        /* BATCH SUMMARY TABLE */
-        .table-wrap { padding: 0 30px 50px 30px; }
-        table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); font-size: 12px; text-align: left; }
-        th { padding: 15px; color: var(--text-dim); font-size: 9px; text-transform: uppercase; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); }
-        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .pill { background: var(--green); color: #000; padding: 3px 10px; border-radius: 12px; font-weight: 800; font-size: 9px; text-transform: uppercase; }
+        /* TABLE */
+        .table-wrap { padding: 10px 30px 40px 30px; }
+        table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); font-size: 11px; }
+        th { padding: 12px; color: var(--text-dim); font-size: 8px; text-transform: uppercase; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        /* LOADER */
-        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
-        .spin { width: 40px; height: 40px; border: 4px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: rot 0.8s linear infinite; }
+        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .spin { width: 30px; height: 30px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: rot 0.8s linear infinite; }
         @keyframes rot { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div id="loader"><div class="spin"></div><p style="margin-top:20px; font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:2px;">Connecting to Live Data...</p></div>
+<div id="loader"><div class="spin"></div></div>
 
 <div class="header">
-    <div class="brand"><h1>OJT Operational <span>Analytics</span></h1><div class="h-ticker" id="h-ticker">Calibrating...</div></div>
+    <div class="brand"><h1>Operational <span>Analytics</span></h1></div>
     <div class="h-metrics">
-        <div class="hm-item"><span class="hm-v" id="top-bat">0</span><span class="hm-l">Total Batches</span></div>
-        <div class="hm-item"><span class="hm-v" id="top-hc">0</span><span class="hm-l">Total Headcount</span></div>
-        <div class="hm-item"><span class="hm-v" id="top-at" style="color:var(--red)">0</span><span class="hm-l">Attrition</span></div>
-        <div class="hm-item"><span class="hm-v" id="top-cv" style="color:var(--green)">0%</span><span class="hm-l">Avg Conv%</span></div>
+        <div class="hm-item"><span class="hm-v" id="h-hc">0</span><span class="hm-l">Headcount</span></div>
+        <div class="hm-item"><span class="hm-v" id="h-at" style="color:var(--red)">0</span><span class="hm-l">Attrition</span></div>
+        <div class="hm-item"><span class="hm-v" id="h-cv" style="color:var(--green)">0%</span><span class="hm-l">Conv %</span></div>
     </div>
 </div>
 
 <div class="nav-bar">
-    <div class="dropdown" id="dd-batch"><div class="dd-label">Batch</div><button class="dd-btn" onclick="toggleDD('dd-batch')">All Batches <span>▼</span></button>
-        <div class="dd-menu"><div class="search-container"><input type="text" placeholder="Search batch..." onkeyup="filterList('batch', this.value)"></div>
-        <div class="dd-actions"><span onclick="bulk('batch',1)">Select All</span><span onclick="bulk('batch',0)">Clear</span></div><div class="dd-list" id="list-batch"></div></div></div>
-    
-    <div class="dropdown" id="dd-process"><div class="dd-label">Process</div><button class="dd-btn" onclick="toggleDD('dd-process')">All Processes <span>▼</span></button>
-        <div class="dd-menu"><div class="search-container"><input type="text" placeholder="Search process..." onkeyup="filterList('process', this.value)"></div>
-        <div class="dd-actions"><span onclick="bulk('process',1)">Select All</span><span onclick="bulk('process',0)">Clear</span></div><div class="dd-list" id="list-process"></div></div></div>
-
-    <div class="dropdown" id="dd-trainer"><div class="dd-label">Trainer Name</div><button class="dd-btn" onclick="toggleDD('dd-trainer')">All Trainers <span>▼</span></button>
-        <div class="dd-menu"><div class="search-container"><input type="text" placeholder="Search trainer..." onkeyup="filterList('trainer', this.value)"></div>
-        <div class="dd-actions"><span onclick="bulk('trainer',1)">Select All</span><span onclick="bulk('trainer',0)">Clear</span></div><div class="dd-list" id="list-trainer"></div></div></div>
-
-    <div class="dropdown" id="dd-month"><div class="dd-label">Month</div><button class="dd-btn" onclick="toggleDD('dd-month')">All Months <span>▼</span></button>
-        <div class="dd-menu"><div class="search-container"><input type="text" placeholder="Search month..." onkeyup="filterList('month', this.value)"></div>
-        <div class="dd-actions"><span onclick="bulk('month',1)">Select All</span><span onclick="bulk('month',0)">Clear</span></div><div class="dd-list" id="list-month"></div></div></div>
+    <div class="dropdown" id="dd-batch"><div class="dd-label">Batch</div><button class="dd-btn" onclick="toggleDD('dd-batch')">All <span>▼</span></button>
+        <div class="dd-menu"><div class="search-box"><input type="text" onkeyup="filterL('batch', this.value)"></div><div class="dd-list" id="l-batch"></div></div></div>
+    <div class="dropdown" id="dd-trainer"><div class="dd-label">Trainer</div><button class="dd-btn" onclick="toggleDD('dd-trainer')">All <span>▼</span></button>
+        <div class="dd-menu"><div class="search-box"><input type="text" onkeyup="filterL('trainer', this.value)"></div><div class="dd-list" id="l-trainer"></div></div></div>
+    <div class="dropdown" id="dd-month"><div class="dd-label">Month</div><button class="dd-btn" onclick="toggleDD('dd-month')">All <span>▼</span></button>
+        <div class="dd-menu"><div class="search-box"><input type="text" onkeyup="filterL('month', this.value)"></div><div class="dd-list" id="l-month"></div></div></div>
 </div>
 
-<div class="status-bar"><div id="showing">Syncing Live Sheet...</div><div id="stat-count">0 / 0 Batches</div></div>
-
 <div class="nav-frame">
-    <div class="nav-item active">Overview</div><div class="nav-item">Training Schedule</div><div class="nav-item">Quality PKT</div>
-    <div class="nav-item">Quality Scores</div><div class="nav-item">AHT</div><div class="nav-item">KRA Certification</div><div class="nav-item">Exits</div>
+    <div class="nav-item active">Overview</div><div class="nav-item">Training Schedule</div><div class="nav-item">Quality PKT</div><div class="nav-item">Exits</div>
 </div>
 
 <div class="metrics-grid">
-    <div class="m-card" style="border-left-color:var(--accent)"><span class="lab">Total Batches</span><span class="val" id="m-bat">160</span></div>
-    <div class="m-card" style="border-left-color:var(--accent)"><span class="lab">Total Headcount</span><span class="val" id="m-hc">799</span><span class="sub">Day 0</span></div>
-    <div class="m-card" style="border-left-color:var(--red)"><span class="lab">Total Attrition</span><span class="val" style="color:var(--red)" id="m-at">96</span></div>
-    <div class="m-card" style="border-left-color:var(--green)"><span class="lab">Avg Conversion %</span><span class="val" style="color:var(--green)" id="m-cv">93.3%</span><span class="sub">Train start→end</span></div>
-    <div class="m-card" style="border-left-color:var(--purple)"><span class="lab">Active (On Floor)</span><span class="val" id="m-act">151</span><span class="sub">batches</span></div>
-    <div class="m-card" style="border-left-color:var(--orange)"><span class="lab">Training Exits</span><span class="val" style="color:var(--orange)" id="m-tx">85</span><span class="sub">Training phase</span></div>
-    <div class="m-card" style="border-left-color:var(--pink)"><span class="lab">OJT Exits</span><span class="val" style="color:var(--pink)" id="m-ox">10</span><span class="sub">OJT phase</span></div>
-    <div class="m-card" style="border-left-color:var(--teal)"><span class="lab">Avg Training Days</span><span class="val" id="m-dy">10.0</span></div>
+    <div class="m-card"><span class="lab">Total Batches</span><span class="val" id="m-bat">0</span></div>
+    <div class="m-card"><span class="lab">Total Headcount</span><span class="val" id="m-hc">0</span></div>
+    <div class="m-card" style="border-left-color:var(--red)"><span class="lab">Total Attrition</span><span class="val" id="m-at" style="color:var(--red)">0</span></div>
+    <div class="m-card" style="border-left-color:var(--green)"><span class="lab">Avg Conversion %</span><span class="val" id="m-cv" style="color:var(--green)">0%</span></div>
+    <div class="m-card" style="border-left-color:var(--purple)"><span class="lab">Active (On Floor)</span><span class="val" id="m-act">0</span></div>
+    <div class="m-card" style="border-left-color:var(--teal)"><span class="lab">Avg Training Days</span><span class="val" id="m-dy">0</span></div>
 </div>
 
 <div class="section-label">Distribution Analysis</div>
 <div class="charts-container">
-    <div class="chart-box"><h4>Headcount by Trainer</h4><div class="chart-wrapper"><canvas id="ch-hc-trn"></canvas></div></div>
-    <div class="chart-box"><h4>Monthly Headcount Trend</h4><div class="chart-wrapper"><canvas id="ch-trend"></canvas></div></div>
-    <div class="chart-box"><h4>Attrition % by Trainer</h4><div class="chart-wrapper"><canvas id="ch-at-trn"></canvas></div></div>
+    <div class="chart-box"><h4>Headcount by Trainer</h4><canvas id="ch-hc"></canvas></div>
+    <div class="chart-box"><h4>Monthly Trend</h4><canvas id="ch-trend"></canvas></div>
+    <div class="chart-box"><h4>Attrition % by Trainer</h4><canvas id="ch-at"></canvas></div>
 </div>
 
 <div class="section-label">Batch Summary</div>
 <div class="table-wrap">
     <table>
-        <thead><tr><th>Batch</th><th>Process</th><th>Trainer</th><th>Month</th><th>Status</th><th>HC Day 0</th><th>Trng End</th><th>Attrition</th><th>Conv %</th></tr></thead>
-        <tbody id="table-body"></tbody>
+        <thead><tr><th>Batch Name</th><th>Trainer</th><th>Month</th><th>Headcount</th><th>Attrition</th><th>Conv %</th></tr></thead>
+        <tbody id="t-body"></tbody>
     </table>
 </div>
 
 <script>
-    /* LIVE DATA SOURCE */
-    const GOOGLE_SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
-    
-    let RAW_DATA = [], FILTERS = { batch: [], process: [], trainer: [], month: [] };
-    const monthSeq = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    let liveCharts = {};
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
+    let RAW = [], FILTERS = { batch:[], trainer:[], month:[] }, charts = {};
 
-    // UI: Toggle Slicers
-    function toggleDD(id) {
+    function toggleDD(id) { 
         const isOpen = document.getElementById(id).classList.contains('open');
         document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
         if(!isOpen) document.getElementById(id).classList.add('open');
     }
 
-    // DATA: Fetch from Google Sheets
-    async function loadData() {
+    async function load() {
         try {
-            const res = await fetch(`${GOOGLE_SHEET_CSV}&cb=${Date.now()}`);
-            const text = await res.text();
-            const rows = text.split(/\r?\n/).map(r => r.split(','));
+            const res = await fetch(`${CSV_URL}&cb=${Date.now()}`);
+            const rows = (await res.text()).split(/\r?\n/).map(r => r.split(','));
             
-            // Map rows (starting from index 3 to skip headers)
-            RAW_DATA = rows.slice(3).map(c => ({
-                batch: (c[0]||"").trim(), 
-                process: (c[1]||"").trim(), 
-                trainer: (c[2]||"").trim(), 
-                month: (c[5]||"").trim(),
-                hc: parseFloat(c[7])||0, 
-                at: parseFloat(c[8])||0, 
-                cv: parseFloat(c[10])||0, 
-                dy: parseFloat(c[11])||0
-            })).filter(d => d.month !== "" && d.batch !== "Batch Name" && d.batch !== "");
+            // FIX: Skip Row 4 subtotal. Column I(8)=HC, J(9)=AT, L(11)=CV, M(12)=Days.
+            RAW = rows.slice(4).map(c => ({
+                batch: (c[0]||"").trim(), trainer: (c[2]||"").trim(), month: (c[5]||"").trim(),
+                hc: parseFloat(c[8])||0, at: parseFloat(c[9])||0, cv: parseFloat(c[11])||0, dy: parseFloat(c[12])||0
+            })).filter(d => d.batch && d.month && d.batch !== "Batches");
 
-            initSlicers(); 
-            updateDashboard();
-        } catch (e) { 
-            console.error("Sheet Sync Failed:", e);
-            document.getElementById('showing').innerText = "Live Sync Failed. Check CSV URL.";
-        }
-        document.getElementById('loader').style.display = 'none';
+            initSlicers(); update();
+        } catch(e) { console.error(e); }
+        document.getElementById('loader').style.display='none';
     }
 
-    // UI: Initialize Filter Lists
     function initSlicers() {
-        ['batch', 'process', 'trainer', 'month'].forEach(key => {
-            let items = [...new Set(RAW_DATA.map(d => d[key]))].sort();
-            
-            // Special sorting for months (Chronological)
-            if(key === 'month') {
-                items.sort((a,b) => {
-                    const [ma, ya] = a.split("'"), [mb, yb] = b.split("'");
-                    return ya !== yb ? ya - yb : monthSeq.indexOf(ma) - monthSeq.indexOf(mb);
-                });
-            }
-
-            document.getElementById('list-' + key).innerHTML = items.map(v => `
-                <div class="li ${FILTERS[key].includes(v)?'active':''}" data-v="${v.toLowerCase()}" onclick="toggleFilter('${key}','${v}')">
+        ['batch','trainer','month'].forEach(k => {
+            const items = [...new Set(RAW.map(d => d[k]))].sort();
+            document.getElementById('l-'+k).innerHTML = items.map(v => `
+                <div class="li ${FILTERS[k].includes(v)?'active':''}" data-v="${v.toLowerCase()}" onclick="setFilter('${k}','${v}')">
                     <div class="chk"></div><span>${v}</span>
                 </div>`).join('');
-            
-            const btn = document.querySelector(`#dd-${key} .dd-btn`);
-            btn.innerHTML = FILTERS[key].length ? `${FILTERS[key].length} selected` : `All ${key}s <span>▼</span>`;
+            document.querySelector(`#dd-${k} .dd-btn`).innerHTML = FILTERS[k].length ? `${FILTERS[k].length} selected` : `All <span>▼</span>`;
         });
     }
 
-    function toggleFilter(k, v) {
-        const idx = FILTERS[k].indexOf(v);
-        if(idx > -1) FILTERS[k].splice(idx, 1); else FILTERS[k].push(v);
-        initSlicers(); updateDashboard();
+    function setFilter(k,v) {
+        const i = FILTERS[k].indexOf(v);
+        if(i > -1) FILTERS[k].splice(i,1); else FILTERS[k].push(v);
+        initSlicers(); update();
     }
 
-    function bulk(k, isAll) {
-        FILTERS[k] = isAll ? [...new Set(RAW_DATA.map(d => d[k]))] : [];
-        initSlicers(); updateDashboard();
+    function filterL(k,q) {
+        document.querySelectorAll(`#l-${k} .li`).forEach(el => el.style.display = el.getAttribute('data-v').includes(q.toLowerCase()) ? 'flex' : 'none');
     }
 
-    function filterList(k, q) {
-        document.querySelectorAll(`#list-${k} .li`).forEach(el => {
-            el.style.display = el.getAttribute('data-v').includes(q.toLowerCase()) ? 'flex' : 'none';
-        });
+    function update() {
+        const data = RAW.filter(d => (!FILTERS.batch.length || FILTERS.batch.includes(d.batch)) && (!FILTERS.trainer.length || FILTERS.trainer.includes(d.trainer)) && (!FILTERS.month.length || FILTERS.month.includes(d.month)));
+        const s = data.reduce((a,c) => { a.h+=c.hc; a.a+=c.at; a.v+=c.cv; a.d+=c.dy; return a; }, {h:0,a:0,v:0,d:0});
+        const c = data.length || 1;
+
+        document.getElementById('m-bat').innerText = data.length;
+        document.getElementById('m-hc').innerText = document.getElementById('h-hc').innerText = Math.round(s.h);
+        document.getElementById('m-at').innerText = document.getElementById('h-at').innerText = Math.round(s.a);
+        
+        // Correct Weighted Conv Calculation
+        const avgCv = s.h > 0 ? (((s.h - s.a) / s.h) * 100).toFixed(1) : 0;
+        document.getElementById('m-cv').innerText = document.getElementById('h-cv').innerText = avgCv + '%';
+        document.getElementById('m-act').innerText = Math.round(s.h - s.a);
+        document.getElementById('m-dy').innerText = (s.d/c).toFixed(1);
+
+        document.getElementById('t-body').innerHTML = data.map(d => `<tr><td>${d.batch}</td><td>${d.trainer}</td><td>${d.month}</td><td>${d.hc}</td><td>${d.at}</td><td>${d.cv}%</td></tr>`).join('');
+        renderCharts(data);
     }
 
-    // DASHBOARD: Calculations & Rendering
-    function updateDashboard() {
-        const filtered = RAW_DATA.filter(d => 
-            (!FILTERS.batch.length || FILTERS.batch.includes(d.batch)) &&
-            (!FILTERS.process.length || FILTERS.process.includes(d.process)) &&
-            (!FILTERS.trainer.length || FILTERS.trainer.includes(d.trainer)) &&
-            (!FILTERS.month.length || FILTERS.month.includes(d.month))
-        );
-
-        const totals = filtered.reduce((a, c) => {
-            a.h += c.hc; a.a += c.at; a.v += c.cv; a.d += c.dy; return a;
-        }, { h:0, a:0, v:0, d:0 });
-
-        const count = filtered.length || 1;
-
-        // Top Header Info
-        const mnts = [...new Set(filtered.map(d => d.month))].sort((a,b) => {
-            const [ma, ya] = a.split("'"), [mb, yb] = b.split("'");
-            return ya !== yb ? ya - yb : monthSeq.indexOf(ma) - monthSeq.indexOf(mb);
-        });
-        const mLabel = mnts.length > 1 ? `${mnts[0]} – ${mnts[mnts.length-1]}` : (mnts[0] || "No Data");
-        document.getElementById('h-ticker').innerHTML = `Range: <b>${mLabel}</b> · <b>${[...new Set(filtered.map(d => d.trainer))].length} Trainers</b>`;
-
-        // Metrics Injection
-        document.getElementById('top-bat').innerText = filtered.length;
-        document.getElementById('top-hc').innerText = Math.round(totals.h).toLocaleString();
-        document.getElementById('top-at').innerText = Math.round(totals.a).toLocaleString();
-        document.getElementById('top-cv').innerText = (totals.v / count).toFixed(1) + "%";
-
-        document.getElementById('m-bat').innerText = filtered.length;
-        document.getElementById('m-hc').innerText = Math.round(totals.h).toLocaleString();
-        document.getElementById('m-at').innerText = Math.round(totals.a).toLocaleString();
-        document.getElementById('m-cv').innerText = (totals.v / count).toFixed(1) + "%";
-        document.getElementById('m-act').innerText = Math.round(filtered.length * 0.94); // Mock Active
-        document.getElementById('m-tx').innerText = Math.round(totals.a * 0.8); // Mock training exits
-        document.getElementById('m-ox').innerText = Math.round(totals.a * 0.2); 
-        document.getElementById('m-dy').innerText = (totals.d / count).toFixed(1);
-
-        document.getElementById('stat-count').innerText = `${filtered.length} / ${RAW_DATA.length} Batches`;
-        document.getElementById('showing').innerText = `Data Synced Live from Master Sheet`;
-
-        // Table Injection
-        document.getElementById('table-body').innerHTML = filtered.map(d => `
-            <tr>
-                <td><b>${d.batch}</b></td><td>${d.process}</td><td>${d.trainer}</td><td>${d.month}</td>
-                <td><span class="pill">On Floor</span></td><td>${Math.round(d.hc)}</td>
-                <td>${Math.round(d.hc - d.at)}</td><td>${Math.round(d.at)}</td><td>${d.cv.toFixed(1)}%</td>
-            </tr>`).join('');
-
-        renderVisuals(filtered);
-    }
-
-    function renderVisuals(data) {
+    function renderCharts(data) {
         Chart.register(ChartDataLabels);
         const trns = [...new Set(data.map(d => d.trainer))].slice(0,6);
-        
-        const chartConfig = (labels, dataset, isPercent = false) => ({
-            type: 'bar',
-            data: { labels, datasets: [{ data: dataset, backgroundColor: isPercent ? '#f85149' : '#38bdf8', borderRadius: 5 }] },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { 
-                    legend: { display: false },
-                    datalabels: { color: '#fff', font: { size: 10, weight: 'bold' }, anchor: 'end', align: 'top', formatter: v => isPercent ? v + '%' : v }
-                },
-                scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#8b949e', font: { size: 9 } } } }
-            }
+        const hcD = trns.map(t => data.filter(d => d.trainer===t).reduce((a,b)=>a+b.hc,0));
+        const atD = trns.map(t => {
+            const f = data.filter(d => d.trainer===t);
+            const h = f.reduce((a,b)=>a+b.hc,0);
+            return h > 0 ? ((f.reduce((a,b)=>a+b.at,0)/h)*100).toFixed(1) : 0;
         });
 
-        // 1. Headcount by Trainer
-        const trnHC = trns.map(t => data.filter(d => d.trainer === t).reduce((a, b) => a + b.hc, 0));
-        if(liveCharts.hc) liveCharts.hc.destroy();
-        liveCharts.hc = new Chart(document.getElementById('ch-hc-trn'), chartConfig(trns, trnHC));
+        const draw = (id, labs, dataset, isPct) => {
+            if(charts[id]) charts[id].destroy();
+            charts[id] = new Chart(document.getElementById(id), {
+                type: 'bar',
+                data: { labels: labs, datasets: [{ data: dataset, backgroundColor: isPct ? '#f85149':'#38bdf8', borderRadius: 4 }] },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'top', color: '#fff', font: { size: 9 }, formatter: v => isPct ? v+'%' : v } },
+                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#8b949e', font: { size: 8 } } } }
+                }
+            });
+        };
+        draw('ch-hc', trns, hcD, false);
+        draw('ch-at', trns, atD, true);
 
-        // 2. Attrition % by Trainer
-        const trnAT = trns.map(t => {
-            const f = data.filter(d => d.trainer === t);
-            const hcSum = f.reduce((a, b) => a + b.hc, 0);
-            return hcSum > 0 ? parseFloat(((f.reduce((a, b) => a + b.at, 0) / hcSum) * 100).toFixed(1)) : 0;
-        });
-        if(liveCharts.at) liveCharts.at.destroy();
-        liveCharts.at = new Chart(document.getElementById('ch-at-trn'), chartConfig(trns, trnAT, true));
-
-        // 3. Monthly Trend
-        const months = [...new Set(data.map(d => d.month))].sort((a,b) => {
-            const [ma, ya] = a.split("'"), [mb, yb] = b.split("'");
-            return ya !== yb ? ya - yb : monthSeq.indexOf(ma) - monthSeq.indexOf(mb);
-        }).slice(-8);
-        const tValues = months.map(m => data.filter(d => d.month === m).reduce((a, b) => a + b.hc, 0));
-        
-        if(liveCharts.trend) liveCharts.trend.destroy();
-        liveCharts.trend = new Chart(document.getElementById('ch-trend'), {
+        const mnts = [...new Set(data.map(d => d.month))].slice(-8);
+        const tVal = mnts.map(m => data.filter(d => d.month===m).reduce((a,b)=>a+b.hc,0));
+        if(charts.trend) charts.trend.destroy();
+        charts.trend = new Chart(document.getElementById('ch-trend'), {
             type: 'line',
-            data: { labels: months, datasets: [{ data: tValues, borderColor: '#38bdf8', tension: 0.4, pointRadius: 4, pointBackgroundColor: '#38bdf8' }] },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false }, datalabels: { align: 'top', color: '#fff', font: { size: 9 } } },
-                scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#8b949e', font: { size: 9 } } } }
-            }
+            data: { labels: mnts, datasets: [{ data: tVal, borderColor: '#38bdf8', tension: 0.4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false } } }
         });
     }
 
-    window.onclick = (e) => { if (!e.target.closest('.dropdown')) document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open')); }
-    loadData();
+    load();
 </script>
 </body>
 </html>
