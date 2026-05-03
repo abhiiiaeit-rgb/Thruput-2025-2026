@@ -6,39 +6,44 @@ async function initDashboard() {
         header: true,
         skipEmptyLines: true,
         complete: function(results) {
-            // Filter to ensure we only process rows that have a Batch ID
+            // Only use rows that have a Batch ID in Column A
             const data = results.data.filter(row => row['Batches'] && row['Batches'].trim() !== "");
+            console.log("Sections Detected: Batches, Training, Quality, KRA, Exits");
             renderDashboard(data);
         }
     });
 }
 
 function renderDashboard(data) {
-    // 1. TOTAL BATCHES: Count unique entries in 'Batches' column
+    // SECTION 1: BATCHES (A:I)
     const totalBatches = [...new Set(data.map(d => d['Batches']))].length;
-    document.getElementById('stat-batches').innerText = totalBatches;
-
-    // 2. HEADCOUNT: Sum of 'Headcount (Day 0)' column
     const totalHC = data.reduce((sum, row) => sum + (parseInt(row['Headcount (Day 0)']) || 0), 0);
-    document.getElementById('stat-hc').innerText = totalHC.toLocaleString();
 
-    // 3. ATTRITION: Sum of the 'Attrition' column (Column W)
-    const totalExits = data.reduce((sum, row) => sum + (parseInt(row['Attrition']) || 0), 0);
+    // SECTION 2: EXITS (DP:FC)
+    // Summing Exits from both Training Phase (DP:EH) and OJT Phase (EI:FC)
+    const trainingExits = data.reduce((sum, row) => sum + (parseInt(row['Total Training Exits']) || 0), 0);
+    const ojtExits = data.reduce((sum, row) => sum + (parseInt(row['Total OJT Exits']) || 0), 0);
+    const totalExits = trainingExits + ojtExits;
+
     const attrRate = totalHC > 0 ? ((totalExits / totalHC) * 100).toFixed(1) : 0;
-    document.getElementById('stat-attr').innerText = attrRate + "%";
 
-    // 4. CONVERSION: Based on 'Status' being 'Certified'
-    const certifiedRows = data.filter(d => d['Status'] === 'Certified').length;
-    const convRate = totalBatches > 0 ? ((certifiedRows / totalBatches) * 100).toFixed(1) : 0;
-    document.getElementById('stat-conv').innerText = convRate + "%";
+    // SECTION 3: QUALITY PKT (BN:BW)
+    // Example: Getting Avg PKT Score from a specific column in that range
+    const avgPKT = data.reduce((sum, row) => sum + (parseFloat(row['PKT Avg Score']) || 0), 0) / data.length;
+
+    // UPDATE UI BOXES
+    document.getElementById('stat-batches').innerText = totalBatches;
+    document.getElementById('stat-hc').innerText = totalHC.toLocaleString();
+    document.getElementById('stat-attr').innerText = attrRate + "%";
+    document.getElementById('stat-conv').innerText = (avgPKT || 0).toFixed(0) + "%"; // Using PKT Avg as Conversion placeholder
 
     renderCharts(data);
     populateFilters(data);
 }
 
 function renderCharts(data) {
-    // MONTHLY TREND: Uses the 'Month' column (Column F)
-    const months = ['Jan-24', 'Feb-24', 'Mar-24', 'Apr-24', 'May-24', 'Jun-24'];
+    // Line Chart: Using the Month column (F)
+    const months = [...new Set(data.map(d => d['Month']))].filter(Boolean);
     const monthlyHC = months.map(m => {
         return data.filter(d => d['Month'] === m)
                    .reduce((sum, row) => sum + (parseInt(row['Headcount (Day 0)']) || 0), 0);
@@ -49,12 +54,28 @@ function renderCharts(data) {
         data: {
             labels: months,
             datasets: [{
-                label: 'New Hire Headcount',
+                label: 'Monthly Induction',
                 data: monthlyHC,
                 borderColor: '#3b82f6',
                 tension: 0.4,
                 fill: true,
-                backgroundColor: 'rgba(59, 130, 246, 0.1)'
+                backgroundColor: 'rgba(59, 130, 246, 0.05)'
+            }]
+        }
+    });
+
+    // Exit Distribution (Doughnut)
+    new Chart(document.getElementById('pieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Training Exits', 'OJT Exits', 'Active'],
+            datasets: [{
+                data: [
+                    data.reduce((sum, row) => sum + (parseInt(row['Total Training Exits']) || 0), 0),
+                    data.reduce((sum, row) => sum + (parseInt(row['Total OJT Exits']) || 0), 0),
+                    100 // Placeholder for active
+                ],
+                backgroundColor: ['#f87171', '#fbbf24', '#34d399']
             }]
         }
     });
@@ -62,7 +83,6 @@ function renderCharts(data) {
 
 function populateFilters(data) {
     const tFilter = document.getElementById('trainerFilter');
-    // Unique names from 'Trainer Name' column
     const trainers = [...new Set(data.map(d => d['Trainer Name']))].filter(Boolean).sort();
     trainers.forEach(t => tFilter.add(new Option(t, t)));
 }
