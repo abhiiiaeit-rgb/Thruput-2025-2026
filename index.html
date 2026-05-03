@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OJT Dashboard - Dropdown Edition</title>
+    <title>OJT Pro Dashboard - Black Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap');
 
@@ -23,104 +23,101 @@
 
         /* Header */
         .header { padding: 25px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000; }
-        .h-left h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; }
-        .top-metrics { display: flex; gap: 40px; }
-        .tm-v { display: block; font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono'; color: var(--text); }
+        .h-left h1 { font-size: 22px; font-weight: 600; }
+        .top-metrics { display: flex; gap: 30px; }
+        .tm-v { display: block; font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono'; color: var(--accent); }
         .tm-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Dropdown Slicer Bar */
-        .filter-bar { display: flex; gap: 15px; padding: 20px 30px; background: #090c10; border-bottom: 1px solid var(--border); position: sticky; top: 82px; z-index: 999; }
+        /* Navigation / Reset Bar */
+        .nav-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: #090c10; border-bottom: 1px solid var(--border); }
+        .filter-group { display: flex; gap: 12px; }
         
-        .dropdown { position: relative; width: 220px; }
+        /* Dropdown Style */
+        .dropdown { position: relative; width: 180px; }
         .dd-btn { 
-            width: 100%; padding: 12px 15px; background: var(--surface); 
-            border: 1px solid var(--border); color: var(--text); border-radius: 8px;
-            cursor: pointer; text-align: left; font-size: 13px; font-weight: 600;
+            width: 100%; padding: 10px 14px; background: var(--surface); 
+            border: 1px solid var(--border); color: var(--text); border-radius: 6px;
+            cursor: pointer; text-align: left; font-size: 12px; font-weight: 600;
             display: flex; justify-content: space-between; align-items: center;
         }
         .dd-btn::after { content: '▼'; font-size: 8px; color: var(--text-dim); }
-        .dd-btn:hover { border-color: var(--accent); }
-
         .dd-menu { 
             position: absolute; top: 110%; left: 0; width: 100%; 
             background: var(--surface); border: 1px solid var(--border); 
-            border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            max-height: 250px; overflow-y: auto; display: none; z-index: 1001;
+            border-radius: 8px; max-height: 250px; overflow-y: auto; display: none; z-index: 1001;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .dropdown.open .dd-menu { display: block; }
 
-        /* List Item Tick Style */
-        .li { padding: 10px 15px; display: flex; align-items: center; gap: 12px; font-size: 13px; cursor: pointer; transition: 0.1s; color: var(--text-dim); }
+        /* List Items */
+        .li { padding: 10px 14px; display: flex; align-items: center; gap: 10px; font-size: 12px; cursor: pointer; color: var(--text-dim); }
         .li:hover { background: #21262d; color: var(--text); }
-        .chk { width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .chk { width: 14px; height: 14px; border: 2px solid var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; }
         .li.active .chk { background: var(--accent); border-color: var(--accent); }
-        .li.active .chk::after { content: '✓'; color: #000; font-size: 11px; font-weight: 900; }
+        .li.active .chk::after { content: '✓'; color: #000; font-size: 10px; font-weight: 900; }
         .li.active { color: var(--text); font-weight: 600; background: rgba(56, 189, 248, 0.05); }
 
-        /* Active Tag Area */
-        .tag-area { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 30px; min-height: 45px; }
-        .tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); padding: 4px 12px; border-radius: 4px; font-size: 11px; display: flex; align-items: center; gap: 8px; }
-        .tag span { cursor: pointer; font-weight: bold; opacity: 0.7; }
+        /* Buttons */
+        .btn { padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700; text-transform: uppercase; border: 1px solid var(--border); transition: 0.2s; }
+        .btn-reset { background: rgba(248, 81, 73, 0.1); color: var(--red); border-color: rgba(248, 81, 73, 0.2); }
+        .btn-reset:hover { background: var(--red); color: white; }
 
-        /* KPI Display Cards */
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; padding: 10px 30px; }
-        .card { background: var(--surface); border: 1px solid var(--border); padding: 25px; border-radius: 8px; position: relative; }
-        .card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); border-radius: 8px 0 0 8px; }
+        /* Active Tags */
+        .tag-area { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 30px; min-height: 40px; }
+        .tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); padding: 4px 10px; border-radius: 4px; font-size: 11px; display: flex; align-items: center; gap: 6px; }
+        .tag span { cursor: pointer; font-weight: bold; }
+
+        /* KPI Grid - Combined from both images */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; padding: 10px 30px; }
+        .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 8px; position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
         .card.red::before { background: var(--red); }
         .card.green::before { background: var(--green); }
-        .c-l { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 12px; display: block; }
-        .c-v { font-size: 36px; font-weight: 700; font-family: 'JetBrains Mono'; }
-
-        .reset-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; }
-        .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+        
+        .c-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; display: block; letter-spacing: 0.5px; }
+        .c-v { font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono'; }
+        .c-sub { font-size: 11px; color: var(--text-dim); margin-top: 5px; }
 
         #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
-        .spinner { width: 40px; height: 40px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
+        .spinner { width: 30px; height: 30px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><p style="font-size:12px; color:var(--text-dim)">SYNCING LIVE FEED...</p></div>
+<div id="loader"><div class="spinner"></div><p style="font-size:11px; color:var(--text-dim)">INITIALIZING OJT FEED...</p></div>
 
 <div class="header">
-    <div class="h-left"><h1>OJT Dashboard</h1><p id="status-text" style="font-size:10px; color:var(--accent); font-family:'JetBrains Mono'; margin-top:4px;">LIVE DATA ACCESS</p></div>
+    <div class="h-left"><h1>OJT Operational Analytics</h1></div>
     <div class="top-metrics">
-        <div class="tm-item"><span class="tm-v" id="h-hc">0</span><span class="tm-l">Total Headcount</span></div>
-        <div class="tm-item"><span class="tm-v" id="h-at">0</span><span class="tm-l">Total Attrition</span></div>
-        <button class="reset-btn" onclick="location.reload()">↺ REFRESH</button>
+        <div class="tm-item"><span class="tm-v" id="h-hc">0</span><span class="tm-l">Total HC</span></div>
+        <div class="tm-item"><span class="tm-v" id="h-at" style="color:var(--red)">0</span><span class="tm-l">Attrition</span></div>
     </div>
 </div>
 
-<div class="filter-bar">
-    <div class="dropdown" id="dd-process">
-        <button class="dd-btn" onclick="toggleDD('dd-process')">🏭 Process</button>
-        <div class="dd-menu" id="list-process"></div>
+<div class="nav-bar">
+    <div class="filter-group">
+        <div class="dropdown" id="dd-process"><button class="dd-btn" onclick="toggleDD('dd-process')">Process</button><div class="dd-menu" id="list-process"></div></div>
+        <div class="dropdown" id="dd-type"><button class="dd-btn" onclick="toggleDD('dd-type')">Batch Type</button><div class="dd-menu" id="list-type"></div></div>
+        <div class="dropdown" id="dd-trainer"><button class="dd-btn" onclick="toggleDD('dd-trainer')">Trainer</button><div class="dd-menu" id="list-trainer"></div></div>
+        <div class="dropdown" id="dd-month"><button class="dd-btn" onclick="toggleDD('dd-month')">Timeline</button><div class="dd-menu" id="list-month"></div></div>
     </div>
-    <div class="dropdown" id="dd-type">
-        <button class="dd-btn" onclick="toggleDD('dd-type')">⚡ Batch Type</button>
-        <div class="dd-menu" id="list-type"></div>
-    </div>
-    <div class="dropdown" id="dd-trainer">
-        <button class="dd-btn" onclick="toggleDD('dd-trainer')">👤 Trainer</button>
-        <div class="dd-menu" id="list-trainer"></div>
-    </div>
-    <div class="dropdown" id="dd-month">
-        <button class="dd-btn" onclick="toggleDD('dd-month')">📅 Timeline</button>
-        <div class="dd-menu" id="list-month"></div>
-    </div>
+    <button class="btn btn-reset" onclick="resetAll()">✕ Reset All Filters</button>
 </div>
 
 <div class="tag-area" id="tag-box"></div>
 
 <div class="kpi-grid">
-    <div class="card"><span class="c-l">Active Batches</span><div class="c-v" id="k-batches">0</div></div>
-    <div class="card"><span class="c-l">Current HC</span><div class="c-v" id="k-hc">0</div></div>
-    <div class="card red"><span class="c-l">Attrition Loss</span><div class="c-v" id="k-at">0</div></div>
+    <div class="card"><span class="c-l">Total Batches</span><div class="c-v" id="k-batches">0</div></div>
+    <div class="card"><span class="c-l">Target HC</span><div class="c-v" id="k-target">0</div></div>
+    <div class="card"><span class="c-l">Actual HC</span><div class="c-v" id="k-hc">0</div></div>
+    <div class="card red"><span class="c-l">Attrition</span><div class="c-v" id="k-at">0</div></div>
     <div class="card green"><span class="c-l">Avg. Conversion %</span><div class="c-v" id="k-cv">0%</div></div>
+    <div class="card"><span class="c-l">Certification %</span><div class="c-v" id="k-cert">0%</div></div>
+    <div class="card"><span class="c-l">Total Training Days</span><div class="c-v" id="k-days">0</div></div>
 </div>
 
 <script>
@@ -130,13 +127,7 @@
     let RAW_DATA = [];
     let FILTERS = { process: [], type: [], trainer: [], month: [] };
 
-    // Close dropdowns when clicking outside
-    window.onclick = function(e) {
-        if (!e.target.matches('.dd-btn')) {
-            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
-        }
-    }
-
+    window.onclick = (e) => { if (!e.target.matches('.dd-btn')) document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open')); }
     function toggleDD(id) {
         const el = document.getElementById(id);
         const isOpen = el.classList.contains('open');
@@ -148,34 +139,25 @@
         try {
             const res = await fetch(URL);
             const csv = await res.text();
-            const rows = csv.split(/\r?\n/).map(row => {
-                const parts = [];
-                let current = '', inQuotes = false;
-                for (let char of row) {
-                    if (char === '"') inQuotes = !inQuotes;
-                    else if (char === ',' && !inQuotes) { parts.push(current.trim()); current = ''; }
-                    else current += char;
-                }
-                parts.push(current.trim());
-                return parts;
-            });
+            const rows = csv.split(/\r?\n/).map(r => r.split(','));
 
             RAW_DATA = rows.slice(1).map(c => ({
                 process: (c[1] || "").trim(),
                 trainer: (c[2] || "").trim(),
                 type: (c[4] || "").trim(),
                 month: (c[5] || "").trim(),
-                hc: parseFloat(c[8]) || 0,
-                attr: parseFloat(c[10]) || 0,
-                conv: parseFloat(c[19]) || 0
+                target: parseFloat(c[7]) || 0,   // Target HC
+                hc: parseFloat(c[8]) || 0,       // Actual HC
+                attr: parseFloat(c[10]) || 0,    // Attrition
+                cert: parseFloat(c[15]) || 0,    // Certification %
+                days: parseFloat(c[16]) || 0,    // Training Days
+                conv: parseFloat(c[19]) || 0     // Conversion %
             })).filter(d => d.month !== "");
 
             document.getElementById('loader').style.display = 'none';
             renderSlicers();
             updateDashboard();
-        } catch (e) {
-            document.getElementById('status-text').innerText = "CONNECTION ERROR";
-        }
+        } catch (e) { console.error("CSV Load Fail"); }
     }
 
     function renderSlicers() {
@@ -183,17 +165,15 @@
             let items = [...new Set(RAW_DATA.map(d => d[key]))].filter(v => v);
             if(key === 'month') {
                 items.sort((a,b) => {
-                    const [mA, yA] = a.split("'");
-                    const [mB, yB] = b.split("'");
+                    const [mA, yA] = a.split("'"); const [mB, yB] = b.split("'");
                     return (parseInt(yA) - parseInt(yB)) || (MONTH_ORDER[mA] - MONTH_ORDER[mB]);
                 });
-            } else { items.sort(); }
+            } else items.sort();
 
             const container = document.getElementById('list-' + key);
             container.innerHTML = items.map(val => `
                 <div class="li ${FILTERS[key].includes(val) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFilter('${key}', '${val}')">
-                    <div class="chk"></div>
-                    <span>${val}</span>
+                    <div class="chk"></div><span>${val}</span>
                 </div>
             `).join('');
         });
@@ -203,9 +183,12 @@
         const idx = FILTERS[key].indexOf(val);
         if(idx > -1) FILTERS[key].splice(idx, 1);
         else FILTERS[key].push(val);
-        
-        renderSlicers();
-        updateDashboard();
+        renderSlicers(); updateDashboard();
+    }
+
+    function resetAll() {
+        FILTERS = { process: [], type: [], trainer: [], month: [] };
+        renderSlicers(); updateDashboard();
     }
 
     function updateDashboard() {
@@ -217,19 +200,23 @@
         );
 
         const sums = filtered.reduce((a, c) => {
-            a.hc += c.hc; a.at += c.attr; a.cv += c.conv; return a;
-        }, { hc:0, at:0, cv:0 });
+            a.target += c.target; a.hc += c.hc; a.at += c.attr; 
+            a.cv += c.conv; a.cert += c.cert; a.days += c.days; return a;
+        }, { target:0, hc:0, at:0, cv:0, cert:0, days:0 });
 
-        const avgCv = filtered.length ? (sums.cv / filtered.length).toFixed(1) : 0;
+        const count = filtered.length || 1;
 
         document.getElementById('h-hc').innerText = Math.round(sums.hc);
         document.getElementById('h-at').innerText = Math.round(sums.at);
+        
         document.getElementById('k-batches').innerText = filtered.length;
+        document.getElementById('k-target').innerText = Math.round(sums.target);
         document.getElementById('k-hc').innerText = Math.round(sums.hc);
         document.getElementById('k-at').innerText = Math.round(sums.at);
-        document.getElementById('k-cv').innerText = avgCv + "%";
+        document.getElementById('k-cv').innerText = (sums.cv / count).toFixed(1) + "%";
+        document.getElementById('k-cert').innerText = (sums.cert / count).toFixed(1) + "%";
+        document.getElementById('k-days').innerText = Math.round(sums.days);
 
-        // Selection Tags
         const box = document.getElementById('tag-box');
         box.innerHTML = '';
         Object.keys(FILTERS).forEach(k => {
