@@ -37,7 +37,7 @@
         .act-sel { color: var(--accent); cursor: pointer; }
         .act-clr { color: var(--red); cursor: pointer; }
         .dd-list { max-height: 220px; overflow-y: auto; padding: 5px 0; }
-        .dd-item { padding: 8px 15px; display: flex; align-items: center; gap: 12px; font-size: 12px; cursor: pointer; transition: 0.2s; }
+        .dd-item { padding: 8px 15px; display: flex; align-items: center; gap: 12px; font-size: 12px; cursor: pointer; }
         .dd-item:hover { background: var(--surface3); }
         .dd-item input { pointer-events: auto; accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
 
@@ -57,11 +57,11 @@
 
 <div id="loader">
     <div class="spinner"></div>
-    <p id="l-msg">Syncing Google Sheet Data...</p>
+    <p id="l-msg">Fetching Live Sheet Data...</p>
 </div>
 
 <div class="header">
-    <div><h1>OJT Training Dashboard</h1><p style="color:var(--text3); font-size:10px;">Live Data Processing</p></div>
+    <div><h1>OJT Training Dashboard</h1><p style="color:var(--text3); font-size:10px;">Year-to-Year Analytics</p></div>
     <div class="hstats">
         <div class="hstat"><div class="v" id="hBatches">0</div><div class="l">Batches</div></div>
         <div class="hstat"><div class="v" id="hHC">0</div><div class="l">Headcount</div></div>
@@ -95,3 +95,13 @@
 </div>
 
 <div class="main">
+    <div class="kpi-grid">
+        <div class="kpi-card"><div class="lbl">Total Batches</div><div class="val" id="k-batches">0</div></div>
+        <div class="kpi-card"><div class="lbl">Total Headcount</div><div class="val" id="k-hc">0</div></div>
+        <div class="kpi-card red"><div class="lbl">Total Attrition</div><div class="val" id="k-attr">0</div></div>
+        <div class="kpi-card green"><div class="lbl">Avg Conversion %</div><div class="val" id="k-conv">0%</div></div>
+    </div>
+</div>
+
+<script>
+    const sheetURL = "
