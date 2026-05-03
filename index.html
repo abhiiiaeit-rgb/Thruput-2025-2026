@@ -19,36 +19,38 @@
             padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; 
             border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000;
         }
-        .h-left { display: flex; align-items: center; gap: 15px; flex: 1; overflow: hidden; }
-        .brand { border-right: 1px solid var(--border); padding-right: 15px; line-height: 1; flex-shrink: 0; }
+        .h-left { display: flex; align-items: center; gap: 15px; flex: 1; }
+        .brand { border-right: 1px solid var(--border); padding-right: 15px; line-height: 1; }
         .brand h1 { font-size: 13px; font-weight: 800; color: #fff; text-transform: uppercase; }
         .brand p { font-size: 9px; color: var(--accent); font-weight: 700; text-transform: uppercase; margin-top: 2px; }
         
-        /* Left Hand Summary Line */
-        .h-summary { font-family: 'JetBrains Mono'; font-size: 10.5px; color: var(--text-dim); white-space: nowrap; }
+        .h-summary { font-family: 'JetBrains Mono'; font-size: 10.5px; color: var(--text-dim); }
         .h-summary span { color: var(--accent); font-weight: 700; }
 
-        /* Right Hand KPI Line */
         .h-right { display: flex; align-items: center; gap: 25px; }
         .hk-item { text-align: right; line-height: 1.1; }
         .hk-v { display: block; font-size: 17px; font-weight: 700; font-family: 'JetBrains Mono'; color: #fff; }
         .hk-l { font-size: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: 800; }
 
-        /* NAV & SLICERS - CLEANED (No Tickers) */
-        .nav-bar { display: flex; gap: 8px; padding: 10px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; }
-        .dropdown { position: relative; width: 145px; }
-        .dd-btn { width: 100%; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px; font-weight: 600; display: flex; justify-content: space-between; }
-        .dd-menu { position: absolute; top: 115%; left: 0; width: 220px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; max-height: 300px; overflow-y: auto; display: none; z-index: 1001; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        /* NAV & SLICERS */
+        .nav-bar { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 30px; background: #090c10; border-bottom: 1px solid var(--border); align-items: center; }
+        .dropdown { position: relative; width: 140px; }
+        .dd-btn { width: 100%; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; text-align: left; font-size: 10px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
+        .dd-btn::after { content: '▼'; font-size: 8px; margin-left: 5px; transition: 0.2s; }
+        .dropdown.open .dd-btn::after { content: '▲'; }
+        
+        .dd-menu { position: absolute; top: 115%; left: 0; width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; max-height: 300px; overflow-y: auto; display: none; z-index: 1001; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .dropdown.open .dd-menu { display: block; }
         
-        .dd-actions { display: flex; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); }
+        .dd-actions { display: flex; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 2; }
         .dd-actions button { flex: 1; padding: 8px; background: transparent; border: none; color: var(--accent); font-size: 9px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
         
         .li { padding: 8px 12px; display: flex; align-items: center; gap: 10px; font-size: 11px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.02); }
         .li:hover { background: #21262d; }
         .li.active { color: var(--accent); font-weight: 600; }
         .chk { width: 13px; height: 13px; border: 1px solid var(--border); border-radius: 3px; flex-shrink: 0; }
-        .li.active .chk { background: var(--accent); border-color: var(--accent); }
+        .li.active .chk { background: var(--accent); border-color: var(--accent); position: relative; }
+        .li.active .chk::after { content: '✓'; color: #000; font-size: 9px; position: absolute; left: 2px; top: -1px; font-weight: 900; }
 
         /* KPI GRID */
         .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; padding: 20px 30px; }
@@ -62,12 +64,12 @@
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><p style="margin-top:12px; font-size:10px; color:var(--text-dim);">FETCHING OJT RECORDS...</p></div>
+<div id="loader"><div class="spinner"></div><p style="margin-top:12px; font-size:10px; color:var(--text-dim);">SYNCING OJT DATABASE...</p></div>
 
 <div class="header">
     <div class="h-left">
         <div class="brand"><h1>New Hire</h1><p>Thruput Live</p></div>
-        <div class="h-summary" id="h-sum-text">Initializing Dashboard...</div>
+        <div class="h-summary" id="h-sum-text">Loading History...</div>
     </div>
     <div class="h-right">
         <div class="hk-item"><span class="hk-v" id="h-count">0</span><span class="hk-l">Batches</span></div>
@@ -78,11 +80,12 @@
 </div>
 
 <div class="nav-bar">
-    <div class="dropdown" id="dd-batch"><button class="dd-btn" onclick="toggleDD('dd-batch')">🔍 Batch</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('batch',1)">Select All</button><button onclick="bulk('batch',0)">Clear</button></div><div id="list-batch"></div></div></div>
-    <div class="dropdown" id="dd-process"><button class="dd-btn" onclick="toggleDD('dd-process')">🏭 Process</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('process',1)">All</button><button onclick="bulk('process',0)">Clear</button></div><div id="list-process"></div></div></div>
-    <div class="dropdown" id="dd-trainer"><button class="dd-btn" onclick="toggleDD('dd-trainer')">👤 Trainer Name</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('trainer',1)">All</button><button onclick="bulk('trainer',0)">Clear</button></div><div id="list-trainer"></div></div></div>
-    <div class="dropdown" id="dd-month"><button class="dd-btn" onclick="toggleDD('dd-month')">📅 Month</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('month',1)">All</button><button onclick="bulk('month',0)">Clear</button></div><div id="list-month"></div></div></div>
-    <button onclick="loadData(true)" style="padding:7px 12px; background:transparent; border:1px solid var(--border); color:var(--text); border-radius:6px; font-size:10px; font-weight:800; cursor:pointer; margin-left:auto;">REFRESH</button>
+    <div class="dropdown" id="dd-batch"><button class="dd-btn" onclick="toggleDD('dd-batch')">Batch</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('batch',1)">All</button><button onclick="bulk('batch',0)">Clear</button></div><div id="list-batch"></div></div></div>
+    <div class="dropdown" id="dd-process"><button class="dd-btn" onclick="toggleDD('dd-process')">Process</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('process',1)">All</button><button onclick="bulk('process',0)">Clear</button></div><div id="list-process"></div></div></div>
+    <div class="dropdown" id="dd-trainer"><button class="dd-btn" onclick="toggleDD('dd-trainer')">Trainer</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('trainer',1)">All</button><button onclick="bulk('trainer',0)">Clear</button></div><div id="list-trainer"></div></div></div>
+    <div class="dropdown" id="dd-type"><button class="dd-btn" onclick="toggleDD('dd-type')">Batch Type</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('type',1)">All</button><button onclick="bulk('type',0)">Clear</button></div><div id="list-type"></div></div></div>
+    <div class="dropdown" id="dd-month"><button class="dd-btn" onclick="toggleDD('dd-month')">Month</button><div class="dd-menu"><div class="dd-actions"><button onclick="bulk('month',1)">All</button><button onclick="bulk('month',0)">Clear</button></div><div id="list-month"></div></div></div>
+    <button onclick="loadData(true)" style="padding:7px 12px; background:transparent; border:1px solid var(--border); color:var(--text); border-radius:6px; font-size:10px; font-weight:800; cursor:pointer; margin-left:auto;">REFRESH LIVE</button>
 </div>
 
 <div class="kpi-grid">
@@ -96,7 +99,9 @@
 
 <script>
     const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
-    let RAW = [], FILTERS = { batch: [], process: [], trainer: [], month: [] };
+    let RAW = [], FILTERS = { batch: [], process: [], trainer: [], month: [], type: [] };
+
+    const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     window.onclick = (e) => { if (!e.target.closest('.dropdown')) document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open')); }
     function toggleDD(id) {
@@ -111,7 +116,6 @@
         try {
             const res = await fetch(`${URL}&cb=${Date.now()}`);
             const text = await res.text();
-            
             const rows = text.split(/\r?\n/).map(row => {
                 let res = [], cell = '', inQ = false;
                 for (let char of row) {
@@ -122,12 +126,10 @@
                 res.push(cell.trim()); return res;
             });
 
-            // Start scanning from Row 3 (Index 2) to skip decorative headers
-            const startIdx = 2; 
+            const startIdx = 2; // Fixed start based on your template
             const head = rows[startIdx].map(h => h.toLowerCase());
             const find = (k) => head.findIndex(h => h.includes(k));
 
-            // Map metric indices
             const idxTG = find("target"), idxHC = find("headcount"), idxAT = find("attrition");
             const idxCR = find("cert"), idxCV = find("conv"), idxDY = find("days");
 
@@ -136,18 +138,16 @@
                     let val = parseFloat(String(v).replace(/[^0-9.]/g, ''));
                     return isNaN(val) ? 0 : val;
                 };
-                // Exact Column Mapping: A=0, B=1, C=2, D=3, E=4, F=5
                 return {
                     batch: c[0] || "N/A",
                     process: c[1] || "N/A",
                     trainer: c[2] || "N/A",
-                    status: c[3] || "",
-                    type: c[4] || "",
-                    month: c[5] || "",
+                    type: c[4] || "New", // Column E
+                    month: c[5] || "",    // Column F
                     target: n(c[idxTG]), hc: n(c[idxHC]), at: n(c[idxAT]),
                     cert: n(c[idxCR]), days: n(c[idxDY]), cv: n(c[idxCV])
                 };
-            }).filter(d => d.month && d.month.length > 2 && d.batch !== "N/A");
+            }).filter(d => d.month && d.month.length > 2);
 
             renderSlicers(); update();
         } catch (e) { console.error(e); }
@@ -155,11 +155,20 @@
     }
 
     function renderSlicers() {
-        ['batch', 'process', 'trainer', 'month'].forEach(key => {
-            const items = [...new Set(RAW.map(d => d[key]))]
-                .filter(v => v && v !== "N/A" && v !== "Trainer Name" && v !== "Batch No")
-                .sort((a,b) => a.localeCompare(b, undefined, {numeric:true}));
+        ['batch', 'process', 'trainer', 'month', 'type'].forEach(key => {
+            let items = [...new Set(RAW.map(d => d[key]))].filter(v => v && v !== "N/A" && v !== "Trainer Name");
             
+            if(key === 'month') {
+                items.sort((a,b) => {
+                    const [m1, y1] = a.split("'");
+                    const [m2, y2] = b.split("'");
+                    if(y1 !== y2) return y1 - y2;
+                    return monthOrder.indexOf(m1) - monthOrder.indexOf(m2);
+                });
+            } else if (key === 'batch') {
+                items.sort((a,b) => a.localeCompare(b, undefined, {numeric: true}));
+            } else { items.sort(); }
+
             document.getElementById('list-' + key).innerHTML = items.map(v => `
                 <div class="li ${FILTERS[key].includes(v)?'active':''}" onclick="event.stopPropagation();toggleItem('${key}','${v.replace(/'/g, "\\'")}')">
                     <div class="chk"></div><span>${v}</span>
@@ -183,6 +192,7 @@
             (!FILTERS.batch.length || FILTERS.batch.includes(d.batch)) &&
             (!FILTERS.process.length || FILTERS.process.includes(d.process)) &&
             (!FILTERS.trainer.length || FILTERS.trainer.includes(d.trainer)) &&
+            (!FILTERS.type.length || FILTERS.type.includes(d.type)) &&
             (!FILTERS.month.length || FILTERS.month.includes(d.month))
         );
 
@@ -192,29 +202,29 @@
 
         const count = data.length || 1;
         
-        // Exact Batch Count (No ticker interference)
-        const totalBatches = data.length;
-
-        // Date Range Logic: 2024 to 2026
-        const months = [...new Set(data.map(d => d.month))];
-        const mStart = "Jan 2024"; // Force starting from 2024 as requested
-        const mEnd = months[months.length-1] || "Mar 2026";
+        // Dynamic Range Calculation
+        const bOnly = data.map(d => parseInt(d.batch.replace(/\D/g,''))).filter(n => !isNaN(n));
+        const bRange = bOnly.length ? `Batch ${Math.min(...bOnly)} → ${Math.max(...bOnly)}` : 'N/A';
         
-        // Trainer & Process Count (Fixed to skip duplicates and empty values)
-        const trn = [...new Set(data.map(d => d.trainer))].filter(v => v && v !== "N/A" && v !== "Trainer Name").length;
-        const prc = [...new Set(data.map(d => d.process))].filter(v => v && v !== "N/A" && v !== "Process").length;
+        // Months Range
+        const mSorted = [...new Set(RAW.map(d => d.month))].sort((a,b) => {
+            const [m1, y1] = a.split("'"); const [m2, y2] = b.split("'");
+            if(y1 !== y2) return y1 - y2; return monthOrder.indexOf(m1) - monthOrder.indexOf(m2);
+        });
+        const mStart = mSorted[0] || "Jan'24";
+        const mEnd = mSorted[mSorted.length-1] || "Mar'26";
 
-        // Update Left Summary
+        const trn = [...new Set(data.map(d => d.trainer))].filter(v => v && v !== "N/A").length;
+        const prc = [...new Set(data.map(d => d.process))].filter(v => v && v !== "N/A").length;
+
         document.getElementById('h-sum-text').innerHTML = 
-            `(<span>Batch ${totalBatches > 0 ? RAW[0].batch.replace(/\D/g,'') : '0'} → ${totalBatches > 0 ? RAW[RAW.length-1].batch.replace(/\D/g,'') : '0'}</span> · <span>${mStart} – ${mEnd}</span> · <span>${trn} Trainers</span> · <span>${prc} Processes</span>)`;
+            `(<span>${bRange}</span> · <span>${mStart} – ${mEnd}</span> · <span>${trn} Trainers</span> · <span>${prc} Processes</span>)`;
 
-        // Update Top Right KPIs
-        document.getElementById('h-count').innerText = totalBatches;
+        document.getElementById('h-count').innerText = data.length;
         document.getElementById('h-hc').innerText = Math.round(s.h).toLocaleString();
         document.getElementById('h-at').innerText = Math.round(s.a).toLocaleString();
         document.getElementById('h-conv').innerText = (s.v / count).toFixed(1) + "%";
 
-        // KPI Cards
         document.getElementById('k-target').innerText = Math.round(s.t).toLocaleString();
         document.getElementById('k-hc').innerText = Math.round(s.h).toLocaleString();
         document.getElementById('k-at').innerText = Math.round(s.a).toLocaleString();
