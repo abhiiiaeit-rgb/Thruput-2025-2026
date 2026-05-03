@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>OJT Training Dashboard - Final Version</title>
+    <title>OJT Training Dashboard - Corrected</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap');
         
@@ -78,31 +78,31 @@
     <div class="dd-wrap" id="wrap-batch">
         <div class="dd-label">Batch</div>
         <button class="dd-btn" onclick="toggleDD('batch')"><span id="lbl-batch">All</span> <span class="arrow">▼</span></button>
-        <div id="panel-batch" class="dd-panel"><div class="dd-search-area"><input type="text" onkeyup="searchDD('batch', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('batch', true)">All</span><span class="act-clr" onclick="bulk('batch', false)">Clear</span></div><div class="dd-list" id="list-batch"></div></div>
+        <div id="panel-batch" class="dd-panel"><div class="dd-search-area"><input type="text" placeholder="Search..." onkeyup="searchDD('batch', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('batch', true)">All</span><span class="act-clr" onclick="bulk('batch', false)">Clear</span></div><div class="dd-list" id="list-batch"></div></div>
     </div>
 
     <div class="dd-wrap" id="wrap-process">
         <div class="dd-label">Process</div>
         <button class="dd-btn" onclick="toggleDD('process')"><span id="lbl-process">All</span> <span class="arrow">▼</span></button>
-        <div id="panel-process" class="dd-panel"><div class="dd-search-area"><input type="text" onkeyup="searchDD('process', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('process', true)">All</span><span class="act-clr" onclick="bulk('process', false)">Clear</span></div><div class="dd-list" id="list-process"></div></div>
+        <div id="panel-process" class="dd-panel"><div class="dd-search-area"><input type="text" placeholder="Search..." onkeyup="searchDD('process', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('process', true)">All</span><span class="act-clr" onclick="bulk('process', false)">Clear</span></div><div class="dd-list" id="list-process"></div></div>
     </div>
 
     <div class="dd-wrap" id="wrap-type">
         <div class="dd-label">Batch Type</div>
         <button class="dd-btn" onclick="toggleDD('type')"><span id="lbl-type">All</span> <span class="arrow">▼</span></button>
-        <div id="panel-type" class="dd-panel"><div class="dd-search-area"><input type="text" onkeyup="searchDD('type', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('type', true)">All</span><span class="act-clr" onclick="bulk('type', false)">Clear</span></div><div class="dd-list" id="list-type"></div></div>
+        <div id="panel-type" class="dd-panel"><div class="dd-search-area"><input type="text" placeholder="New/Transit..." onkeyup="searchDD('type', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('type', true)">All</span><span class="act-clr" onclick="bulk('type', false)">Clear</span></div><div class="dd-list" id="list-type"></div></div>
     </div>
 
     <div class="dd-wrap" id="wrap-trainer">
         <div class="dd-label">Trainer</div>
         <button class="dd-btn" onclick="toggleDD('trainer')"><span id="lbl-trainer">All</span> <span class="arrow">▼</span></button>
-        <div id="panel-trainer" class="dd-panel"><div class="dd-search-area"><input type="text" onkeyup="searchDD('trainer', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('trainer', true)">All</span><span class="act-clr" onclick="bulk('trainer', false)">Clear</span></div><div class="dd-list" id="list-trainer"></div></div>
+        <div id="panel-trainer" class="dd-panel"><div class="dd-search-area"><input type="text" placeholder="Search..." onkeyup="searchDD('trainer', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('trainer', true)">All</span><span class="act-clr" onclick="bulk('trainer', false)">Clear</span></div><div class="dd-list" id="list-trainer"></div></div>
     </div>
 
     <div class="dd-wrap" id="wrap-month">
         <div class="dd-label">Month</div>
         <button class="dd-btn" onclick="toggleDD('month')"><span id="lbl-month">All</span> <span class="arrow">▼</span></button>
-        <div id="panel-month" class="dd-panel"><div class="dd-search-area"><input type="text" onkeyup="searchDD('month', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('month', true)">All</span><span class="act-clr" onclick="bulk('month', false)">Clear</span></div><div class="dd-list" id="list-month"></div></div>
+        <div id="panel-month" class="dd-panel"><div class="dd-search-area"><input type="text" placeholder="Search..." onkeyup="searchDD('month', this.value)"></div><div class="dd-controls"><span class="act-sel" onclick="bulk('month', true)">All</span><span class="act-clr" onclick="bulk('month', false)">Clear</span></div><div class="dd-list" id="list-month"></div></div>
     </div>
 
     <button class="btn-reset" onclick="resetAll()">↺ Reset All</button>
@@ -134,28 +134,30 @@
                 batch: c[0]?.trim() || "",
                 process: c[1]?.trim() || "",
                 trainer: c[2]?.trim() || "",
-                type: c[4]?.trim() || "",
+                type: c[4]?.trim() || "", // Batch Type (New/Transit)
                 month: c[5]?.trim() || "",
                 hc: parseFloat(c[8]) || 0,
                 attr: parseFloat(c[10]) || 0,
                 conv: parseFloat(c[19]) || 0
-            })).filter(d => d.batch && !d.batch.toLowerCase().includes("batch"));
+            })).filter(d => d.batch && !d.batch.toLowerCase().includes("batch") && d.batch !== "");
 
             document.getElementById('loader').style.display = 'none';
             renderAllFilters();
             update();
-        } catch (e) { document.getElementById('l-msg').innerText = "Link Error: Check CSV Publishing."; }
+        } catch (e) { 
+            document.getElementById('l-msg').innerText = "Link Error: Check Google Sheet Publishing.";
+        }
     }
 
-    // Fixed Chronological Month Logic
+    // Chronological sorting logic for Month dropdown
     function sortMonthsChronologically(arr) {
         return arr.sort((a, b) => {
-            const partsA = a.split("'");
-            const partsB = b.split("'");
-            const yrA = parseInt(partsA[1]);
-            const yrB = parseInt(partsB[1]);
-            if (yrA !== yrB) return yrA - yrB;
-            return monthOrder.indexOf(partsA[0]) - monthOrder.indexOf(partsB[0]);
+            const aParts = a.split("'");
+            const bParts = b.split("'");
+            const yearA = parseInt(aParts[1]) || 0;
+            const yearB = parseInt(bParts[1]) || 0;
+            if (yearA !== yearB) return yearA - yearB;
+            return monthOrder.indexOf(aParts[0]) - monthOrder.indexOf(bParts[0]);
         });
     }
 
@@ -194,7 +196,7 @@
     }
 
     function update() {
-        const f = RAW.filter(d => 
+        const filteredData = RAW.filter(d => 
             (!filters.batch.length || filters.batch.includes(d.batch)) &&
             (!filters.process.length || filters.process.includes(d.process)) &&
             (!filters.type.length || filters.type.includes(d.type)) &&
@@ -202,16 +204,17 @@
             (!filters.month.length || filters.month.includes(d.month))
         );
 
-        const hc = f.reduce((a, b) => a + b.hc, 0);
-        const at = f.reduce((a, b) => a + b.attr, 0);
-        const avgConv = f.length ? (f.reduce((a, b) => a + (b.conv > 1.5 ? b.conv/100 : b.conv), 0) / f.length * 100).toFixed(1) : 0;
+        const totalHC = filteredData.reduce((acc, curr) => acc + curr.hc, 0);
+        const totalAttr = filteredData.reduce((acc, curr) => acc + curr.attr, 0);
+        const avgConv = filteredData.length ? (filteredData.reduce((acc, curr) => acc + (curr.conv > 1.5 ? curr.conv/100 : curr.conv), 0) / filteredData.length * 100).toFixed(1) : 0;
 
-        document.getElementById('hBatches').innerText = f.length;
-        document.getElementById('k-batches').innerText = f.length;
-        document.getElementById('hHC').innerText = Math.round(hc);
-        document.getElementById('k-hc').innerText = Math.round(hc);
-        document.getElementById('hAttr').innerText = Math.round(at);
-        document.getElementById('k-attr').innerText = Math.round(at);
+        // Updating KPI display
+        document.getElementById('hBatches').innerText = filteredData.length;
+        document.getElementById('k-batches').innerText = filteredData.length;
+        document.getElementById('hHC').innerText = Math.round(totalHC);
+        document.getElementById('k-hc').innerText = Math.round(totalHC);
+        document.getElementById('hAttr').innerText = Math.round(totalAttr);
+        document.getElementById('k-attr').innerText = Math.round(totalAttr);
         document.getElementById('k-conv').innerText = avgConv + '%';
     }
 
