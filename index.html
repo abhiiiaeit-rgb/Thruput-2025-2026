@@ -3,293 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OJT Training Dashboard - Pro</title>
+    <title>OJT Training Dashboard - Fixed</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap');
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap');
         :root {
             --bg: #0d1117; --surface: #161b22; --accent: #38bdf8;
             --border: #30363d; --text: #e6edf3; --text-dim: #8b949e;
-            --red: #f85149; --green: #3fb950; --purple: #a371f7;
-            --orange: #f0883e;
+            --red: #f85149; --green: #3fb950; --orange: #f0883e;
         }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+        
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .live-status { font-size: 11px; color: var(--accent); font-family: 'JetBrains Mono'; }
+        .top-stats { display: flex; gap: 20px; text-align: right; }
+        .ts-item { display: flex; flex-direction: column; }
+        .ts-val { font-family: 'JetBrains Mono'; font-size: 20px; font-weight: 700; }
+        .ts-lbl { font-size: 9px; color: var(--text-dim); text-transform: uppercase; }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; line-height: 1.5; }
-
-        /* Header Layout */
-        .header { padding: 25px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1100; }
-        .h-left h1 { font-size: 20px; font-weight: 600; }
-        .h-left p { font-size: 11px; color: var(--accent); font-family: 'JetBrains Mono'; margin-top: 4px; }
-        .top-metrics { display: flex; gap: 30px; }
-        .tm { text-align: right; }
-        .tm-v { display: block; font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono'; color: var(--text); }
-        .tm-l { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Slicer Controls */
-        .slicer-area { padding: 20px 30px; display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; background: #090c10; }
-        .s-grp { display: flex; flex-direction: column; gap: 6px; min-width: 175px; position: relative; }
+        /* Slicers */
+        .slicer-area { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; background: #090c10; padding: 15px; border-radius: 8px; align-items: flex-end; }
+        .s-grp { display: flex; flex-direction: column; gap: 5px; min-width: 160px; position: relative; }
         .s-lbl { font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
-        .dd-trig { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; width: 100%; transition: 0.2s; }
-        .dd-trig:hover { border-color: var(--text-dim); }
-        .dd-trig.active { border-color: var(--accent); outline: 1px solid var(--accent); }
+        select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 6px; font-size: 12px; cursor: pointer; outline: none; }
+        .btn-reset { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; }
 
-        /* Dropdown UI */
-        .dd-panel { position: absolute; top: calc(100% + 5px); left: 0; width: 230px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; z-index: 1200; display: none; flex-direction: column; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-        .dd-panel.show { display: flex; }
-        .dd-search { padding: 8px; border-bottom: 1px solid var(--border); }
-        .dd-search input { width: 100%; background: #0d1117; border: 1px solid var(--border); color: var(--text); padding: 7px; border-radius: 4px; font-size: 12px; outline: none; }
-        .dd-btns { padding: 8px 12px; display: flex; gap: 12px; font-size: 11px; border-bottom: 1px solid var(--border); }
-        .act { cursor: pointer; font-weight: 600; color: var(--accent); }
-        .dd-list { max-height: 200px; overflow-y: auto; padding: 4px 0; }
-        .dd-item { padding: 8px 12px; display: flex; align-items: center; gap: 10px; font-size: 12px; cursor: pointer; }
-        .dd-item:hover { background: #21262d; }
-        .dd-item input { accent-color: var(--accent); pointer-events: none; }
+        /* KPI Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent); }
+        .card.red { border-left-color: var(--red); }
+        .card.green { border-left-color: var(--green); }
+        .card.orange { border-left-color: var(--orange); }
+        .c-lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px; }
+        .c-val { font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono'; }
 
-        /* Selection Tags */
-        .tag-box { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 30px; min-height: 40px; }
-        .tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); padding: 3px 10px; border-radius: 4px; font-size: 11px; display: flex; align-items: center; gap: 6px; }
-        .tag b { font-weight: 600; color: var(--text-dim); margin-right: 2px; text-transform: uppercase; font-size: 9px; }
-        .tag span { cursor: pointer; font-weight: bold; padding: 0 2px; }
-        .tag span:hover { color: var(--red); }
-
-        /* KPI Grid */
-        .main-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; padding: 10px 30px; }
-        .card { background: var(--surface); border: 1px solid var(--border); padding: 24px; border-radius: 8px; position: relative; overflow: hidden; }
-        .card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); }
-        .card.red::before { background: var(--red); }
-        .card.green::before { background: var(--green); }
-        .card.orange::before { background: var(--orange); }
-        .c-l { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 12px; display: block; }
-        .c-v { font-size: 32px; font-weight: 700; font-family: 'JetBrains Mono'; }
-
-        .btn-reset { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 9px 15px; border-radius: 6px; cursor: pointer; font-size: 11px; margin-left: auto; }
-        .btn-reset:hover { color: var(--text); border-color: var(--text-dim); }
-
-        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
-        .spin { width: 35px; height: 35px; border: 3px solid #30363d; border-top-color: var(--accent); border-radius: 50%; animation: rot 0.8s linear infinite; }
-        @keyframes rot { to { transform: rotate(360deg); } }
+        #loader { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 99; }
     </style>
 </head>
 <body>
 
-<div id="loader"><div class="spin"></div><p style="margin-top:15px; font-size:12px; color:var(--text-dim)">Initializing Dashboard Data...</p></div>
+<div id="loader">Fetching Live Data...</div>
 
 <div class="header">
-    <div class="h-left"><h1>OJT Training Dashboard</h1><p id="data-status">Live System Active</p></div>
-    <div class="top-metrics">
-        <div class="tm"><span class="tm-v" id="h-batches">0</span><span class="tm-l">Batches</span></div>
-        <div class="tm"><span class="tm-v" id="h-hc">0</span><span class="tm-l">Headcount</span></div>
-        <div class="tm"><span class="tm-v" id="h-attr">0</span><span class="tm-l">Attrition</span></div>
+    <div>
+        <h1>OJT Training Dashboard</h1>
+        <div class="live-status" id="status">Live System Active</div>
+    </div>
+    <div class="top-stats">
+        <div class="ts-item"><span class="ts-val" id="h-batches">0</span><span class="ts-lbl">Batches</span></div>
+        <div class="ts-item"><span class="ts-val" id="h-hc">0</span><span class="ts-lbl">Headcount</span></div>
+        <div class="ts-item"><span class="ts-val" id="h-at">0</span><span class="ts-lbl">Attrition</span></div>
     </div>
 </div>
 
 <div class="slicer-area">
-    <div class="s-grp">
-        <div class="s-lbl">🔍 Batch</div>
-        <button class="dd-trig" onclick="toggleDD('batch')"><span id="btn-batch">All</span> <small>▼</small></button>
-        <div class="dd-panel" id="pan-batch">
-            <div class="dd-search"><input type="text" placeholder="Search..." onkeyup="searchList('batch', this.value)"></div>
-            <div class="dd-btns"><span class="act" onclick="bulk('batch', true)">All</span><span class="act" style="color:var(--red)" onclick="bulk('batch', false)">Clear</span></div>
-            <div class="dd-list" id="list-batch"></div>
-        </div>
-    </div>
-
-    <div class="s-grp">
-        <div class="s-lbl">⚡ Batch Type</div>
-        <button class="dd-trig" onclick="toggleDD('type')"><span id="btn-type">All</span> <small>▼</small></button>
-        <div class="dd-panel" id="pan-type">
-            <div class="dd-search"><input type="text" placeholder="New/Transit..." onkeyup="searchList('type', this.value)"></div>
-            <div class="dd-btns"><span class="act" onclick="bulk('type', true)">All</span><span class="act" style="color:var(--red)" onclick="bulk('type', false)">Clear</span></div>
-            <div class="dd-list" id="list-type"></div>
-        </div>
-    </div>
-
-    <div class="s-grp">
-        <div class="s-lbl">🏭 Process</div>
-        <button class="dd-trig" onclick="toggleDD('process')"><span id="btn-process">All</span> <small>▼</small></button>
-        <div class="dd-panel" id="pan-process">
-            <div class="dd-search"><input type="text" placeholder="Search..." onkeyup="searchList('process', this.value)"></div>
-            <div class="dd-btns"><span class="act" onclick="bulk('process', true)">All</span><span class="act" style="color:var(--red)" onclick="bulk('process', false)">Clear</span></div>
-            <div class="dd-list" id="list-process"></div>
-        </div>
-    </div>
-
-    <div class="s-grp">
-        <div class="s-lbl">👤 Trainer</div>
-        <button class="dd-trig" onclick="toggleDD('trainer')"><span id="btn-trainer">All</span> <small>▼</small></button>
-        <div class="dd-panel" id="pan-trainer">
-            <div class="dd-search"><input type="text" placeholder="Search..." onkeyup="searchList('trainer', this.value)"></div>
-            <div class="dd-btns"><span class="act" onclick="bulk('trainer', true)">All</span><span class="act" style="color:var(--red)" onclick="bulk('trainer', false)">Clear</span></div>
-            <div class="dd-list" id="list-trainer"></div>
-        </div>
-    </div>
-
-    <div class="s-grp">
-        <div class="s-lbl">📅 Month</div>
-        <button class="dd-trig" onclick="toggleDD('month')"><span id="btn-month">All</span> <small>▼</small></button>
-        <div class="dd-panel" id="pan-month">
-            <div class="dd-search"><input type="text" placeholder="Search..." onkeyup="searchList('month', this.value)"></div>
-            <div class="dd-btns"><span class="act" onclick="bulk('month', true)">All</span><span class="act" style="color:var(--red)" onclick="bulk('month', false)">Clear</span></div>
-            <div class="dd-list" id="list-month"></div>
-        </div>
-    </div>
-    <button class="btn-reset" onclick="location.reload()">↺ Reset</button>
+    <div class="s-grp"><span class="s-lbl">🔍 Batch</span><select id="sel-batch" onchange="updateDash()"><option value="All">All</option></select></div>
+    <div class="s-grp"><span class="s-lbl">⚡ Batch Type</span><select id="sel-type" onchange="updateDash()"><option value="All">All</option></select></div>
+    <div class="s-grp"><span class="s-lbl">🏭 Process</span><select id="sel-process" onchange="updateDash()"><option value="All">All</option></select></div>
+    <div class="s-grp"><span class="s-lbl">👤 Trainer</span><select id="sel-trainer" onchange="updateDash()"><option value="All">All</option></select></div>
+    <div class="s-grp"><span class="s-lbl">📅 Month</span><select id="sel-month" onchange="updateDash()"><option value="All">All</option></select></div>
+    <button class="btn-reset" onclick="location.reload()">Reset All</button>
 </div>
 
-<div class="tag-box" id="tag-box"></div>
-
-<div class="main-grid">
-    <div class="card"><span class="c-l">Total Batches</span><div class="c-v" id="k-batches">0</div></div>
-    <div class="card"><span class="c-l">Total Headcount</span><div class="c-v" id="k-hc">0</div></div>
-    <div class="card red"><span class="c-l">Total Attrition</span><div class="c-v" id="k-attr">0</div></div>
-    <div class="card green"><span class="c-l">Avg Conversion %</span><div class="c-v" id="k-conv">0%</div></div>
-    <div class="card orange"><span class="c-l">Floor Deployment</span><div class="c-v" id="k-floor">0</div></div>
+<div class="grid">
+    <div class="card"><span class="c-lbl">Total Batches</span><div class="c-val" id="k-batches">0</div></div>
+    <div class="card"><span class="c-lbl">Total Headcount</span><div class="c-val" id="k-hc">0</div></div>
+    <div class="card red"><span class="c-lbl">Total Attrition</span><div class="c-val" id="k-at">0</div></div>
+    <div class="card green"><span class="c-lbl">Avg Conversion %</span><div class="c-val" id="k-cv">0%</div></div>
+    <div class="card orange"><span class="c-lbl">Floor Deployment</span><div class="c-val" id="k-fl">0</div></div>
 </div>
 
 <script>
-    // Robust Data Parsing and Chronological Sort
-    const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv&v=" + new Date().getTime();
-    const MONTH_ORDER = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    // 1. ADD YOUR PUBLISHED CSV URL HERE
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
     
-    let RAW_DATA = [];
-    let FILTERS = { batch: [], type: [], process: [], trainer: [], month: [] };
+    let RAW = [];
 
-    async function loadData() {
+    async function fetchData() {
         try {
-            const res = await fetch(URL);
-            const csvText = await res.text();
-            const lines = csvText.split(/\r?\n/).map(line => {
-                // Handle comma within quotes if necessary
-                return line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            });
-            
-            RAW_DATA = lines.slice(1).map(col => ({
-                batch: (col[0] || "").trim(),
-                process: (col[1] || "").trim(),
-                trainer: (col[2] || "").trim(),
-                type: (col[4] || "").trim(), // Batch Type (New/Transit)
-                month: (col[5] || "").trim(),
-                hc: parseFloat(col[8]) || 0,
-                attr: parseFloat(col[10]) || 0,
-                conv: parseFloat(col[19]) || 0,
-                floor: parseFloat(col[22]) || 0
-            })).filter(d => d.batch !== "" && !d.batch.toLowerCase().includes("batch"));
+            const response = await fetch(CSV_URL + "&cache=" + new Date().getTime());
+            const text = await response.text();
+            const rows = text.split('\n').map(r => r.split(','));
 
+            // Column Mapping (Correct these indices if your sheet changes)
+            RAW = rows.slice(1).map(c => ({
+                batch: (c[0] || "").trim(),
+                process: (c[1] || "").trim(),
+                trainer: (c[2] || "").trim(),
+                type: (c[4] || "").trim(),
+                month: (c[5] || "").trim(),
+                hc: parseFloat(c[8]) || 0,
+                attr: parseFloat(c[10]) || 0,
+                conv: parseFloat(c[19]) || 0,
+                floor: parseFloat(c[22]) || 0
+            })).filter(d => d.batch !== "");
+
+            populateDropdowns();
+            updateDash();
             document.getElementById('loader').style.display = 'none';
-            buildFilters();
-            updateDashboard();
-        } catch (e) {
-            document.getElementById('data-status').innerHTML = "<span style='color:red'>Connection Failed</span>";
+        } catch (err) {
+            document.getElementById('status').innerHTML = "⚠️ Fetch Error";
+            console.error(err);
         }
     }
 
-    function buildFilters() {
-        Object.keys(FILTERS).forEach(key => {
-            let unique = [...new Set(RAW_DATA.map(d => d[key]))].filter(v => v !== "");
-            
-            if(key === 'month') {
-                unique.sort((a,b) => {
-                    const [m1, y1] = a.split("'"); const [m2, y2] = b.split("'");
-                    return (parseInt(y1) - parseInt(y2)) || (MONTH_ORDER.indexOf(m1) - MONTH_ORDER.indexOf(m2));
-                });
-            } else { unique.sort(); }
-
-            const list = document.getElementById('list-' + key);
-            list.innerHTML = unique.map(val => `
-                <div class="dd-item" onclick="toggleItem('${key}', '${val}')">
-                    <input type="checkbox" ${FILTERS[key].includes(val) ? 'checked' : ''}>
-                    <span>${val}</span>
-                </div>
-            `).join('');
+    function populateDropdowns() {
+        const fields = { batch: 'sel-batch', type: 'sel-type', process: 'sel-process', trainer: 'sel-trainer', month: 'sel-month' };
+        Object.keys(fields).forEach(key => {
+            const unique = [...new Set(RAW.map(d => d[key]))].sort();
+            const el = document.getElementById(fields[key]);
+            unique.forEach(val => {
+                if(val) el.innerHTML += `<option value="${val}">${val}</option>`;
+            });
         });
     }
 
-    function toggleDD(key) {
-        const pan = document.getElementById('pan-' + key);
-        const isOpen = pan.classList.contains('show');
-        document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('show'));
-        document.querySelectorAll('.dd-trig').forEach(t => t.classList.remove('active'));
-        if(!isOpen) {
-            pan.classList.add('show');
-            pan.previousElementSibling.classList.add('active');
-        }
-    }
+    function updateDash() {
+        const fBatch = document.getElementById('sel-batch').value;
+        const fType = document.getElementById('sel-type').value;
+        const fProc = document.getElementById('sel-process').value;
+        const fTrain = document.getElementById('sel-trainer').value;
+        const fMonth = document.getElementById('sel-month').value;
 
-    function toggleItem(key, val) {
-        const idx = FILTERS[key].indexOf(val);
-        if(idx > -1) FILTERS[key].splice(idx, 1);
-        else FILTERS[key].push(val);
-        
-        document.getElementById('btn-' + key).innerText = FILTERS[key].length ? `${FILTERS[key].length} Selected` : 'All';
-        updateDashboard();
-        buildFilters();
-    }
-
-    function bulk(key, all) {
-        FILTERS[key] = all ? [...new Set(RAW_DATA.map(d => d[key]))] : [];
-        document.getElementById('btn-' + key).innerText = FILTERS[key].length ? `Selected` : 'All';
-        updateDashboard();
-        buildFilters();
-    }
-
-    function searchList(key, q) {
-        const items = document.querySelectorAll(`#list-${key} .dd-item`);
-        items.forEach(i => i.style.display = i.innerText.toLowerCase().includes(q.toLowerCase()) ? 'flex' : 'none');
-    }
-
-    function updateDashboard() {
-        const filtered = RAW_DATA.filter(d => 
-            (!FILTERS.batch.length || FILTERS.batch.includes(d.batch)) &&
-            (!FILTERS.type.length || FILTERS.type.includes(d.type)) &&
-            (!FILTERS.process.length || FILTERS.process.includes(d.process)) &&
-            (!FILTERS.trainer.length || FILTERS.trainer.includes(d.trainer)) &&
-            (!FILTERS.month.length || FILTERS.month.includes(d.month))
+        const filtered = RAW.filter(d => 
+            (fBatch === 'All' || d.batch === fBatch) &&
+            (fType === 'All' || d.type === fType) &&
+            (fProc === 'All' || d.process === fProc) &&
+            (fTrain === 'All' || d.trainer === fTrain) &&
+            (fMonth === 'All' || d.month === fMonth)
         );
 
-        const sum = filtered.reduce((acc, cur) => {
-            acc.hc += cur.hc; acc.at += cur.attr; acc.cv += cur.conv; acc.fl += cur.floor;
+        const sums = filtered.reduce((acc, curr) => {
+            acc.hc += curr.hc; acc.at += curr.attr; acc.cv += curr.conv; acc.fl += curr.floor;
             return acc;
-        }, { hc:0, at:0, cv:0, fl:0 });
+        }, { hc: 0, at: 0, cv: 0, fl: 0 });
 
-        const convP = filtered.length ? (sum.cv / filtered.length).toFixed(1) : 0;
+        const avgConv = filtered.length ? (sums.cv / filtered.length).toFixed(1) : 0;
 
-        // UI Updates
+        // Update UI
         document.getElementById('h-batches').innerText = filtered.length;
         document.getElementById('k-batches').innerText = filtered.length;
-        document.getElementById('h-hc').innerText = Math.round(sum.hc);
-        document.getElementById('k-hc').innerText = Math.round(sum.hc);
-        document.getElementById('h-attr').innerText = Math.round(sum.at);
-        document.getElementById('k-attr').innerText = Math.round(sum.at);
-        document.getElementById('k-conv').innerText = convP + '%';
-        document.getElementById('k-floor').innerText = Math.round(sum.fl);
-
-        renderSelectionTags();
+        document.getElementById('h-hc').innerText = Math.round(sums.hc);
+        document.getElementById('k-hc').innerText = Math.round(sums.hc);
+        document.getElementById('h-at').innerText = Math.round(sums.at);
+        document.getElementById('k-at').innerText = Math.round(sums.at);
+        document.getElementById('k-cv').innerText = avgConv + "%";
+        document.getElementById('k-fl').innerText = Math.round(sums.fl);
     }
 
-    function renderSelectionTags() {
-        const box = document.getElementById('tag-box');
-        box.innerHTML = '';
-        const labels = { batch: 'BT', type: 'TYP', process: 'PRC', trainer: 'TR', month: 'MO' };
-        
-        Object.keys(FILTERS).forEach(k => {
-            FILTERS[k].forEach(v => {
-                const tag = document.createElement('div');
-                tag.className = 'tag';
-                tag.innerHTML = `<b>${labels[k]}</b> ${v} <span onclick="toggleItem('${k}', '${v}')">×</span>`;
-                box.appendChild(tag);
-            });
-        });
-    }
-
-    window.onclick = (e) => {
-        if(!e.target.closest('.s-grp')) {
-            document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('show'));
-            document.querySelectorAll('.dd-trig').forEach(t => t.classList.remove('active'));
-        }
-    };
-
-    loadData();
+    fetchData();
 </script>
 </body>
 </html>
