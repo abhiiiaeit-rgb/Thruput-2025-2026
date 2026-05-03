@@ -29,7 +29,6 @@
         .dd-wrap { display: flex; flex-direction: column; gap: 4px; position: relative; }
         .dd-wrap label { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; }
         .dd-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); border-radius: var(--rs); padding: 8px 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; min-width: 160px; transition: 0.2s; }
-        .dd-btn:hover { border-color: var(--accent); }
         
         .dd-panel { position: absolute; top: calc(100% + 4px); left: 0; min-width: 220px; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--r); z-index: 300; display: none; flex-direction: column; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
         .dd-panel.open { display: flex; }
@@ -62,7 +61,7 @@
 </div>
 
 <div class="header">
-    <div><h1>OJT Training Dashboard</h1><p style="color:var(--text3); font-size:10px;">Live Google Sheets Link Integrated</p></div>
+    <div><h1>OJT Training Dashboard</h1><p style="color:var(--text3); font-size:10px;">Live Google Sheets Connection Active</p></div>
     <div class="hstats">
         <div class="hstat"><div class="v" id="hTotal">0</div><div class="l">Batches</div></div>
         <div class="hstat"><div class="v" id="hHC">0</div><div class="l">Headcount</div></div>
@@ -93,45 +92,3 @@
         <div id="dd-month" class="dd-panel">
             <div class="dd-controls"><span class="dd-action" onclick="bulkSelect('month', true)">Select All</span><span class="dd-action clear" onclick="bulkSelect('month', false)">Clear</span></div>
             <div class="dd-list" id="list-month"></div>
-        </div>
-    </div>
-    <div class="dd-wrap"><label>Batch Type</label><button class="dd-btn" onclick="toggleDD('dd-batchtype')"><span id="lbl-batchtype">All</span> ▾</button>
-        <div id="dd-batchtype" class="dd-panel">
-            <div class="dd-controls"><span class="dd-action" onclick="bulkSelect('batchtype', true)">Select All</span><span class="dd-action clear" onclick="bulkSelect('batchtype', false)">Clear</span></div>
-            <div class="dd-list" id="list-batchtype"></div>
-        </div>
-    </div>
-    <button class="btn-reset" onclick="resetFilters()">↺ Reset All</button>
-</div>
-
-<div class="main">
-    <div class="kpi-grid">
-        <div class="kpi-card"><div class="lbl">Total Batches</div><div class="val" id="k-batches">0</div></div>
-        <div class="kpi-card"><div class="lbl">Total Headcount</div><div class="val" id="k-hc">0</div></div>
-        <div class="kpi-card"><div class="lbl">Avg Conversion</div><div class="val" id="k-conv">0%</div></div>
-    </div>
-</div>
-
-<script>
-    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSbuV6t-gxHvr0aN9asRdWBs0arjftIJ6k5hcpviihyk46Jpcd_9OPueR1LkE1rgS_kVHfoRIKTifxV/pub?gid=2099952935&single=true&output=csv";
-    let RAW_DATA = [];
-    let filters = { batch: [], process: [], trainer: [], month: [], batchtype: [] };
-
-    async function init() {
-        try {
-            const res = await fetch(sheetURL);
-            const text = await res.text();
-            const rows = text.split('\n').map(r => r.split(',')).filter(r => r.length > 1);
-            RAW_DATA = rows.slice(1).map(cols => ({
-                batch: cols[0]?.trim(), process: cols[1]?.trim(), trainer: cols[2]?.trim(),
-                batch_type: cols[4]?.trim(), month: cols[5]?.trim(),
-                hc: parseFloat(cols[8]) || 0, conv: parseFloat(cols[19]) || 0
-            })).filter(d => d.batch && d.batch.toLowerCase() !== "batch");
-            
-            document.getElementById('loader').style.display = 'none';
-            renderFilters();
-            updateDashboard();
-        } catch (e) { console.error(e); }
-    }
-
-    function renderFilters()
